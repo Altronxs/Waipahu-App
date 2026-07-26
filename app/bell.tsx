@@ -53,7 +53,7 @@ const Bell = () => {
         </View>
       </View>
 
-      <View className="grow justify-center items-center bg-whs-gold  pt-16 ">
+      <View className="justify-center items-center bg-whs-gold ">
         <TouchableOpacity
           className="w-10 h-10 left self-start pt-3 z-30"
           onPress={() => router.push("/")}
@@ -67,19 +67,20 @@ const Bell = () => {
           />
         </TouchableOpacity>
         <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          Bell Schedule SY 2025-2026
+          Bell Schedule SY25-26
         </Text>
-
-        <View className="self-center items-center flex-row w-[100vw] h-[100vh] z-10">
-          <WebView
-            className="relative mt-[10vh]"
-            ref={webViewRef}
-            source={{
-              uri: "https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf",
-            }}
-          />
-        </View>
       </View>
+
+      <View className="self-center items-center flex-row w-[100vw] h-[100vh] z-10">
+        <WebView
+          className="relative mt-[10vh]"
+          ref={webViewRef}
+          source={{
+            uri: "https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf",
+          }}
+        />
+      </View>
+      
     </SafeAreaProvider>
   );
 };
