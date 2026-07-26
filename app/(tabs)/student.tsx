@@ -176,7 +176,7 @@ const Students = () => {
             </TouchableOpacity>
             <TouchableOpacity
               className="w-24 h-min mx-3 my-3 justify-center pt-5"
-              onPress={() => router.push("/calender")}
+              onPress={() => router.push("/calendar")}
             >
               <Image
                 source={require("@/assets/images/calender.png")}
@@ -217,6 +217,21 @@ const Students = () => {
               />
               <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
                 News
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="w-24 h-min mx-3 my-3 justify-center"
+              onPress={() => router.push("/legacy")}
+            >
+              <Image
+                source={require("@/assets/images/torch.png")}
+                style={{
+                  tintColor: "#0b0b49",
+                }}
+                className="size-14 self-center"
+              />
+              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                LEGACY
               </Text>
             </TouchableOpacity>
           </ImageBackground>

@@ -226,7 +226,7 @@ export default function Index() {
             </TouchableOpacity>
             <TouchableOpacity
               className="w-24 h-min mx-3 my-3 justify-center"
-              onPress={() => router.push("/author")}
+              onPress={() => router.push("/legacy")}
             >
               <Image
                 source={require("@/assets/images/torch.png")}
