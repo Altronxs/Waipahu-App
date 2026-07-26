@@ -20,8 +20,9 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
+import { Asset } from "expo-asset";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Dimensions,
@@ -34,16 +35,50 @@ import {
 } from "react-native";
 import MapView, { Callout, Marker, Polygon } from "react-native-maps";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { WebView } from "react-native-webview";
 import type { WebView as WebViewType } from "react-native-webview";
-// Removed BottomSheet imports:
-// import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-// import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-const width = Dimensions.get("window").width;
-const height = Dimensions.get("window").height;
+const { width, height } = Dimensions.get("window");
+
+const WAIPAHU_CAMPUS_MAP_NAME = "Waipahu High Campus Map";
+
+const INITIAL_REGION = {
+  latitude: 21.3888,
+  longitude: -157.9923,
+  latitudeDelta: 0.005,
+  longitudeDelta: 0.005,
+};
+
+const INITIAL_CAMERA = {
+  center: {
+    latitude: 21.38912945,
+    longitude: -157.99326913,
+  },
+  pitch: 80,
+  heading: 180,
+  altitude: 150,
+  zoom: 17,
+};
+
+const CAMERA_ZOOM_RANGE = {
+  maxCenterCoordinateDistance: 1300,
+  minCenterCoordinateDistance: 100,
+};
+
+const icons = {
+  gym: require("@/assets/images/gym.png"),
+  marker: require("@/assets/images/map-marker.png"),
+  library: require("@/assets/images/library.png"),
+  cafe: require("@/assets/images/cafe.png"),
+  band: require("@/assets/images/band.png"),
+  whs: require("@/assets/images/whs-icon.png"),
+  campusMap: require("@/assets/images/whs-campus-map.png"),
+  // add more as needed
+};
 
 type Coordinate = [number, number];
-type floor = [string, string?, string?, string?, string?, string?];
+type Floor = [string, string?, string?, string?, string?, string?];
+
 interface MapFeature {
   name: string;
   polygon: Coordinate[];
@@ -52,56 +87,71 @@ interface MapFeature {
   textNeed?: boolean;
   iconName?: string;
   markerText?: string;
-  firstFloor?: floor;
-  secondFloor?: floor;
-  thirdFloor?: floor;
+  firstFloor?: Floor;
+  secondFloor?: Floor;
+  thirdFloor?: Floor;
   layoutNeed?: boolean;
   image?: string;
 }
+
 interface MapDataResponse {
   mapData: MapFeature[];
 }
+
+/** Renders one row of rooms for a floor, sized to fit evenly within the sheet. */
+const FloorRow = ({
+  rooms,
+  variant,
+}: {
+  rooms: Floor;
+  variant: "first" | "second" | "third";
+}) => {
+  const containerClassName =
+    variant === "second"
+      ? "flex-row flex-wrap justify-around flex-1"
+      : "flex-row items-center justify-start self-center";
+
+  const cellClassName =
+    variant === "third"
+      ? "text-gray-700 text-[0.5rem] text-center text-nowrap border-2 border-black self-center p-2 bg-gray-300"
+      : variant === "second"
+        ? "text-gray-700 text-[0.5rem] text-center text-nowrap border-2 border-black self-center pt-2 pb-2 pl-1 pr-1 bg-gray-200"
+        : "text-gray-700 text-[0.5rem] text-center border-2 border-black self-center pt-2 pb-2 pl-1 pr-1";
+
+  const cellWidth = (width * 0.8) / rooms.length;
+
+  return (
+    <View className={containerClassName}>
+      {rooms.map((room, idx) => (
+        <Text key={idx} className={cellClassName} style={{ width: cellWidth }}>
+          {room}
+        </Text>
+      ))}
+    </View>
+  );
+};
 
 const Map = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
-  const [intrestPoint, setIntrestPoint] = useState<string>("");
 
-  // State for managing the Modal visibility
+  const [interestPoint, setInterestPoint] = useState<string>("");
+  const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [isSheetVisible, setIsSheetVisible] = useState(false);
+  const [region, setRegion] = useState(INITIAL_REGION);
 
-  const [mapData, setMapData] = useState<MapDataResponse>(
+  const [mapData] = useState<MapDataResponse>(
     require("@/assets/json/mapdata.json"),
   );
 
-  const icons = {
-    gym: require("@/assets/images/gym.png"),
-    marker: require("@/assets/images/map-marker.png"),
-    library: require("@/assets/images/library.png"),
-    cafe: require("@/assets/images/cafe.png"),
-    band: require("@/assets/images/band.png"),
-    whs: require("@/assets/images/whs-icon.png"),
-    campusMap: require("@/assets/images/whs-campus-map.png"),
-    // add more as needed
-  };
-
-  const [location, setLocation] = useState({
-    latitude: 21.3888,
-    longitude: -157.9923,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
-  });
-
   useFocusEffect(
     React.useCallback(() => {
-      if (webViewRef.current) {
-        webViewRef.current.reload();
-      }
+      webViewRef.current?.reload();
     }, []),
   );
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
     NotoSerif_400Regular,
@@ -117,6 +167,25 @@ const Map = () => {
     SourceSerifPro_600SemiBold,
   });
 
+  useEffect(() => {
+    async function loadMapAsset() {
+      try {
+        const asset = await Asset.fromModule(
+          require("@/assets/pdf/campusMap.pdf"),
+        ).downloadAsync();
+        setPdfUri(asset.localUri);
+      } catch (error) {
+        console.error("Failed to load local PDF asset:", error);
+      }
+    }
+    loadMapAsset();
+  }, []);
+
+  const openSheetFor = (name: string) => {
+    setInterestPoint(name);
+    setIsSheetVisible(true);
+  };
+
   if (!fontsLoaded) {
     return (
       <SafeAreaProvider className="flex-1 justify-center items-center bg-white">
@@ -126,6 +195,10 @@ const Map = () => {
       </SafeAreaProvider>
     );
   }
+
+  const selectedFeature = mapData.mapData.find(
+    (feature) => feature.name === interestPoint,
+  );
 
   return (
     <SafeAreaProvider className="flex-col">
@@ -140,16 +213,15 @@ const Map = () => {
           <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
         </SafeAreaView>
       </SafeAreaView>
-      <View className="justify-center items-center bg-whs-gold ">
+
+      <View className="justify-center items-center bg-whs-gold">
         <TouchableOpacity
           className="w-10 h-10 left self-start pt-3 z-30"
           onPress={() => router.push("/")}
         >
           <Image
             source={require("@/assets/images/back.png")}
-            style={{
-              tintColor: "#0b0b49",
-            }}
+            style={{ tintColor: "#0b0b49" }}
             className="size-10 self-center"
           />
         </TouchableOpacity>
@@ -157,25 +229,15 @@ const Map = () => {
           Campus Map 2025-2026
         </Text>
       </View>
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
+
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
         <MapView
           ref={mapRef}
           style={{ width: "100%", height: "100%", zIndex: 20 }}
-          region={location}
-          initialCamera={{
-            center: {
-              latitude: 21.38912945,
-              longitude: -157.99326913,
-            },
-            pitch: 80,
-            heading: 180,
-            altitude: 150,
-            zoom: 17,
-          }}
-          cameraZoomRange={{
-            maxCenterCoordinateDistance: 1300,
-            minCenterCoordinateDistance: 100,
-          }}
+          region={region}
+          onRegionChangeComplete={setRegion}
+          initialCamera={INITIAL_CAMERA}
+          cameraZoomRange={CAMERA_ZOOM_RANGE}
           mapType="standard"
           userInterfaceStyle="dark"
         >
@@ -185,9 +247,9 @@ const Map = () => {
                 fillColor="#00008050"
                 strokeColor="#ae8c52"
                 strokeWidth={1}
-                coordinates={feature.polygon.map((coord) => ({
-                  latitude: coord[0],
-                  longitude: coord[1],
+                coordinates={feature.polygon.map(([latitude, longitude]) => ({
+                  latitude,
+                  longitude,
                 }))}
               />
               <Marker
@@ -198,16 +260,12 @@ const Map = () => {
                 title={feature.name}
                 description=""
                 onPress={() => {
-                  if (
-                    feature.layoutNeed === true &&
-                    feature.name != "Waipahu High Campus Map"
-                  ) {
-                    setIntrestPoint(feature.name);
-                    setIsSheetVisible(true);
+                  if (feature.layoutNeed && feature.name !== WAIPAHU_CAMPUS_MAP_NAME) {
+                    openSheetFor(feature.name);
                   }
                 }}
               >
-                <View className="items-center ">
+                <View className="items-center">
                   {feature.iconNeed ? (
                     <>
                       {feature.textNeed && (
@@ -228,7 +286,7 @@ const Map = () => {
                   )}
                 </View>
 
-                <Callout tooltip={true}>
+                <Callout tooltip>
                   <View className="flex flex-col items-center bg-white p-1 rounded-lg shadow-lg border border-gray-300 text-nowrap w-32">
                     <Text className="font-barlow-semibold text-xs mb-1 text-gray-800 w-30">
                       {feature.name}
@@ -239,127 +297,75 @@ const Map = () => {
             </React.Fragment>
           ))}
         </MapView>
+
         <TouchableOpacity
           className="w-5 h-5 self-center justify-center absolute bottom-14 z-50"
-          onPress={() => {
-            setIntrestPoint("Waipahu High Campus Map");
-            setIsSheetVisible(true);
-          }}
+          onPress={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
         >
           <Image
             source={require("@/assets/images/whs-icon.png")}
-            style={{
-              tintColor: "#ffffff",
-            }}
+            style={{ tintColor: "#ffffff" }}
             className="size-10 self-center"
           />
         </TouchableOpacity>
 
-        {/* The new Modal-based bottom sheet code */}
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent
           visible={isSheetVisible}
-          onRequestClose={() => {
-            setIsSheetVisible(!isSheetVisible);
-          }}
+          onRequestClose={() => setIsSheetVisible(false)}
         >
           {/* Dimmed background area that closes the sheet when tapped */}
           <TouchableOpacity
             className="flex-1 justify-end items-center bg-black/1"
             activeOpacity={1}
             onPressOut={() => setIsSheetVisible(false)}
-          >
-            {/* The actual bottom sheet content container */}
-          </TouchableOpacity>
+          />
+
           <View className="w-full bg-white rounded-t-2xl p-4 shadow-2xl">
             <ScrollView>
-              {mapData.mapData
-                .filter((feature) => feature.name === intrestPoint) // only render the clicked feature
-                .map((feature, index) =>
-                  feature.layoutNeed &&
-                  feature.name !== "Waipahu High Campus Map" ? (
-                    <View key={index} className="mb-4">
-                      <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
-                        {feature.name}
-                      </Text>
-                      <View className="self-center items-center w-[80vw]">
-                        {feature.thirdFloor && (
-                          <View className="flex-row items-center justify-start">
-                            {(feature.thirdFloor ?? []).map((room, idx) => (
-                              <Text
-                                key={idx}
-                                className={`
-                                                text-gray-700 text-[0.5rem] text-center
-                                                text-nowrap border-2 border-black self-center p-2 bg-gray-300
-                                                `}
-                                style={{
-                                  width:
-                                    (width * (80 / 100)) /
-                                    (feature.thirdFloor?.length ?? 1),
-                                }}
-                              >
-                                {room}
-                              </Text>
-                            ))}
-                          </View>
-                        )}
-
-                        {feature.secondFloor && (
-                          <View className="flex-row flex-wrap justify-around flex-1">
-                            {(feature.secondFloor ?? []).map((room, idx) => (
-                              <Text
-                                key={idx}
-                                className={`
-                                                text-gray-700 text-[0.5rem] text-center
-                                                text-nowrap border-2 border-black self-center pt-2 pb-2 pl-1 pr-1 bg-gray-200
-                                                `}
-                                style={{
-                                  width:
-                                    (width * (80 / 100)) /
-                                    (feature.secondFloor?.length ?? 1),
-                                }}
-                              >
-                                {room}
-                              </Text>
-                            ))}
-                          </View>
-                        )}
-
-                        {feature.firstFloor && (
-                          <View className="flex-row items-center justify-start self-center">
-                            {(feature.firstFloor ?? []).map((room, idx) => (
-                              <Text
-                                key={idx}
-                                className={`
-                                                text-gray-700 text-[0.5rem] text-center
-                                                border-2 border-black self-center pt-2 pb-2 pl-1 pr-1
-                                                `}
-                                style={{
-                                  width:
-                                    (width * (80 / 100)) /
-                                    (feature.firstFloor?.length ?? 1),
-                                }}
-                              >
-                                {room}
-                              </Text>
-                            ))}
-                          </View>
-                        )}
-                      </View>
+              {selectedFeature?.layoutNeed &&
+                selectedFeature.name !== WAIPAHU_CAMPUS_MAP_NAME && (
+                  <View className="mb-4">
+                    <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
+                      {selectedFeature.name}
+                    </Text>
+                    <View className="self-center items-center w-[80vw]">
+                      {selectedFeature.thirdFloor && (
+                        <FloorRow rooms={selectedFeature.thirdFloor} variant="third" />
+                      )}
+                      {selectedFeature.secondFloor && (
+                        <FloorRow rooms={selectedFeature.secondFloor} variant="second" />
+                      )}
+                      {selectedFeature.firstFloor && (
+                        <FloorRow rooms={selectedFeature.firstFloor} variant="first" />
+                      )}
                     </View>
-                  ) : feature.name === "Waipahu High Campus Map" ? (
-                    <View key={index} className="mb-4">
-                      <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
-                        {feature.name}
-                      </Text>
-                      <Image
-                        source={icons[feature.image as keyof typeof icons]}
-                        className="w-[80vw] h-[15vh] self-center"
-                      />
-                    </View>
-                  ) : null,
+                  </View>
                 )}
+
+              {selectedFeature?.name === WAIPAHU_CAMPUS_MAP_NAME && (
+                <View className="mb-4">
+                  <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
+                    {selectedFeature.name}
+                  </Text>
+                  <View className="self-center m-auto block">
+                    <WebView
+                      ref={webViewRef}
+                      source={{ uri: pdfUri ?? undefined }}
+                      style={{ width: width * 0.8, height: height * 0.15 }}
+                      className="self-center m-auto block"
+                      // Critical security and file flags needed for local URIs
+                      originWhitelist={["*"]}
+                      allowFileAccess
+                      allowFileAccessFromFileURLs
+                      allowUniversalAccessFromFileURLs
+                      // Enables standard pinch-to-zoom controls inside the viewer
+                      scalesPageToFit
+                    />
+                  </View>
+                </View>
+              )}
             </ScrollView>
           </View>
         </Modal>
