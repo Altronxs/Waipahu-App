@@ -54,9 +54,9 @@ const INITIAL_CAMERA = {
     latitude: 21.38912945,
     longitude: -157.99326913,
   },
-  pitch: 80,
+  pitch: 45,
   heading: 180,
-  altitude: 150,
+  altitude: 1000,
   zoom: 17,
 };
 
@@ -202,17 +202,17 @@ const Map = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <SafeAreaView className="flex-row bg-[#0b0b49] h-28 z-30 pt-28">
+      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="w-32 h-32 relative bottom-28 left-11"
         />
-        <SafeAreaView className="w-48 h-28 bottom-36 left-14 items-start">
+        <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
           <Text className="text-white font-barlow-semibold">MY VOICE</Text>
           <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
           <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
 
       <View className="justify-center items-center bg-whs-gold">
         <TouchableOpacity
@@ -259,17 +259,24 @@ const Map = () => {
                 }}
                 title={feature.name}
                 description=""
+                tracksViewChanges={false}
                 onPress={() => {
                   if (feature.layoutNeed && feature.name !== WAIPAHU_CAMPUS_MAP_NAME) {
                     openSheetFor(feature.name);
                   }
                 }}
               >
-                <View className="items-center">
+                <View
+                  className="items-center justify-center"
+                  style={{ minWidth: 18, minHeight: 18 }}
+                >
                   {feature.iconNeed ? (
                     <>
                       {feature.textNeed && (
-                        <Text className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base">
+                        <Text
+                          className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base"
+                          style={{ minWidth: 12 }}
+                        >
                           {feature.markerText}
                         </Text>
                       )}
@@ -280,7 +287,10 @@ const Map = () => {
                       />
                     </>
                   ) : (
-                    <Text className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base">
+                    <Text
+                      className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base"
+                      style={{ minWidth: 12 }}
+                    >
                       {feature.markerText}
                     </Text>
                   )}

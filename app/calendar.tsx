@@ -3,7 +3,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/barlow-semi-condensed";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -18,8 +18,7 @@ import { WebView } from "react-native-webview";
 
 const { width, height } = Dimensions.get("window");
 
-const Cafe = () => {
-  const [menuUrl, setMenuUrl] = useState<string>("");
+const Calendar = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
 
@@ -35,31 +34,7 @@ const Cafe = () => {
     BarlowSemiCondensed_600SemiBold,
   });
 
-  useEffect(() => {
-    const date = new Date();
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const monthNames = [
-      "JANUARY",
-      "FEBRUARY",
-      "MARCH",
-      "APRIL",
-      "MAY",
-      "JUNE",
-      "JULY",
-      "AUGUST",
-      "SEPTEMBER",
-      "OCTOBER",
-      "NOVEMBER",
-      "DECEMBER",
-    ];
-    const formattedMonth = monthNames[month];
-    const pdfUrl = `https://www.waipahuhigh.org/pdf/MONTHLY%20%20MENU%20${formattedMonth}-${year}.pdf`;
-    setMenuUrl(pdfUrl);
-    console.log(pdfUrl);
-  }, []);
-
-  if (!fontsLoaded || !menuUrl) {
+  if (!fontsLoaded) {
     return (
       <SafeAreaProvider className="flex-1 justify-center items-center bg-white">
         <SafeAreaView className="flex-row bg-[#0b0b49] h-28 z-30 pt-28 w-full">
@@ -71,17 +46,17 @@ const Cafe = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <SafeAreaView className="flex-row bg-[#0b0b49] h-28 z-30 pt-28">
+      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="w-32 h-32 relative bottom-28 left-11"
         />
-        <SafeAreaView className="w-48 h-28 bottom-36 left-14 items-start">
+        <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
           <Text className="text-white font-barlow-semibold">MY VOICE</Text>
           <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
           <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
 
       <View className="grow justify-center items-center bg-whs-gold">
         <TouchableOpacity
@@ -97,14 +72,16 @@ const Cafe = () => {
           />
         </TouchableOpacity>
         <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          Breakfast & Lunch Menu
+          Calendar SY 25-26
         </Text>
         <View className="self-center items-center flex-row w-full flex-1 z-10">
           <WebView
             className="relative"
             style={{ width: width, flex: 1 }}
             ref={webViewRef}
-            source={{ uri: menuUrl }}
+            source={{
+              uri: "https://www.waipahuhigh.org/apps/events/view_calendar.jsp",
+            }}
           />
         </View>
       </View>
@@ -112,4 +89,4 @@ const Cafe = () => {
   );
 };
 
-export default Cafe;
+export default Calendar;
