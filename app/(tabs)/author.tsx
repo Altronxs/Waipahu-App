@@ -224,7 +224,7 @@ const Author = () => {
             </View>
             <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
           </View>
-          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
+          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200 pb-[8rem]">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
               Kyle Alexander Baldovi
             </Text>

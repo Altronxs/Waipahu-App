@@ -125,7 +125,7 @@ const Vision = () => {
             educational programs that challenge all students to perform at their
             highest potential.
           </Text>
-          <View className="relative bottom-24">
+          <View className="relative bottom-24 pb-[10rem]">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-xl w-full text-center relative p-5">
               CLASS OF 2025
             </Text>

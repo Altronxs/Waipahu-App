@@ -299,7 +299,7 @@ const Map = () => {
         </MapView>
 
         <TouchableOpacity
-          className="w-5 h-5 self-center justify-center absolute bottom-14 z-50"
+          className="w-5 h-5 self-center justify-center absolute bottom-[10rem] z-50"
           onPress={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
         >
           <Image
@@ -345,7 +345,7 @@ const Map = () => {
                 )}
 
               {selectedFeature?.name === WAIPAHU_CAMPUS_MAP_NAME && (
-                <View className="mb-4">
+                <View className="mb-[5rem] h-max">
                   <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
                     {selectedFeature.name}
                   </Text>

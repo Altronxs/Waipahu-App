@@ -44,7 +44,7 @@ export default function Index() {
         </SafeAreaView>
       </SafeAreaView>
       <View className="grow justify-center items-center bg-white">
-        <ScrollView className="self-center">
+        <ScrollView className="self-center h-[100vh]">
           <ImageBackground
             source={require("@/assets/images/bg-home.png")}
             className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"

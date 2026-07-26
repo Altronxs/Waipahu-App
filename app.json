@@ -10,8 +10,9 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "config": {
-        "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+      "bundleIdentifier": "com.altronx.WaipahuHighSchoolApp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -50,6 +51,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "45415bfb-cf50-4064-a418-644d4c842109"
+      }
     }
   }
 }
