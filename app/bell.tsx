@@ -58,7 +58,7 @@ const Bell = () => {
   };
 
   const calculateCurrentPeriod = (now: Date): void => {
-    const currentMinutes = (now.getHours() + 10) * 60 + (now.getMinutes());
+    const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
     const currentSeconds = now.getSeconds();
     
     const activePeriod = SCHOOL_SCHEDULE.find(
