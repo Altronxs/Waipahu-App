@@ -15,11 +15,15 @@ import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
 
+
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [currentPeriod, setCurrentPeriod] = useState(null);
+  const [currentPeriod, setCurrentPeriod] = useState<String>('');
+  const [currentPeriodStart, setCurrentPeriodStart] = useState<String>('')
+  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<String>('')
+  const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
 
   useFocusEffect(
@@ -45,31 +49,44 @@ const Bell = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const calculateCurrentPeriod = (now) => {
-    const currentMinutes = (now.getHours()) * 60 + now.getMinutes();
-    
-    const currentSeconds = now.getSeconds();
 
-    // Find if current time falls between any period's start and end
+  const minutesToString = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const minute = Math.round(((minutes / 60) - hours) * 60);
+    const paddedMinute = minute < 10 ? "0" + minute : minute;
+    return hours + ":" + paddedMinute;
+  };
+
+  const calculateCurrentPeriod = (now: Date): void => {
+    const currentMinutes = (now.getHours() + 10) * 60 + (now.getMinutes());
+    const currentSeconds = now.getSeconds();
+    
     const activePeriod = SCHOOL_SCHEDULE.find(
       (p) => currentMinutes >= p.start && currentMinutes < p.end
     );
-
+    
     if (activePeriod) {
       setCurrentPeriod(activePeriod.name);
-      
-      // Calculate remaining minutes and seconds
+      setCurrentPeriodStart(minutesToString(activePeriod.start));
+      if (activePeriod.end >= 720) {
+        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "pm")
+      } else {
+        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "am")
+      }
       const minutesRemaining = activePeriod.end - currentMinutes - 1;
       const secondsRemaining = 60 - currentSeconds;
-      
-      // Format output string
+
       const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
       setTimeLeft(`${minutesRemaining}m ${displaySeconds}s`);
+
+      setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - minutesRemaining) / (activePeriod.end - activePeriod.start))) + "%")
+
     } else {
       setCurrentPeriod('School is out!');
       setTimeLeft('');
     }
   };
+
 
   if (!fontsLoaded) {
     return (
@@ -82,7 +99,7 @@ const Bell = () => {
   }
 
   return (
-    <SafeAreaProvider className="flex-col">
+    <SafeAreaProvider className="flex flex-col">
       
       <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
         <Image
@@ -114,27 +131,36 @@ const Bell = () => {
         </Text>
       </View>
 
-      <View className="self-center items-center flex-column w-[100vw] h-[100vh] z-10">
-        <View style={styles.card}>
-          <Text style={styles.clock}>{currentTime.toLocaleTimeString()}</Text>
+      <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10 ">
+        <View className="flex bg-white p-[20] rounded-[3rem] w-[90%] mt-5  ">
+         
+          <View className="flex flex-column">
+            <Text className="font-bold font-barlow text-whs-blue text-lg/tight">{currentPeriod}</Text>
+            {timeLeft ? (
+              <View>
+                <Text className="font-light font-barlow-regular text-whs-blue text-base/tight">{currentPeriodStart}-{currentPeriodEnd}</Text>
+                <View>
+                  <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                  <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+                </View>
+              </View>
+            ) : null}
+          </View>
           
-          <Text style={styles.label}>Current Block:</Text>
-          <Text style={styles.periodText}>{currentPeriod}</Text>
           
           {timeLeft ? (
             <View>
-              <Text style={styles.label}>Time Remaining:</Text>
-              <Text style={styles.timerText}>{timeLeft}</Text>
+              <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
             </View>
           ) : null}
+        </View> 
+        <View className="self-center items-start flex-row h-full z-0 p-[20]">
+            <WebView
+              className="relative h-[50%]"
+              ref={webViewRef}
+              source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+            />
         </View>
-        <WebView
-          className="relative mt-[10vh]"
-          ref={webViewRef}
-          source={{
-            uri: "https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf",
-          }}
-        />
       </View>
       
     </SafeAreaProvider>

@@ -1,10 +1,12 @@
 import { BarlowSemiCondensed_600SemiBold } from "@expo-google-fonts/barlow-semi-condensed";
 import { useFonts } from "@expo-google-fonts/barlow-semi-condensed/useFonts";
 import { useRouter } from "expo-router";
+import React, { useRef, useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Image,
     ImageBackground,
+    Dimensions,
     Linking,
     ScrollView,
     Text,
@@ -13,12 +15,73 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import "../globals.css";
+import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
+
+const { width, height } = Dimensions.get("window");
 
 export default function Index() {
   const router = useRouter(); // Get the router instance
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentPeriod, setCurrentPeriod] = useState<String>('');
+  const [currentPeriodStart, setCurrentPeriodStart] = useState<String>('')
+  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<String>('')
+  const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
+  const [timeLeft, setTimeLeft] = useState('');
+
+
+
   let [fontsLoaded] = useFonts({
     BarlowSemiCondensed_600SemiBold,
   });
+
+  useEffect(() => {
+    // Update timer every single second
+    const timer = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now);
+      calculateCurrentPeriod(now);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+
+  const minutesToString = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const minute = Math.round(((minutes / 60) - hours) * 60);
+    const paddedMinute = minute < 10 ? "0" + minute : minute;
+    return hours + ":" + paddedMinute;
+  };
+
+  const calculateCurrentPeriod = (now: Date): void => {
+    const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
+    const currentSeconds = now.getSeconds();
+    
+    const activePeriod = SCHOOL_SCHEDULE.find(
+      (p) => currentMinutes >= p.start && currentMinutes < p.end
+    );
+    
+    if (activePeriod) {
+      setCurrentPeriod(activePeriod.name);
+      setCurrentPeriodStart(minutesToString(activePeriod.start));
+      if (activePeriod.end >= 720) {
+        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "pm")
+      } else {
+        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "am")
+      }
+      const minutesRemaining = activePeriod.end - currentMinutes - 1;
+      const secondsRemaining = 60 - currentSeconds;
+
+      const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
+      setTimeLeft(`${minutesRemaining}m ${displaySeconds}s`);
+
+      setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - minutesRemaining) / (activePeriod.end - activePeriod.start))) + "%")
+
+    } else {
+      setCurrentPeriod('');
+      setTimeLeft('');
+    }
+  };  
 
   if (!fontsLoaded) {
     return (
@@ -43,13 +106,43 @@ export default function Index() {
           <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
         </View>
       </View>
-      <View className="grow justify-center items-center bg-white">
-        <ScrollView className="self-center h-[100vh]">
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
+        <ScrollView
+          className="w-[100vw] h-96 bg-white flex-1 flex-col "
+          style={{ height: height * 0.5 }}
+        >
           <ImageBackground
             source={require("@/assets/images/bg-home.png")}
             className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
           >
-            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
+            {currentPeriod !== '' ? (
+              <View className="bg-white/10 p-[20] w-[100%] "> 
+                <View className="flex flex-column">
+                  <Text className="font-bold font-barlow text-whs-blue text-sm/none">{currentPeriod}</Text>
+                  {timeLeft ? (
+                    <View>
+                      <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{currentPeriodStart}-{currentPeriodEnd}</Text>
+                      <View>
+                        <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                        <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+                      </View>
+                    </View>
+                  ) : null}
+                </View>
+                
+                
+                {timeLeft ? (
+                  <View>
+                    <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
+                  </View>
+                ) : null}
+              </View> 
+            ) : (
+              <View className="h-5 w-10"></View>
+            )}
+            
+
+            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center relative bottom-10">
               WELCOME!
             </Text>
             <TouchableOpacity
@@ -254,6 +347,7 @@ export default function Index() {
                 Authors
               </Text>
             </TouchableOpacity>
+            
           </ImageBackground>
         </ScrollView>
       </View>
