@@ -56,18 +56,26 @@ export default function Index() {
   };
 
   const calculateCurrentPeriod = (now: Date): void => {
-    const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
+
+    const currentMinutes = (now.getHours() - 12) * 60 + (now.getMinutes() - (18));
     const currentSeconds = now.getSeconds();
     
     const activePeriod = SCHOOL_SCHEDULE.find(
       (p) => currentMinutes >= p.start && currentMinutes < p.end
     );
-    
     if (activePeriod) {
       setCurrentPeriod(activePeriod.name);
-      setCurrentPeriodStart(minutesToString(activePeriod.start));
+      if (activePeriod.start >= 780) {
+        setCurrentPeriodStart(minutesToString(activePeriod.start - 720));
+      } else {
+        setCurrentPeriodStart(minutesToString(activePeriod.start));
+      }
       if (activePeriod.end >= 720) {
-        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "pm")
+        if (activePeriod.end >= 780) {
+          setCurrentPeriodEnd(minutesToString(activePeriod.end - 720) + "pm")
+        } else {
+          setCurrentPeriodEnd(minutesToString(activePeriod.end) + "pm")
+        }
       } else {
         setCurrentPeriodEnd(minutesToString(activePeriod.end) + "am")
       }
@@ -77,8 +85,7 @@ export default function Index() {
       const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
       setTimeLeft(`${minutesRemaining}m ${displaySeconds}s`);
 
-      setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - minutesRemaining) / (activePeriod.end - activePeriod.start))) + "%")
-
+      setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) + "%")
     } else {
       setCurrentPeriod('');
       setTimeLeft('');
