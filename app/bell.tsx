@@ -13,8 +13,8 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
+import TitleBar from "@/components/titleBar";
 import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
-
 
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
@@ -25,6 +25,7 @@ const Bell = () => {
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<String>('')
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
+  const [appIsReady, setAppIsReady] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,6 +45,7 @@ const Bell = () => {
       const now = new Date();
       setCurrentTime(now);
       calculateCurrentPeriod(now);
+      setAppIsReady(true)
     }, 1000);
 
     return () => clearInterval(timer);
@@ -60,7 +62,6 @@ const Bell = () => {
   const calculateCurrentPeriod = (now: Date): void => {
     const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
     const currentSeconds = now.getSeconds();
-    
     const activePeriod = SCHOOL_SCHEDULE.find(
       (p) => currentMinutes >= p.start && currentMinutes < p.end
     );
@@ -88,30 +89,24 @@ const Bell = () => {
   };
 
 
-  if (!fontsLoaded) {
+  if ((appIsReady == false) || !fontsLoaded) {
     return (
-      <SafeAreaProvider className="flex-1 justify-center items-center bg-white">
-        <SafeAreaView className="flex-row bg-[#0b0b49] h-28 z-30 pt-28 w-full">
-          <ActivityIndicator size="large" color="#0b0b49" />
-        </SafeAreaView>
-      </SafeAreaProvider>
+      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
+        <Image
+          source={require("@/assets/images/whs-logo.png")}
+          className="size-32 mb-6 self-center"
+        />
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
+          Loading...
+        </Text>
+      </View>
     );
   }
 
   return (
     <SafeAreaProvider className="flex flex-col">
-      
-      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="w-32 h-32 relative bottom-28 left-11"
-        />
-        <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
-          <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-          <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-          <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
-        </View>
-      </View>
+      <TitleBar></TitleBar>
 
       <View className="justify-center items-center bg-whs-gold ">
         <TouchableOpacity

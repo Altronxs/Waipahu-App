@@ -37,6 +37,7 @@ import MapView, { Callout, Marker, Polygon } from "react-native-maps";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import type { WebView as WebViewType } from "react-native-webview";
+import TitleBar from "@/components/titleBar";
 
 const { width, height } = Dimensions.get("window");
 
@@ -135,7 +136,7 @@ const Map = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
-
+  const [appIsReady, setAppIsReady] = useState(false);
   const [interestPoint, setInterestPoint] = useState<string>("");
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [isSheetVisible, setIsSheetVisible] = useState(false);
@@ -179,6 +180,7 @@ const Map = () => {
       }
     }
     loadMapAsset();
+    setAppIsReady(true)
   }, []);
 
   const openSheetFor = (name: string) => {
@@ -186,33 +188,29 @@ const Map = () => {
     setIsSheetVisible(true);
   };
 
-  if (!fontsLoaded) {
-    return (
-      <SafeAreaProvider className="flex-1 justify-center items-center bg-white">
-        <SafeAreaView className="flex-row bg-[#0b0b49] h-28 z-30 pt-28 w-full">
-          <ActivityIndicator size="large" color="#0b0b49" />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  }
-
   const selectedFeature = mapData.mapData.find(
     (feature) => feature.name === interestPoint,
   );
 
-  return (
-    <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
+  if ((appIsReady == false) || !fontsLoaded) {
+    return (
+      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
         <Image
           source={require("@/assets/images/whs-logo.png")}
-          className="w-32 h-32 relative bottom-28 left-11"
+          className="size-32 mb-6 self-center"
         />
-        <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
-          <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-          <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-          <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
-        </View>
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
+          Loading...
+        </Text>
       </View>
+    );
+  }
+
+
+  return (
+    <SafeAreaProvider className="flex-col">
+      <TitleBar></TitleBar>
 
       <View className="justify-center items-center bg-whs-gold">
         <TouchableOpacity
