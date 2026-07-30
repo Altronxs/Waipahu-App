@@ -8,7 +8,7 @@
         },
         {
             "name": "National Honor Society",
-            "location": "H-5",
+            "location": "H-9",
             "supervisor": "Edmar Ramos",
             "description": "Unveiled over a century ago, the National Honor Society enshrines four pillars at its heart: Scholarship, Service, Leadership, and Character. More than mere badges of honor for NHS members, these principles are transformative keys that unlock potential, enhancing every student's educational journey, and ultimately empowering them to make profound, enduring contributions to our world."
         },
@@ -59,12 +59,6 @@
             "location": "",
             "supervisor": "C. Lee",
             "description": "Chinese Club promotes Chinese language, culture, and traditions. Members participate in cultural activities, celebrate Chinese holidays, practice language skills, and explore the rich heritage of Chinese civilization."
-        },
-        {
-            "name": "Class of 2026 Council",
-            "location": "I-6",
-            "supervisor": "E. Hipolito",
-            "description": "The Class of 2026 Council represents the junior class, organizing class activities, fundraisers, and events. Council members work together to build class spirit and create memorable experiences for their classmates."
         },
         {
             "name": "Class of 2027 Council",
