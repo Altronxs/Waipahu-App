@@ -13,8 +13,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
- 
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"; 
 import "../globals.css";
 import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
 

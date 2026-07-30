@@ -39,8 +39,6 @@ if (dayOfWeek >= 1 && dayOfWeek <= 5) {
   if (scheduleID < 8) {
     todaySchedule = scheduleJSON.schedule[scheduleID]
   }
-
-  console.log(todaySchedule)
 }
 
 // Converts a "HH:MM" time string into total minutes since midnight,
