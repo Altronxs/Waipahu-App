@@ -1,0 +1,23 @@
+{   
+    "comment": "0 = monday | 1 = tuesday... | 5 = a_asem | 6 = bb_asem | 7 = c_asem | 8 = no school",
+    "calendar": [
+        {
+            "week": 1,
+            "start": "7-27-26",
+            "end": "7-31-26",
+            "scheduleID": "01234"
+        },
+        {
+            "week": 2,
+            "start": "8-3-26",
+            "end": "8-7-26",
+            "scheduleID": "81134"
+        },
+        {
+            "week": 3,
+            "start": "8-10-26",
+            "end": "8-14-26",
+            "scheduleID": "01234"
+        }
+    ]
+}

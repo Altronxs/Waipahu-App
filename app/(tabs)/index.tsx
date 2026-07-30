@@ -57,7 +57,7 @@ export default function Index() {
 
   const calculateCurrentPeriod = (now: Date): void => {
 
-    const currentMinutes = (now.getHours() - 12) * 60 + (now.getMinutes() - (18));
+    const currentMinutes = (now.getHours() - 2) * 60 + (now.getMinutes());
     const currentSeconds = now.getSeconds();
     
     const activePeriod = SCHOOL_SCHEDULE.find(
@@ -119,14 +119,15 @@ export default function Index() {
                 <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
             </View>
         </View>
-        <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
+        <View className="bg-white w-[100vw] h-[100vh] justify-center items-center " style={{ height: (height - 208)}}>
           <ScrollView
             className="w-[100vw] h-96 bg-white flex-1 flex-col "
-            style={{ height: height * 0.5 }}
+            style={{ height: height * 0.5}}
           >
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
-              className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
+              className="flex-row flex-wrap justify-center items-start w-[100vw]"
+              style={{ height: height}}
             >
               {currentPeriod !== '' ? (
                 <View className="bg-white/10 p-[20] w-[100%] "> 

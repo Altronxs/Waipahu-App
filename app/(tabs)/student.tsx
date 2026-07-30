@@ -113,7 +113,7 @@ const Students = () => {
           Student Resources
         </Text>
       </View>
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
         <ScrollView
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
@@ -121,6 +121,7 @@ const Students = () => {
           <ImageBackground
             source={require("@/assets/images/bg-home.png")}
             className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
+
           >
             <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
               Student Resources
