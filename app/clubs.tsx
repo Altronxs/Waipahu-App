@@ -62,7 +62,7 @@ const Clubs = () => {
     }, []),
   );
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
     NotoSerif_400Regular,

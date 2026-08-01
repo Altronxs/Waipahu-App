@@ -1,7 +1,25 @@
 import {
-  BarlowSemiCondensed_600SemiBold,
-  useFonts,
+    BarlowSemiCondensed_400Regular,
+    BarlowSemiCondensed_400Regular_Italic,
+    BarlowSemiCondensed_600SemiBold,
 } from "@expo-google-fonts/barlow-semi-condensed";
+import {
+    NotoSerif_400Regular,
+    NotoSerif_700Bold,
+    NotoSerif_700Bold_Italic,
+} from "@expo-google-fonts/noto-serif";
+import {
+    Roboto_400Regular,
+    Roboto_700Bold,
+    useFonts,
+} from "@expo-google-fonts/roboto";
+import {
+    SourceSerifPro_400Regular,
+    SourceSerifPro_400Regular_Italic,
+    SourceSerifPro_600SemiBold,
+    SourceSerifPro_700Bold,
+    SourceSerifPro_700Bold_Italic,
+} from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useRef } from "react";
 import {
@@ -31,8 +49,21 @@ const Calendar = () => {
     }, []),
   );
 
-  let [fontsLoaded] = useFonts({
+
+  const [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_700Bold,
+    NotoSerif_400Regular,
+    NotoSerif_700Bold,
+    NotoSerif_700Bold_Italic,
+    BarlowSemiCondensed_400Regular,
+    BarlowSemiCondensed_400Regular_Italic,
     BarlowSemiCondensed_600SemiBold,
+    SourceSerifPro_400Regular,
+    SourceSerifPro_400Regular_Italic,
+    SourceSerifPro_700Bold,
+    SourceSerifPro_700Bold_Italic,
+    SourceSerifPro_600SemiBold,
   });
 
   if (!fontsLoaded) {
