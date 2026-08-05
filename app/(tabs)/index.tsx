@@ -124,7 +124,7 @@ export default function Index() {
 
   if ((appIsReady == false) || !fontsLoaded) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
+      <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="size-32 mb-6 self-center"
@@ -138,7 +138,7 @@ export default function Index() {
   } else {
     return (
       <SafeAreaProvider className="flex-col">
-        <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
+        <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
             <Image
                 source={require("@/assets/images/whs-logo.png")}
                 className="w-32 h-32 relative bottom-28 left-11"
@@ -196,11 +196,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/school.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Mission & Vision
                 </Text>
               </TouchableOpacity>
@@ -209,13 +209,13 @@ export default function Index() {
                 onPress={() => router.push("/calendar")}
               >
                 <Image
-                  source={require("@/assets/images/calender.png")}
+                  source={require("@/assets/images/calendar.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Calendar
                 </Text>
               </TouchableOpacity>
@@ -226,11 +226,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/news.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   News
                 </Text>
               </TouchableOpacity>
@@ -242,11 +242,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/bell.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Bell Schedule
                 </Text>
               </TouchableOpacity>
@@ -257,27 +257,27 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/map-icon.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Campus Map
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/contacts")}
+                onPress={() => router.push("/staff")}
               >
                 <Image
-                  source={require("@/assets/images/phone.png")}
+                  source={require("@/assets/images/staff.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
-                  Contacts
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                  Staff
                 </Text>
               </TouchableOpacity>
 
@@ -288,11 +288,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/user.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Student
                 </Text>
               </TouchableOpacity>
@@ -303,11 +303,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/registrar.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Registrar
                 </Text>
               </TouchableOpacity>
@@ -322,11 +322,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/if.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Infinite Campus
                 </Text>
               </TouchableOpacity>
@@ -338,11 +338,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/ball.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Athletics
                 </Text>
               </TouchableOpacity>
@@ -353,12 +353,12 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/cafe.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
-                  Cafeteria
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                  Menu
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -366,14 +366,14 @@ export default function Index() {
                 onPress={() => router.push("/legacy")}
               >
                 <Image
-                  source={require("@/assets/images/torch.png")}
+                  source={require("@/assets/images/socials.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
-                  LEGACY
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                  Socials
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -383,11 +383,11 @@ export default function Index() {
                 <Image
                   source={require("@/assets/images/author.png")}
                   style={{
-                    tintColor: "#0b0b49",
+                    tintColor: "#17273d",
                   }}
                   className="size-14 self-center"
                 />
-                <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                   Authors
                 </Text>
               </TouchableOpacity>

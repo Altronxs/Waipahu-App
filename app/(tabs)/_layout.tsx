@@ -5,7 +5,7 @@ import { NativeTabs } from 'expo-router/unstable-native-tabs';
 
 const ACTIVE_COLOR = "#ae8c52";
 const INACTIVE_COLOR = "#ffffff";
-const BAR_BACKGROUND = "#0b0b49";
+const BAR_BACKGROUND = "#17273d";
 
 const _Layout = () => {
   return (
@@ -28,10 +28,6 @@ const _Layout = () => {
         <NativeTabs.Trigger.Label>Campus</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon src={require("@/assets/images/whs-map-resized.png")} />
       </NativeTabs.Trigger>
-
-      {/* everything below is just left out of the tab bar entirely — */}
-      {/* no Trigger needed, no href: null needed. The routes still exist */}
-      {/* and are reachable via router.push("/cafe") etc. */}
     </NativeTabs>
     // <Tabs
     //   screenOptions={{

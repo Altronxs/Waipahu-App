@@ -3,9 +3,9 @@ import './globals.css';
 
 const HIDDEN_ROUTE_TITLES: Record<string, string> = {
   cafe: "Cafe",
-  contacts: "Contacts",
+  staff: "Staff",
   bell: "Bell",
-  calendar: "Calendar", // fixed the "Calender" typo, rename the file too
+  calendar: "Calendar",
   vision: "Vision",
   news: "News",
   athletics: "Athletics",

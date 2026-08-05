@@ -75,7 +75,7 @@ const Registrar = () => {
 
   if (!fontsLoaded) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
+      <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="size-32 mb-6 self-center"
@@ -90,7 +90,7 @@ const Registrar = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
+      <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
           <Image
               source={require("@/assets/images/whs-logo.png")}
               className="w-32 h-32 relative bottom-28 left-11"
@@ -111,7 +111,7 @@ const Registrar = () => {
             <Image
               source={require("@/assets/images/back.png")}
               style={{
-                tintColor: "#0b0b49",
+                tintColor: "#17273d",
               }}
               className="size-10 self-center"
             />
@@ -129,7 +129,7 @@ const Registrar = () => {
             <Image
               source={require("@/assets/images/back.png")}
               style={{
-                tintColor: "#0b0b49",
+                tintColor: "#17273d",
               }}
               className="size-10 self-center"
             />

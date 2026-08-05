@@ -68,7 +68,7 @@ const Vision = () => {
 
   if (!fontsLoaded) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
+      <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="size-32 mb-6 self-center"
@@ -83,7 +83,7 @@ const Vision = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
+      <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
           <Image
               source={require("@/assets/images/whs-logo.png")}
               className="w-32 h-32 relative bottom-28 left-11"
@@ -103,7 +103,7 @@ const Vision = () => {
           <Image
             source={require("@/assets/images/back.png")}
             style={{
-              tintColor: "#0b0b49",
+              tintColor: "#17273d",
             }}
             className="size-10 self-center"
           />
@@ -132,26 +132,20 @@ const Vision = () => {
           </Text>
           <View className="relative bottom-24 pb-[10rem]">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-xl w-full text-center relative p-5">
-              CLASS OF 2025
+              CLASS OF 2026
             </Text>
             <View className="flex-wrap flex-row justify-center items-center gap-3">
-              <View className="w-[40vw] items-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 pt-4">
-                  29
+              <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                  32
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center">
+                <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   Early College Olympians (graduating w/ AA)
-                </Text>
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-nowrap text-3xl text-center pl-8 pr-8 pt-3">
-                  305
-                </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center pb-4">
-                  Earned College Credits through Early College Initiative
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
                 <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
-                  238
+                  256
                 </Text>
                 <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   Academic Honors
@@ -159,7 +153,7 @@ const Vision = () => {
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
                 <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
-                  335
+                  321
                 </Text>
                 <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   STEM & CTE Honors
@@ -167,7 +161,7 @@ const Vision = () => {
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
                 <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
-                  86
+                  83
                 </Text>
                 <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   Achieved Valedictorian Status (4.0 g.p.a)
@@ -175,7 +169,7 @@ const Vision = () => {
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
                 <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
-                  420
+                  461
                 </Text>
                 <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   Earned an Industry Certification
@@ -183,7 +177,7 @@ const Vision = () => {
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
                 <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
-                  124
+                  117
                 </Text>
                 <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   Seal of Biliteracy Awards - 34 with three languages & two with
@@ -192,7 +186,7 @@ const Vision = () => {
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
                 <Text className="z-20 font-source-serif-italic text-white w-[40vw] text-3xl text-center pl-8 pr-8 self-center">
-                  $32M
+                  $28M
                 </Text>
                 <Text className="font-barlow-regular text-xs text-white text-center self-center">
                   In Merit-Based Scholarships

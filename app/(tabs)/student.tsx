@@ -69,7 +69,7 @@ const Students = () => {
 
   if (!fontsLoaded) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
+      <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="size-32 mb-6 self-center"
@@ -84,7 +84,7 @@ const Students = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
+      <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
             <Image
                 source={require("@/assets/images/whs-logo.png")}
                 className="w-32 h-32 relative bottom-28 left-11"
@@ -104,7 +104,7 @@ const Students = () => {
           <Image
             source={require("@/assets/images/back.png")}
             style={{
-              tintColor: "#0b0b49",
+              tintColor: "#17273d",
             }}
             className="size-10 self-center"
           />
@@ -139,11 +139,11 @@ const Students = () => {
               <Image
                 source={require("@/assets/images/registrar.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Registrar
               </Text>
             </TouchableOpacity>
@@ -158,11 +158,11 @@ const Students = () => {
               <Image
                 source={require("@/assets/images/if.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Infinite Campus
               </Text>
             </TouchableOpacity>
@@ -173,11 +173,11 @@ const Students = () => {
               <Image
                 source={require("@/assets/images/bell.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Bell Schedule
               </Text>
             </TouchableOpacity>
@@ -186,13 +186,13 @@ const Students = () => {
               onPress={() => router.push("/calendar")}
             >
               <Image
-                source={require("@/assets/images/calender.png")}
+                source={require("@/assets/images/calendar.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Calendar
               </Text>
             </TouchableOpacity>
@@ -203,11 +203,11 @@ const Students = () => {
               <Image
                 source={require("@/assets/images/clubs.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Clubs
               </Text>
             </TouchableOpacity>
@@ -218,11 +218,11 @@ const Students = () => {
               <Image
                 source={require("@/assets/images/news.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 News
               </Text>
             </TouchableOpacity>
@@ -233,11 +233,11 @@ const Students = () => {
               <Image
                 source={require("@/assets/images/torch.png")}
                 style={{
-                  tintColor: "#0b0b49",
+                  tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 LEGACY
               </Text>
             </TouchableOpacity>

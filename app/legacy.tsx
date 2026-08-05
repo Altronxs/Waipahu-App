@@ -69,7 +69,7 @@ const Legacy = () => {
 
   if (!fontsLoaded) {
     return (
-      <View className="flex-1 justify-center items-center bg-[#0b0b49]">
+      <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
           source={require("@/assets/images/whs-logo.png")}
           className="size-32 mb-6 self-center"
@@ -84,7 +84,7 @@ const Legacy = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#0b0b49] h-[13rem] z-10 pt-44">
+      <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
           <Image
               source={require("@/assets/images/whs-logo.png")}
               className="w-32 h-32 relative bottom-28 left-11"
@@ -104,7 +104,7 @@ const Legacy = () => {
           <Image
             source={require("@/assets/images/back.png")}
             style={{
-              tintColor: "#0b0b49",
+              tintColor: "#17273d",
             }}
             className="size-10 self-center"
           />
@@ -141,7 +141,7 @@ const Legacy = () => {
                 source={{ uri: 'https://instagram.fhnl3-1.fna.fbcdn.net/v/t51.82787-19/651150899_18566645851026601_3394037472475620577_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby41NjIuYzIifQ&_nc_ht=instagram.fhnl3-1.fna.fbcdn.net&_nc_cat=101&_nc_oc=Q6cZ2gGHe5tXiKMaZpO97HHaCO2mVroM5TZ29RIBOlVqntUN8SsbdXTs8Sz74uOJf-CS5as&_nc_ohc=Xj7_1NDBqUkQ7kNvwFEjudc&_nc_gid=Zk9cdfqFuwWMZHBjuruATw&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQB1hu7dmrzsW1KIGeOHusqyo8UqoBXKT0SiW3QbHrVllA&oe=6A6C588A&_nc_sid=7a9f4b'}}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Waipahu High School
               </Text>
             </TouchableOpacity>
@@ -157,7 +157,7 @@ const Legacy = () => {
                 source={{ uri: 'https://instagram.fhnl3-1.fna.fbcdn.net/v/t51.2885-19/20346830_1974403226176167_450762907978825728_a.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmV4cGVyaW1lbnRhbCJ9&_nc_ht=instagram.fhnl3-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gHGRCmErDfITsGEhGm5rtOiQwiXGt6FriFKw3zTqWthuVv9mr6RArEwjpaGf3LotUY&_nc_ohc=71TAhg7iWdoQ7kNvwGW96OU&_nc_gid=1nC-G9Ta8P1KmlvQzKaMow&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQDoXan4mz33FoVzseDFV771oOeheQuCdCGOO-hf1G-QNA&oe=6A6C4F23&_nc_sid=7a9f4b'}}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 legacy.808
               </Text>
             </TouchableOpacity>
@@ -173,7 +173,7 @@ const Legacy = () => {
                 source={{ uri: 'https://instagram.fhnl3-2.fna.fbcdn.net/v/t51.2885-19/330801182_207085698487804_8172898972968818707_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40MTYuYzIifQ&_nc_ht=instagram.fhnl3-2.fna.fbcdn.net&_nc_cat=104&_nc_oc=Q6cZ2gFlcR-QCS_cOdsw_gJnVJlfDM5AcPhS31UYOF5ohMv8kyVx7xE0D1iznViw_CZMdXE&_nc_ohc=5VB2eVzWRoAQ7kNvwEAEhW0&_nc_gid=QCuq-mgswF4ojk1W4EBkTw&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQCGghjtb_BkOs2a-Wc3ahuBVvFfv1ULazSWsWR9mTwz5w&oe=6A6C44EE&_nc_sid=7a9f4b'}}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 WHS Student Government
               </Text>
             </TouchableOpacity>
@@ -189,7 +189,7 @@ const Legacy = () => {
                 source={{ uri: 'https://scontent.cdninstagram.com/v/t51.82787-19/721377449_18127622212556631_5429922796695097582_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=tS0xUd0v1SEQ7kNvwGEHty2&_nc_oc=AdrwH-AKtCAua-968ylSJxQbaBXUNYGaFYBYQWzdISEzHGnspeq4SZzXNMta80-xng8&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=lJOR8MKXeUXcUOC-tl68FQ&_nc_ss=7b6a8&oh=00_AQB1BJRG1LsJ1TI5EUAM55wK9Ar0ywUhW8YLr23Yes6wPg&oe=6A6C49FC'}}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Legendary Leviathans '30
               </Text>
             </TouchableOpacity>
@@ -206,7 +206,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Divine Crusaders '29
               </Text>
             </TouchableOpacity>
@@ -222,7 +222,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Valient Vipers  '28
               </Text>
             </TouchableOpacity>
@@ -238,7 +238,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Moonlight Soldiers '27
               </Text>
             </TouchableOpacity>
@@ -254,7 +254,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Immortal Lions '26
               </Text>
             </TouchableOpacity>
@@ -270,7 +270,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Mystic Knights '25
               </Text>
             </TouchableOpacity>
@@ -286,7 +286,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Menacing Thunderbirds '24
               </Text>
             </TouchableOpacity>
@@ -302,7 +302,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Midnight Warriors '23
               </Text>
             </TouchableOpacity>
@@ -318,7 +318,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Fearless Huskies '22
               </Text>
             </TouchableOpacity>
@@ -334,7 +334,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Royal Rebels '21
               </Text>
             </TouchableOpacity>
@@ -350,7 +350,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Luminous Wolves '20
               </Text>
             </TouchableOpacity>
@@ -366,7 +366,7 @@ const Legacy = () => {
                 }}
                 className="size-14 self-center rounded-full"
               />
-              <Text className="text-center font-barlow-semibold text-[#0b0b49] text-xs">
+              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                 Ambitious Archers '19
               </Text>
             </TouchableOpacity>

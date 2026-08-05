@@ -46,8 +46,8 @@ module.exports = {
         "source-serif-600": ["SourceSerifPro_600SemiBold", ...fontFamily.serif],
       },
       colors: {
-        "whs-gold": "#ae8c52",
-        "whs-blue": "#0b0b49",
+        "whs-gold": "#b28d3e",
+        "whs-blue": "#17273d",
       },
     },
   },
