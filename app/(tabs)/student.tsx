@@ -117,6 +117,10 @@ const Students = () => {
         <ScrollView
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
+          bounces={false}                
+          overScrollMode="never"          
+          scrollEventThrottle={16}       
+          decelerationRate="normal"   
         >
           <ImageBackground
             source={require("@/assets/images/bg-home.png")}

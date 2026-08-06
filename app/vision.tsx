@@ -117,7 +117,7 @@ const Vision = () => {
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
         >
-          <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center relative bottom-7 p-5 pt-10">
+          <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center relative p-7 bottom-4 pt-10">
             HOME OF THE MARAUDERS
           </Text>
           <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center relative bottom-16 p-8">

@@ -116,127 +116,19 @@ const Author = () => {
         <ScrollView
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
+          bounces={false}                
+          overScrollMode="never"          
+          scrollEventThrottle={16}       
+          decelerationRate="normal"   
         >
           <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
-              Layten Fernandez
-            </Text>
-            <View className="flex-row relative left-8">
-              <Image
-                source={require("@/assets/images/mk.png")}
-                className="w-10 h-10 bottom-2 object-contain relative"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
-                Class of 2025
-              </Text>
-              <Image
-                source={require("@/assets/images/instagram.png")}
-                className="w-10 h-7 object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
-                @layten_f
-              </Text>
-            </View>
-            <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
-          </View>
-          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
-            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
-              Lander Jarvis Viernes
-            </Text>
-            <View className="flex-row relative left-8">
-              <Image
-                source={require("@/assets/images/mk.png")}
-                className="w-10 h-10 bottom-2 object-contain relative"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
-                Class of 2025
-              </Text>
-            </View>
-            <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
-          </View>
-          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
-            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
-              Justine John Claro
-            </Text>
-            <View className="flex-row relative left-8">
-              <Image
-                source={require("@/assets/images/mk.png")}
-                className="w-10 h-10 bottom-2 object-contain relative"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
-                Class of 2025
-              </Text>
-              <Image
-                source={require("@/assets/images/instagram.png")}
-                className="w-10 h-7 object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
-                @time2plytmr
-              </Text>
-            </View>
-            <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
-          </View>
-          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
-            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
-              Ian Ramos
-            </Text>
-            <View className="flex-row relative left-8">
-              <Image
-                source={require("@/assets/images/mk.png")}
-                className="w-10 h-10 bottom-2 object-contain relative"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
-                Class of 2025
-              </Text>
-              <Image
-                source={require("@/assets/images/instagram.png")}
-                className="w-10 h-7 object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
-                @eeeyannnn
-              </Text>
-            </View>
-            <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
-          </View>
-          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
-            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
-              Carl Nelson David
-            </Text>
-            <View className="flex-row relative left-8">
-              <Image
-                source={require("@/assets/images/mk.png")}
-                className="w-10 h-10 bottom-2 object-contain relative"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
-                Class of 2025
-              </Text>
-              <Image
-                source={require("@/assets/images/instagram.png")}
-                className="w-10 h-7 object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
-                style={{ tintColor: "gray" }}
-              />
-              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
-                @itsaflyingsheep
-              </Text>
-            </View>
-            <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
-          </View>
-          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200 pb-[8rem]">
-            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
               Kyle Alexander Baldovi
             </Text>
-            <View className="flex-row relative left-8">
+            <View className="flex-row relative left-8 justify-start items-center">
               <Image
                 source={require("@/assets/images/il.png")}
-                className="w-10 h-10 bottom-2 object-contain relative"
+                className="w-10 h-10 object-contain relative"
                 style={{ tintColor: "gray" }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
@@ -244,15 +136,128 @@ const Author = () => {
               </Text>
               <Image
                 source={require("@/assets/images/instagram.png")}
-                className="w-10 h-7 object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
+                className="w-10 h-7 object-center border-l-2 border-gray-200 pl-4"
                 style={{ tintColor: "gray" }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
                 @kylealtxyz
               </Text>
             </View>
-            <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2"></Text>
+            
           </View>
+          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
+            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
+              Layten Fernandez
+            </Text>
+            <View className="flex-row relative left-8 justify-start items-center">
+              <Image
+                source={require("@/assets/images/mk.png")}
+                className="w-10 h-10 object-contain relative"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
+                Class of 2025
+              </Text>
+              <Image
+                source={require("@/assets/images/instagram.png")}
+                className="w-10 h-7 object-center border-l-2 border-gray-200 pl-4"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
+                @layten_f
+              </Text>
+            </View>
+            
+          </View>
+          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
+            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
+              Lander Jarvis Viernes
+            </Text>
+            <View className="flex-row relative left-8 justify-normal items-center">
+              <Image
+                source={require("@/assets/images/mk.png")}
+                className="w-10 h-10 object-contain relative"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
+                Class of 2025
+              </Text>
+            </View>
+            
+          </View>
+          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
+            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
+              Justine John Claro
+            </Text>
+            <View className="flex-row relative left-8 justify-start items-center">
+              <Image
+                source={require("@/assets/images/mk.png")}
+                className="w-10 h-10 object-contain relative"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
+                Class of 2025
+              </Text>
+              <Image
+                source={require("@/assets/images/instagram.png")}
+                className="w-10 h-7 object-center border-l-2 border-gray-200 pl-4"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
+                @time2plytmr
+              </Text>
+            </View>
+            
+          </View>
+          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
+            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
+              Ian Ramos
+            </Text>
+            <View className="flex-row relative left-8 justify-start items-center">
+              <Image
+                source={require("@/assets/images/mk.png")}
+                className="w-10 h-10 object-contain relative"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
+                Class of 2025
+              </Text>
+              <Image
+                source={require("@/assets/images/instagram.png")}
+                className="w-10 h-7 object-center border-l-2 border-gray-200 pl-4"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
+                @eeeyannnn
+              </Text>
+            </View>
+           
+          </View>
+          <View className="w-[100vw] p-3 border-t-[1px] border-gray-200 pb-[8rem]">
+            <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
+              Carl Nelson David
+            </Text>
+            <View className="flex-row relative left-8 justify-start items-center">
+              <Image
+                source={require("@/assets/images/mk.png")}
+                className="w-10 h-10 object-contain relative"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
+                Class of 2025
+              </Text>
+              <Image
+                source={require("@/assets/images/instagram.png")}
+                className="w-10 h-7 object-center border-l-2 border-gray-200 pl-4"
+                style={{ tintColor: "gray" }}
+              />
+              <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
+                @itsaflyingsheep
+              </Text>
+            </View>
+            
+          </View>
+          
         </ScrollView>
       </View>
     </SafeAreaProvider>

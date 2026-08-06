@@ -29,12 +29,16 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  ScrollView,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
  
 import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
+const { width, height } = Dimensions.get("window");
 
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
@@ -176,38 +180,55 @@ const Bell = () => {
           Bell Schedule SY25-26
         </Text>
       </View>
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
+        <ScrollView
+          className="w-[100vw] h-96 bg-white flex-1 flex-col "
+          style={{ height: height * 0.5 }}
+          bounces={false}                
+          overScrollMode="never"          
+          scrollEventThrottle={16}       
+          decelerationRate="normal"   
+        >
+          <ImageBackground
+            source={require("@/assets/images/bg-home.png")}
+            className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
 
-      <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10 ">
-        <View className="flex bg-white p-[20] rounded-[3rem] w-[90%] mt-5  ">
-         
-          <View className="flex flex-column">
-            <Text className="font-bold font-barlow text-whs-blue text-lg/tight">{currentPeriod}</Text>
-            {timeLeft ? (
-              <View>
-                <Text className="font-light font-barlow-regular text-whs-blue text-base/tight">{currentPeriodStart}-{currentPeriodEnd}</Text>
-                <View>
-                  <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
-                  <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+          >
+            <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10 ">
+              <View className="flex bg-white p-[20] rounded-[3rem] w-[90%] mt-5  ">
+              
+                <View className="flex flex-column">
+                  <Text className="font-bold font-barlow text-whs-blue text-lg/tight">{currentPeriod}</Text>
+                  {timeLeft ? (
+                    <View>
+                      <Text className="font-light font-barlow-regular text-whs-blue text-base/tight">{currentPeriodStart}-{currentPeriodEnd}</Text>
+                      <View>
+                        <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                        <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+                      </View>
+                    </View>
+                  ) : null}
                 </View>
+                
+                
+                {timeLeft ? (
+                  <View>
+                    <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
+                  </View>
+                ) : null}
+              </View> 
+              <View className="self-center items-start flex-row h-3/4 z-0 p-[20]">
+                  <WebView
+                    className="relative h-[50%]"
+                    ref={webViewRef}
+                    source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+                  />
               </View>
-            ) : null}
-          </View>
-          
-          
-          {timeLeft ? (
-            <View>
-              <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
             </View>
-          ) : null}
-        </View> 
-        <View className="self-center items-start flex-row h-full z-0 p-[20]">
-            <WebView
-              className="relative h-[50%]"
-              ref={webViewRef}
-              source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
-            />
-        </View>
+          </ImageBackground>
+        </ScrollView>
       </View>
+      
       
     </SafeAreaProvider>
   );

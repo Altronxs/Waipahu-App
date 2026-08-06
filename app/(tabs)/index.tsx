@@ -149,10 +149,25 @@ export default function Index() {
                 <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
             </View>
         </View>
+        <View className="flex flex-row justify-center items-center gap-5 bg-whs-gold w-full p-5">
+          <Image
+            source={require("@/assets/images/marauder-script.png")} 
+            className="self-center object-contain" 
+            style={{ height: 40, width: 'auto', aspectRatio: 198 / 50 }} 
+          >
+          </Image>
+          <Text className="z-20 font-barlow-semibold text-2xl text-white text-center  ">
+            WELCOME!
+          </Text>
+        </View>
         <View className="bg-white w-[100vw] h-[100vh] justify-center items-center " style={{ height: (height - 208)}}>
           <ScrollView
             className="w-[100vw] h-96 bg-white flex-1 flex-col "
             style={{ height: height * 0.5}}
+            bounces={false}                
+            overScrollMode="never"          
+            scrollEventThrottle={16}       
+            decelerationRate="normal"   
           >
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
@@ -182,13 +197,10 @@ export default function Index() {
                   ) : null}
                 </View> 
               ) : (
-                <View className="h-5 w-10"></View>
+                <View className="h-5 w-full"></View>
               )}
               
 
-              <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center relative bottom-10">
-                WELCOME!
-              </Text>
               <TouchableOpacity
                 className="w-24 h-min mx-3 my-3 justify-center pt-5"
                 onPress={() => router.push("/vision")}
@@ -388,7 +400,7 @@ export default function Index() {
                   className="size-14 self-center"
                 />
                 <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Authors
+                  Made By
                 </Text>
               </TouchableOpacity>
               
