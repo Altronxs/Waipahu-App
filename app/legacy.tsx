@@ -110,7 +110,7 @@ const Legacy = () => {
           />
         </TouchableOpacity>
         <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          L.E.G.A.C.Y Resources
+          Social Media Resources
         </Text>
       </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
@@ -123,11 +123,10 @@ const Legacy = () => {
             className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
           >
             <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
-              L.E.G.A.C.Y
+              Social Media
             </Text>
             <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full text-center p-8 pt-3">
-              Welcome to the LEGACY page where students are provided with
-              important resources for their respective class
+              Welcome to the Social Media page where students can connect with their respective classes and stay updated on the latest news and events.
             </Text>
             <TouchableOpacity
               className="w-24 h-min mx-3 my-3 justify-center"

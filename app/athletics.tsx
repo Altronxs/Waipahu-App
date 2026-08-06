@@ -91,7 +91,7 @@ const Athletics = () => {
     <SafeAreaProvider className="flex-col">
       <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
           <Image
-              source={require("@/assets/images/whs-logo.png")}
+              source={require("@/assets/images/athletic-logo.png")}
               className="w-32 h-32 relative bottom-28 left-11"
           />
           <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">

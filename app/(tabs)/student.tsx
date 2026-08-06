@@ -231,14 +231,14 @@ const Students = () => {
               onPress={() => router.push("/legacy")}
             >
               <Image
-                source={require("@/assets/images/torch.png")}
+                source={require("@/assets/images/socials.png")}
                 style={{
                   tintColor: "#17273d",
                 }}
                 className="size-14 self-center"
               />
               <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                LEGACY
+                Socials
               </Text>
             </TouchableOpacity>
           </ImageBackground>
