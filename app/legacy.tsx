@@ -84,12 +84,12 @@ const Legacy = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
+      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28 left-11"
+              className="w-32 h-32 relative bottom-28"
           />
-          <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
+          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
               <Text className="text-white font-barlow-semibold">MY VOICE</Text>
               <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
               <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
@@ -137,7 +137,7 @@ const Legacy = () => {
               }}
             >
               <Image
-                source={{ uri: 'https://instagram.fhnl3-1.fna.fbcdn.net/v/t51.82787-19/651150899_18566645851026601_3394037472475620577_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby41NjIuYzIifQ&_nc_ht=instagram.fhnl3-1.fna.fbcdn.net&_nc_cat=101&_nc_oc=Q6cZ2gGHe5tXiKMaZpO97HHaCO2mVroM5TZ29RIBOlVqntUN8SsbdXTs8Sz74uOJf-CS5as&_nc_ohc=Xj7_1NDBqUkQ7kNvwFEjudc&_nc_gid=Zk9cdfqFuwWMZHBjuruATw&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQB1hu7dmrzsW1KIGeOHusqyo8UqoBXKT0SiW3QbHrVllA&oe=6A6C588A&_nc_sid=7a9f4b'}}
+                source={{ uri: 'https://instagram.fhnl3-1.fna.fbcdn.net/v/t51.82787-19/651150899_18566645851026601_3394037472475620577_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby41NjIuYzIifQ&_nc_ht=instagram.fhnl3-1.fna.fbcdn.net&_nc_cat=101&_nc_oc=Q6cZ2gGV5Fs-2-u89FFmST2hb5kJEwBjmRo9A1OUv7LrV9JsTQHDKSrHVbT46UkA-MDzA0E&_nc_ohc=d9XjoYF9ZMoQ7kNvwFA7wCm&_nc_gid=ripSdvOyDO_qA4qzLP4OUg&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQEm9-19lR499He5bw-Mj96RSELmjqhFELapNO9C8iT_uw&oe=6A7AD90A&_nc_sid=7a9f4b'}}
                 className="size-14 self-center rounded-full"
               />
               <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">

@@ -83,12 +83,12 @@ const Author = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
+      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28 left-11"
+              className="w-32 h-32 relative bottom-28"
           />
-          <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
+          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
               <Text className="text-white font-barlow-semibold">MY VOICE</Text>
               <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
               <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
@@ -129,7 +129,7 @@ const Author = () => {
               <Image
                 source={require("@/assets/images/il.png")}
                 className="w-10 h-10 object-contain relative"
-                style={{ tintColor: "gray" }}
+                style={{ tintColor: "gray", height: 28, width: 28 }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
                 Class of 2026
@@ -153,7 +153,7 @@ const Author = () => {
               <Image
                 source={require("@/assets/images/mk.png")}
                 className="w-10 h-10 object-contain relative"
-                style={{ tintColor: "gray" }}
+                style={{ tintColor: "gray", height: 28, width: 28 }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
                 Class of 2025
@@ -177,7 +177,7 @@ const Author = () => {
               <Image
                 source={require("@/assets/images/mk.png")}
                 className="w-10 h-10 object-contain relative"
-                style={{ tintColor: "gray" }}
+                style={{ tintColor: "gray", height: 28, width: 28 }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
                 Class of 2025
@@ -193,7 +193,7 @@ const Author = () => {
               <Image
                 source={require("@/assets/images/mk.png")}
                 className="w-10 h-10 object-contain relative"
-                style={{ tintColor: "gray" }}
+                style={{ tintColor: "gray", height: 28, width: 28 }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
                 Class of 2025
@@ -217,7 +217,7 @@ const Author = () => {
               <Image
                 source={require("@/assets/images/mk.png")}
                 className="w-10 h-10 object-contain relative"
-                style={{ tintColor: "gray" }}
+                style={{ tintColor: "gray", height: 28, width: 28 }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
                 Class of 2025
@@ -241,7 +241,7 @@ const Author = () => {
               <Image
                 source={require("@/assets/images/mk.png")}
                 className="w-10 h-10 object-contain relative"
-                style={{ tintColor: "gray" }}
+                style={{ tintColor: "gray", height: 28, width: 28 }}
               />
               <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
                 Class of 2025

@@ -138,27 +138,16 @@ export default function Index() {
   } else {
     return (
       <SafeAreaProvider className="flex-col">
-        <View className="flex-row bg-[#17273d] h-[13rem] z-10 pt-44">
+        <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
             <Image
                 source={require("@/assets/images/whs-logo.png")}
-                className="w-32 h-32 relative bottom-28 left-11"
+                className="w-32 h-32 relative bottom-28"
             />
-            <View className="w-48 h-28 bottom-20 left-14 items-start z-40 relative">
+            <View className="w-48 h-28 bottom-20 items-start z-40 relative">
                 <Text className="text-white font-barlow-semibold">MY VOICE</Text>
                 <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
                 <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
             </View>
-        </View>
-        <View className="flex flex-row justify-center items-center gap-5 bg-whs-gold w-full p-5">
-          <Image
-            source={require("@/assets/images/marauder-script.png")} 
-            className="self-center object-contain" 
-            style={{ height: 40, width: 'auto', aspectRatio: 198 / 50 }} 
-          >
-          </Image>
-          <Text className="z-20 font-barlow-semibold text-2xl text-white text-center  ">
-            WELCOME!
-          </Text>
         </View>
         <View className="bg-white w-[100vw] h-[100vh] justify-center items-center " style={{ height: (height - 208)}}>
           <ScrollView
@@ -174,8 +163,9 @@ export default function Index() {
               className="flex-row flex-wrap justify-center items-start w-[100vw]"
               style={{ height: height}}
             >
+              
               {currentPeriod !== '' ? (
-                <View className="bg-white/10 p-[20] w-[100%] "> 
+                <View className="p-[20] w-[100%] "> 
                   <View className="flex flex-column">
                     <Text className="font-bold font-barlow text-whs-blue text-sm/none">{currentPeriod}</Text>
                     {timeLeft ? (
@@ -200,7 +190,17 @@ export default function Index() {
                 <View className="h-5 w-full"></View>
               )}
               
-
+              <View className="flex flex-row justify-center items-center gap-5 w-full ">
+                <Image
+                  source={require("@/assets/images/marauder-script.png")} 
+                  className="self-center object-contain" 
+                  style={{ height: 40, width: 'auto', aspectRatio: 198 / 50 }} 
+                >
+                </Image>
+                <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue text-center  ">
+                  WELCOME!
+                </Text>
+              </View>
               <TouchableOpacity
                 className="w-24 h-min mx-3 my-3 justify-center pt-5"
                 onPress={() => router.push("/vision")}
