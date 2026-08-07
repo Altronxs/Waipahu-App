@@ -35,7 +35,8 @@ if (dayOfWeek >= 1 && dayOfWeek <= 5) {
   // scheduleID is an array indexed by weekday (Mon = index 0 ... Fri = index 4)
   const scheduleID = calendarEntry.scheduleID[dayOfWeek - 1]
 
-  // scheduleID values of 8+ presumably indicate "no school" / invalid schedule
+  // scheduleID Values of 0-7 correspond to valid schedule entries in school_schedule.json
+  // scheduleID values of 8+ could be added to add special schedules (e.g. for holidays, testing days, etc.) in the future
   if (scheduleID < 8) {
     todaySchedule = scheduleJSON.schedule[scheduleID]
   }

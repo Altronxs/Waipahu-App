@@ -39,9 +39,44 @@ import type { WebView as WebViewType } from "react-native-webview";
 
 const { width, height } = Dimensions.get("window");
 
+type IconItem = {
+  label: string;
+  image: any;
+  onPress: () => void;
+};
+
 const Students = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
+
+  const studentSections: { title: string; items: IconItem[] }[] = [
+    {
+      title: "School Info",
+      items: [
+        { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.push("/bell") },
+        { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.push("/calendar") },
+        { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.push("/news") },
+      ],
+    },
+    {
+      title: "Records & Admin",
+      items: [
+        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
+        {
+          label: "Infinite Campus",
+          image: require("@/assets/images/if.png"),
+          onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp"),
+        },
+      ],
+    },
+    {
+      title: "Campus Life",
+      items: [
+        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
+        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
+      ],
+    },
+  ];
 
   useFocusEffect(
     React.useCallback(() => {
@@ -136,115 +171,33 @@ const Students = () => {
               life.
             </Text>
 
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center"
-              onPress={() => router.push("/registrar")}
-            >
-              <Image
-                source={require("@/assets/images/registrar.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                Registrar
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center"
-              onPress={() => {
-                Linking.openURL(
-                  "https://hawaii.infinitecampus.org/campus/hawaii.jsp",
-                );
-              }}
-            >
-              <Image
-                source={require("@/assets/images/if.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                Infinite Campus
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center"
-              onPress={() => router.push("/bell")}
-            >
-              <Image
-                source={require("@/assets/images/bell.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                Bell Schedule
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center pt-5"
-              onPress={() => router.push("/calendar")}
-            >
-              <Image
-                source={require("@/assets/images/calendar.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                Calendar
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center pt-5"
-              onPress={() => router.push("/clubs")}
-            >
-              <Image
-                source={require("@/assets/images/clubs.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                Clubs
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center pt-5"
-              onPress={() => router.push("/news")}
-            >
-              <Image
-                source={require("@/assets/images/news.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                News
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 h-min mx-3 my-3 justify-center"
-              onPress={() => router.push("/legacy")}
-            >
-              <Image
-                source={require("@/assets/images/socials.png")}
-                style={{
-                  tintColor: "#17273d",
-                }}
-                className="size-14 self-center"
-              />
-              <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                Socials
-              </Text>
-            </TouchableOpacity>
+            {studentSections.map((section) => (
+              <View key={section.title} className="w-full mt-2 px-4">
+                <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
+                  {section.title}
+                </Text>
+                <View className="flex-row flex-wrap justify-center">
+                  {section.items.map((item) => (
+                    <TouchableOpacity
+                      key={item.label}
+                      className="w-1/4 h-min  justify-center items-center"
+                      onPress={item.onPress}
+                    >
+                      <Image
+                        source={item.image}
+                        style={{
+                          tintColor: "#17273d",
+                        }}
+                        className="size-14 self-center"
+                      />
+                      <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                        {item.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            ))}
           </ImageBackground>
         </ScrollView>
       </View>

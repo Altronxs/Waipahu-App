@@ -34,7 +34,7 @@ import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
  
 
-const News = () => {
+const Contacts = () => {
   const router = useRouter();
   const webViewRef = useRef<WebViewType>(null);
 
@@ -146,7 +146,7 @@ const News = () => {
             className="h-[5vh]"
             ref={webViewRef}
             source={{
-              uri: "https://www.waipahuhigh.org/apps/news/index.jsp?id=0",
+              uri: "https://www.waipahuhigh.org/apps/contact/",
             }}
             injectedJavaScript={`
                 setTimeout(() => {
@@ -177,4 +177,4 @@ const News = () => {
   );
 };
 
-export default News;
+export default Contacts;

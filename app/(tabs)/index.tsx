@@ -49,6 +49,56 @@ export default function Index() {
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
 
+
+  type IconItem = {
+    label: string;
+    image: any;
+    onPress: () => void;
+  };
+
+  const sections: { title: string; items: IconItem[] }[] = [
+    {
+      title: "School Info",
+      items: [
+        { label: "Mission & Vision", image: require("@/assets/images/school.png"), onPress: () => router.push("/vision") },
+        { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.push("/calendar") },
+        { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.push("/bell") },
+        { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.push("/news") },
+      ],
+    },
+    {
+      title: "Campus Life",
+      items: [
+        { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.push("/map") },
+        { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.push("/cafe") },
+        { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/athletics") },
+        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
+        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
+      ],
+    },
+    {
+      title: "People & Records",
+      items: [
+        { label: "Student", image: require("@/assets/images/user.png"), onPress: () => router.push("/student") },
+        { label: "Staff", image: require("@/assets/images/staff.png"), onPress: () => router.push("/staff") },
+        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
+        { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.push("/contacts") },
+      ],
+    },
+    {
+      title: "Links",
+      items: [
+        { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp") },
+        { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => Linking.openURL("https://www.waipahuhigh.org/") },
+        { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/author") },
+      ],
+    },
+  ];
+
+
+
+
+
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
@@ -160,8 +210,8 @@ export default function Index() {
           >
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
-              className="flex-row flex-wrap justify-center items-start w-[100vw]"
-              style={{ height: height}}
+              className="flex-row flex-wrap justify-center w-[100vw]"
+              style={{ height: height * 1.5}}
             >
               
               {currentPeriod !== '' ? (
@@ -201,208 +251,27 @@ export default function Index() {
                   WELCOME!
                 </Text>
               </View>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center pt-5"
-                onPress={() => router.push("/vision")}
-              >
-                <Image
-                  source={require("@/assets/images/school.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Mission & Vision
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center pt-5"
-                onPress={() => router.push("/calendar")}
-              >
-                <Image
-                  source={require("@/assets/images/calendar.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Calendar
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center pt-5"
-                onPress={() => router.push("/news")}
-              >
-                <Image
-                  source={require("@/assets/images/news.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  News
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/bell")}
-              >
-                <Image
-                  source={require("@/assets/images/bell.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Bell Schedule
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/map")}
-              >
-                <Image
-                  source={require("@/assets/images/map-icon.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Campus Map
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/staff")}
-              >
-                <Image
-                  source={require("@/assets/images/staff.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Staff
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/student")}
-              >
-                <Image
-                  source={require("@/assets/images/user.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Student
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/registrar")}
-              >
-                <Image
-                  source={require("@/assets/images/registrar.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Registrar
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => {
-                  Linking.openURL(
-                    "https://hawaii.infinitecampus.org/campus/hawaii.jsp",
-                  );
-                }}
-              >
-                <Image
-                  source={require("@/assets/images/if.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Infinite Campus
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/athletics")}
-              >
-                <Image
-                  source={require("@/assets/images/ball.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Athletics
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/cafe")}
-              >
-                <Image
-                  source={require("@/assets/images/cafe.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Menu
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/legacy")}
-              >
-                <Image
-                  source={require("@/assets/images/socials.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Socials
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-24 h-min mx-3 my-3 justify-center"
-                onPress={() => router.push("/author")}
-              >
-                <Image
-                  source={require("@/assets/images/author.png")}
-                  style={{
-                    tintColor: "#17273d",
-                  }}
-                  className="size-14 self-center"
-                />
-                <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                  Made By
-                </Text>
-              </TouchableOpacity>
+              {sections.map((section) => (
+                <View key={section.title} className="w-full mt-4 px-4">
+                  <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
+                    {section.title}
+                  </Text>
+                  <View className="flex-row flex-wrap justify-center">
+                    {section.items.map((item) => (
+                      <TouchableOpacity
+                        key={item.label}
+                        className="w-1/4 h-min justify-center items-center"
+                        onPress={item.onPress}
+                      >
+                        <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-14 self-center" />
+                        <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                          {item.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ))}
               
             </ImageBackground>
           </ScrollView>

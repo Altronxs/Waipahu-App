@@ -6,6 +6,7 @@ const HIDDEN_ROUTE_TITLES: Record<string, string> = {
   staff: "Staff",
   bell: "Bell",
   calendar: "Calendar",
+  contacts: "Contacts",
   vision: "Vision",
   news: "News",
   athletics: "Athletics",
