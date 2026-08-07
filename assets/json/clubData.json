@@ -1,18 +1,6 @@
 {
     "clubData": [
         {
-            "name": "National Technical Honor Society",
-            "location": "V-202",
-            "supervisor": "Cindy Takara",
-            "description": "The NTHS mission is to honor student achievement and leadership, promote educational excellence, and build a highly skilled workforce by connecting education and industry. Its guiding principles, the Core Four Objectives, are career development, leadership, service, and recognition."
-        },
-        {
-            "name": "National Honor Society",
-            "location": "H-9",
-            "supervisor": "Edmar Ramos",
-            "description": "Unveiled over a century ago, the National Honor Society enshrines four pillars at its heart: Scholarship, Service, Leadership, and Character. More than mere badges of honor for NHS members, these principles are transformative keys that unlock potential, enhancing every student's educational journey, and ultimately empowering them to make profound, enduring contributions to our world."
-        },
-        {
             "name": "AHS Board of Directors",
             "location": "",
             "supervisor": "S. Haanio",
@@ -209,6 +197,18 @@
             "location": "",
             "supervisor": "P. Muramoto",
             "description": "Nami Club (National Alliance on Mental Illness) focuses on mental health awareness and support. Members work to reduce stigma, provide peer support, and promote mental wellness through education and advocacy."
+        },
+        {
+            "name": "National Technical Honor Society",
+            "location": "V-202",
+            "supervisor": "Cindy Takara",
+            "description": "The NTHS mission is to honor student achievement and leadership, promote educational excellence, and build a highly skilled workforce by connecting education and industry. Its guiding principles, the Core Four Objectives, are career development, leadership, service, and recognition."
+        },
+        {
+            "name": "National Honor Society",
+            "location": "H-9",
+            "supervisor": "Edmar Ramos",
+            "description": "Unveiled over a century ago, the National Honor Society enshrines four pillars at its heart: Scholarship, Service, Leadership, and Character. More than mere badges of honor for NHS members, these principles are transformative keys that unlock potential, enhancing every student's educational journey, and ultimately empowering them to make profound, enduring contributions to our world."
         },
         {
             "name": "National Japanese Honor Society",

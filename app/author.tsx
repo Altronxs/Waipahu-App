@@ -121,6 +121,14 @@ const Author = () => {
           scrollEventThrottle={16}       
           decelerationRate="normal"   
         >
+          <Text className="z-20 font-barlow-semibold text-xl text-whs-blue w-full text-center p-3 !pt-5">
+            MADE BY STUDENTS & ALUMNI
+          </Text>
+          <Text className="z-20 font-source-serif-italic text-sm text-gray-700 w-full text-center pb-3 px-4 ">
+            Waipahu High School's vision is to provide student-centered
+            educational programs that challenge all students to perform at their
+            highest potential.
+          </Text>
           <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
               Kyle Alexander Baldovi

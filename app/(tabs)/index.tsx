@@ -165,7 +165,11 @@ export default function Index() {
       const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
       setTimeLeft(`${minutesRemaining}m ${displaySeconds}s`);
 
-      setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) + "%")
+      if ((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) >= 5) {
+        setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) + "%")
+      } else {
+        setLoadingBarFactor('5%')
+      }
     } else {
       setCurrentPeriod('');
       setTimeLeft('');

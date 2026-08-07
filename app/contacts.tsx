@@ -117,7 +117,7 @@ const Contacts = () => {
             />
           </TouchableOpacity>
           <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-            News and Announcements
+            Contacts
           </Text>
         </View>
       ) : (
@@ -135,7 +135,7 @@ const Contacts = () => {
             />
           </TouchableOpacity>
           <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-            News and Announcements
+            Contacts
           </Text>
         </View>
       )}
