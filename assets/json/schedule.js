@@ -2,6 +2,9 @@ import scheduleJSON from '@/assets/json/school_schedule.json'
 import calendarJSON from '@/assets/json/calendar.json'
 
 const today = new Date()
+var todaySchedule = {}
+var SCHOOL_SCHEDULE = []
+const dayOfWeek = today.getDay() // 0 = Sunday, 1 = Monday, ... 6 = Saturday
 
 /**
  * Finds the calendar entry (e.g. a week/period definition) whose date range
@@ -23,11 +26,6 @@ const findCalendarEntryForDate = (inputDate) => {
   }) || null;
 };
 
-// Will hold the full schedule object (with its timeSchedule array) for today,
-// or remain an empty object if today isn't a school day / has no valid schedule
-var todaySchedule = {}
-
-const dayOfWeek = today.getDay() // 0 = Sunday, 1 = Monday, ... 6 = Saturday
 
 // Only look up a schedule on weekdays (Monday - Friday)
 if (dayOfWeek >= 1 && dayOfWeek <= 5) {
@@ -40,6 +38,17 @@ if (dayOfWeek >= 1 && dayOfWeek <= 5) {
   if (scheduleID < 8) {
     todaySchedule = scheduleJSON.schedule[scheduleID]
   }
+
+  // Build the final schedule as a flat array of { name, start, end } periods,
+  // with start/end converted to minutes-since-midnight for easy comparisons
+  for (let i = 0; i < todaySchedule.timeSchedule.length; i++) {
+    const period = todaySchedule.timeSchedule[i];
+    SCHOOL_SCHEDULE[i] = {
+      name: period.name,
+      start: timeToMinutes(period.start),
+      end: timeToMinutes(period.end)
+    }
+  }
 }
 
 // Converts a "HH:MM" time string into total minutes since midnight,
@@ -48,17 +57,5 @@ const timeToMinutes = (timeString) => {
   const [hours, minutes] = timeString.split(':').map(Number);
   return hours * 60 + minutes;
 };
-
-// Build the final schedule as a flat array of { name, start, end } periods,
-// with start/end converted to minutes-since-midnight for easy comparisons
-var SCHOOL_SCHEDULE = []
-for (let i = 0; i < todaySchedule.timeSchedule.length; i++) {
-  const period = todaySchedule.timeSchedule[i];
-  SCHOOL_SCHEDULE[i] = {
-    name: period.name,
-    start: timeToMinutes(period.start),
-    end: timeToMinutes(period.end)
-  }
-}
 
 export { SCHOOL_SCHEDULE };
