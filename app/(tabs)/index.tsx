@@ -127,7 +127,6 @@ export default function Index() {
         setCurrentTime(now);
       }
       setAppIsReady(true)
-      console.log(!sections[0].items[0].image)
     }, 1000);
 
     return () => clearInterval(timer);
