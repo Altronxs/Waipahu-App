@@ -79,8 +79,11 @@ const Bell = () => {
     // Update timer every single second
     const timer = setInterval(() => {
       const now = new Date();
-      setCurrentTime(now);
-      calculateCurrentPeriod(now);
+      const dayOfWeek = now.getDay();
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        calculateCurrentPeriod(now);
+        setCurrentTime(now);
+      }
       setAppIsReady(true)
     }, 1000);
 

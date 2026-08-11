@@ -26,6 +26,12 @@ const findCalendarEntryForDate = (inputDate) => {
   }) || null;
 };
 
+// Converts a "HH:MM" time string into total minutes since midnight,
+// making start/end times easy to compare numerically
+const timeToMinutes = (timeString) => {
+  const [hours, minutes] = timeString.split(':').map(Number);
+  return hours * 60 + minutes;
+};
 
 // Only look up a schedule on weekdays (Monday - Friday)
 if (dayOfWeek >= 1 && dayOfWeek <= 5) {
@@ -51,11 +57,5 @@ if (dayOfWeek >= 1 && dayOfWeek <= 5) {
   }
 }
 
-// Converts a "HH:MM" time string into total minutes since midnight,
-// making start/end times easy to compare numerically
-const timeToMinutes = (timeString) => {
-  const [hours, minutes] = timeString.split(':').map(Number);
-  return hours * 60 + minutes;
-};
 
 export { SCHOOL_SCHEDULE };

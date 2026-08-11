@@ -204,7 +204,7 @@ const Legacy = () => {
           />
         </TouchableOpacity>
         <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          Social Media Resources
+          Social Media
         </Text>
       </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
