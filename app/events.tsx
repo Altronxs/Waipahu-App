@@ -320,6 +320,74 @@ const Events = () => {
                 </Text>
               </View>
             </ImageBackground>
+            <ImageBackground
+              source={require("@/assets/images/snr_lua.jpg")}
+              className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
+            >
+              <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
+              <View className="absolute w-full h-full flex justify-center items-center p-4">
+                <Text className="z-20 font-barlow-semibold text-3xl text-white w-full p-3 pt-3">
+                  SENIOR LUAU
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  The Senior Luau is a special milestone event celebrating our graduating class as they near the finish line. While it is a major celebration, it is not the final farewell. Come enjoy great music, food, and relaxed tropical vibes at this exclusive senior gathering. Dress in your favorite island attire and make lasting memories with your classmates before graduation!
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  Mark your Calendars for Nov 21, 2026.
+                </Text>
+              </View>
+            </ImageBackground>
+            <ImageBackground
+              source={require("@/assets/images/fsb.jpg")}
+              className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
+            >
+              <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
+              <View className="absolute w-full h-full flex justify-center items-center p-4">
+                <Text className="z-20 font-barlow-semibold text-3xl text-white w-full p-3 pt-3">
+                  FRESHMAN & SOPHMORE BANQUET
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  The Freshman & Sophomore Banquet is a celebratory milestone marking the end of the underclassman years. Bring your classmates together for an elegant evening of great food, music, and dancing. It is the perfect chance to dress up, take photos, and celebrate your high school journey so far!
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => Linking.openURL("https://www.instagram.com/div2ne_crus9ders/")}>
+                  Get FSB dates and details by clicking <Text className="underline">HERE</Text>
+                </Text>
+              </View>
+            </ImageBackground>
+            <ImageBackground
+              source={require("@/assets/images/jnr_prom.jpg")}
+              className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
+            >
+              <View className="absolute w-full h-full bg-black opacity-75 p-2"></View>
+              <View className="absolute w-full h-full flex justify-center items-center p-4">
+                <Text className="z-20 font-barlow-semibold text-3xl text-white w-full p-3 pt-3">
+                  JUNIOR PROM
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  The Junior Prom is a formal dance event that celebrates the achievements and milestones of our junior class. It is an opportunity for students to showcase their style, connect with peers, and create unforgettable memories. Expect elegant attire, fantastic music, and a night to remember!
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => Linking.openURL("https://www.instagram.com/vali2nt.vip8rs/")}>
+                  Get Junior Prom dates and details by clicking <Text className="underline">HERE</Text>
+                </Text>
+              </View>
+            </ImageBackground>
+            <ImageBackground
+              source={require("@/assets/images/snr_prom.jpg")}
+              className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
+            >
+              <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
+              <View className="absolute w-full h-full flex justify-center items-center p-4">
+                <Text className="z-20 font-barlow-semibold text-3xl text-white w-full p-3 pt-3">
+                  SENIOR PROM
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  The Senior Prom is a formal dance event that celebrates the achievements and milestones of our senior class. It is an opportunity for students to showcase their style, connect with peers, and create unforgettable memories. Expect elegant attire, fantastic music, and a night to remember!
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => Linking.openURL("https://www.instagram.com/moonlightsoldiers27/")}>
+                  Get Senior Prom dates and details by clicking <Text className="underline">HERE</Text>
+                </Text>
+              </View>
+            </ImageBackground>
           </View>
         </ScrollView>
       </View>
