@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Text } from "react-native";
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
-
+import { Ionicons } from '@expo/vector-icons'; // Or your framework's native icon library
 const ACTIVE_COLOR = "#ae8c52";
 const INACTIVE_COLOR = "#ffffff";
 const BAR_BACKGROUND = "#17273d";
@@ -14,19 +14,31 @@ const _Layout = () => {
       iconColor={{ default: INACTIVE_COLOR, selected: ACTIVE_COLOR }}
       labelStyle={{ color: INACTIVE_COLOR }}
     >
+      {/* Students Tab */}
       <NativeTabs.Trigger name="student">
         <NativeTabs.Trigger.Label>Students</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon src={require("@/assets/images/whs-info-resized.png")} />
+        <NativeTabs.Trigger.Icon 
+          sf="info.circle" 
+          md="info" 
+        />
       </NativeTabs.Trigger>
 
+      {/* Home Tab */}
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon src={require("@/assets/images/whs-home-resized.png")} />
+        <NativeTabs.Trigger.Icon 
+          sf="house" 
+          md="home" 
+        />
       </NativeTabs.Trigger>
 
+      {/* Campus Tab */}
       <NativeTabs.Trigger name="map">
         <NativeTabs.Trigger.Label>Campus</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon src={require("@/assets/images/whs-map-resized.png")} />
+        <NativeTabs.Trigger.Icon 
+          sf="map" 
+          md="map" 
+        />
       </NativeTabs.Trigger>
     </NativeTabs>
     // <Tabs

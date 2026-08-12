@@ -201,7 +201,7 @@ const Bell = () => {
 
           >
             <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10 ">
-              <View className="flex bg-white p-[20] rounded-[3rem] w-[90%] mt-5  ">
+              <View className="flex bg-white p-[5%] w-[90%] mt-5  ">
               
                 <View className="flex flex-column">
                   <Text className="font-bold font-barlow text-whs-blue text-lg/tight">{currentPeriod}</Text>
