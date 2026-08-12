@@ -74,7 +74,7 @@ export default function Index() {
         { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/athletics") },
         { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
         { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => Linking.openURL("https://www.instagram.com/waipahuhigh.stugov/") },
-        //{ label: "Academies", image: require("@/assets/images/book.png"), onPress: () => Linking.openURL("https://www.instagram.com/waipahuhigh.stugov/") },
+        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.push("/events") },
         { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
       ],
     },
