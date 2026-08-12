@@ -21,30 +21,36 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useRouter } from "expo-router";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Image,
     ImageBackground,
-    Dimensions,
     Linking,
     ScrollView,
     Text,
     TouchableOpacity,
+    useWindowDimensions,
     View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"; 
 import "../globals.css";
 import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
 
-const { width, height } = Dimensions.get("window");
+// Shared helper so openURL rejections (app not installed, malformed URL, etc.)
+// don't surface as unhandled promise rejections.
+const openLink = (url: string) => {
+  Linking.openURL(url).catch((error) => {
+    console.error("Failed to open URL:", error);
+  });
+};
 
 export default function Index() {
   const router = useRouter(); // Get the router instance
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [currentPeriod, setCurrentPeriod] = useState<String>('');
-  const [currentPeriodStart, setCurrentPeriodStart] = useState<String>('')
-  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<String>('')
+  const { height } = useWindowDimensions();
+  const [currentPeriod, setCurrentPeriod] = useState<string>('');
+  const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
+  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string>('')
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
@@ -90,8 +96,8 @@ export default function Index() {
     {
       title: "Links",
       items: [
-        { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp") },
-        { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => Linking.openURL("https://www.waipahuhigh.org/") },
+        { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://hawaii.infinitecampus.org/campus/hawaii.jsp") },
+        { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://www.waipahuhigh.org/") },
         { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/author") },
       ],
     },
@@ -118,17 +124,28 @@ export default function Index() {
   });
 
   useEffect(() => {
-    // Update timer every single second
-    const timer = setInterval(() => {
+    const tick = () => {
       const now = new Date();
       const dayOfWeek = now.getDay();
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
         calculateCurrentPeriod(now);
-        setCurrentTime(now);
+      } else {
+        // Weekend: explicitly clear so we never keep showing a stale
+        // period/timer from before the week rolled over while the
+        // screen was left open.
+        setCurrentPeriod('');
+        setCurrentPeriodStart('');
+        setCurrentPeriodEnd('');
+        setTimeLeft('');
       }
-      setAppIsReady(true)
-    }, 1000);
+    };
 
+    // Run once immediately so the screen doesn't sit on the loading
+    // state for a full extra second waiting on the first interval tick.
+    tick();
+    setAppIsReady(true);
+
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -271,6 +288,8 @@ export default function Index() {
                         key={item.label}
                         className="w-1/4 h-min justify-center items-center"
                         onPress={item.onPress}
+                        accessibilityRole="button"
+                        accessibilityLabel={item.label}
                       >
                         <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-14 self-center" />
                         <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
