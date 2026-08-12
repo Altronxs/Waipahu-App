@@ -28,6 +28,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
   StyleSheet,
   ScrollView,
   ImageBackground,
@@ -274,13 +275,51 @@ const Events = () => {
                     <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">{event.day}</Text>
                   </View>
                   <View className="flex-1 justify-center items-start pl-5">
-                    <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold">{event.name}</Text>
-                    <Text className="text-white text-center text-[0.75rem] font-light">{event.time}</Text>
+                    <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold font-source-serif-bold">{event.name}</Text>
+                    <Text className="text-white text-center text-[0.75rem] font-light font-source-serif-regular">{event.time}</Text>
                   </View>
                   
                 </View>
               ))
             )}
+            <View className="w-[90%] h-3 border-b-2 border-whs-blue"></View>
+            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+              ACTIVITIES
+            </Text>
+            <ImageBackground
+              source={require("@/assets/images/IMG_0059.jpeg")}
+              className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
+            >
+              <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
+              <View className="absolute w-full h-full flex justify-center items-center p-4">
+                <Text className="z-20 font-barlow-semibold text-3xl text-white w-full p-3 pt-3">
+                  HOMECOMING
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  JOIN US FOR THE BIGGEST EVENT OF THE YEAR! Experience the unmatched energy of Waipahu High School Homecoming! This massive celebration brings together students, staff, and generations of proud Marauder alumni to honor community, history, and school pride. From high-energy campus spirit weeks to deep-rooted local traditions, it is the defining event of the school year on Oahu.
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  Mark your Calendars for Sept 25, 2026.
+                </Text>
+              </View>
+            </ImageBackground>
+            <ImageBackground
+              source={require("@/assets/images/spiritweek.jpg")}
+              className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
+            >
+              <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
+              <View className="absolute w-full h-full flex justify-center items-center p-4">
+                <Text className="z-20 font-barlow-semibold text-3xl text-white w-full p-3 pt-3">
+                  SPIRIT WEEKS
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  Waipahu High School Spirit Weeks are high-energy traditions held throughout the year—including back-to-school, homecoming, and holidays—to unite the campus and boost Marauder pride. These seasonal celebrations feature creative daily dress-up themes, lively lunchtime courtyard rallies, and friendly grade-level competitions that give students a fun break from classes.
+                </Text>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
+                  Get Spirit Week dates and themes by clicking <Text className="underline" onPress={() => Linking.openURL("https://www.instagram.com/waipahuhs.stugov/")}>HERE</Text>
+                </Text>
+              </View>
+            </ImageBackground>
           </View>
         </ScrollView>
       </View>
