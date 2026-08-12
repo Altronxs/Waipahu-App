@@ -33,15 +33,25 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
+import { DOMParser } from 'react-native-html-parser';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
 
 const { width, height } = Dimensions.get("window");
+interface SchoolEvent {
+  name: string;
+  month: string; // e.g., "August" or "08"
+  day: string;   // e.g., "17"
+  time: string;  // e.g., "All Day" or a specific time string
+}
 
 const Events = () => {
+  const [events, setEvents] = useState<SchoolEvent[]>([]);
+  const [eventsError, setEventsError] = useState<string | null>(null);
   const webViewRef = useRef<WebViewType>(null);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [data, setData] = useState([]);
   const router = useRouter();
 
   useFocusEffect(
@@ -50,17 +60,98 @@ const Events = () => {
             webViewRef.current.reload();
         }
     }, []),
-);
+  );
 
-    const [canGoBack, setCanGoBack] = useState(false);
+  const [canGoBack, setCanGoBack] = useState(false);
 
-    useFocusEffect(
-        React.useCallback(() => {
-        if (webViewRef.current?.reload) {
-            webViewRef.current.reload();
-        }
-        }, []),
-    );
+  useFocusEffect(
+    React.useCallback(() => {
+      if (webViewRef.current?.reload) {
+          webViewRef.current.reload();
+      }
+    }, []),
+  );
+
+  useEffect(() => {
+    // Call the function when the component loads
+    fetchWebsiteData();
+  }, []);
+
+  const parseEventsXML = (xmlString: string): SchoolEvent[] => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlString, 'text/html');
+    
+    // 1. Gather all <item> elements into a collection
+    const items = doc.getElementsByTagName('item');
+    const extractedEvents: SchoolEvent[] = [];
+
+    const itemCount = Math.min(3, items.length);
+    for (let i = 0; i < itemCount; i++) {
+      const item = items[i];
+
+      // 2. Fetch standard node text content safely
+      const titleNode = item.getElementsByTagName('title')[0];
+      const descNode = item.getElementsByTagName('description')[0];
+      const eventName = titleNode && titleNode.textContent ? titleNode.textContent.trim() : 'Unknown Event';
+      const rawDesc = descNode && descNode.textContent ? descNode.textContent.trim() : ''; // e.g. "8/18/2026 11:11 AM - 11:41 AM (WHS)"
+      
+      let month = '';
+      let day = '';
+      
+      // Match date formats like "8/18/2026" or "08/18/2026"
+      const dateMatch = rawDesc.match(/^(\d{1,2})\/(\d{1,2})\/\d{4}/);
+      if (dateMatch) {
+        // set month to "january" or "1" based on your preference
+        month = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[parseInt(dateMatch[1], 10) - 1];
+        day = dateMatch[2];   // "18"
+      }
+
+      // 4. Parse out the Time Range using Regex
+      let time = 'All Day'; // Default fallback value
+      
+      // Matches time formats like "11:11 AM - 11:41 AM" or "1:00 PM"
+      const timeRegex = /(\d{1,2}:\d{2}\s*(?:AM|PM)(?:\s*-\s*\d{1,2}:\d{2}\s*(?:AM|PM))?)/i;
+      const timeMatch = rawDesc.match(timeRegex);
+      
+      if (timeMatch) {
+        time = timeMatch[0].trim().replace(/\s*-\s*/, '-'); // Captures "11:11 AM - 11:41 AM"
+        
+      }
+
+      // 5. Append to your parsed state list
+      extractedEvents.push({
+        name: eventName,
+        month,
+        day,
+        time,
+      });
+    }
+
+    return extractedEvents;
+  };
+
+  const fetchWebsiteData = async () => {
+    try {
+      // 1. Send the network request
+      const response = await fetch('https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0');
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      // 2. Parse the readable stream into text
+      const htmlString = await response.text();
+      const parsedEvents = parseEventsXML(htmlString);
+      setEvents(parsedEvents);
+      setEventsError(null);
+    } catch (error) {
+      console.error("Network request failed: ", error);
+      setEventsError("Unable to load events right now.");
+    } finally {
+       setAppIsReady(true);
+    }
+  };
+
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -95,6 +186,20 @@ const Events = () => {
 
   return (
     <SafeAreaProvider className="flex flex-col">
+      {appIsReady == false && (
+        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
+          <View className="flex-1 justify-center items-center bg-[#17273d]">
+            <Image
+              source={require("@/assets/images/whs-logo.png")}
+              className="size-32 mb-6 self-center"
+            />
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
+              Loading...
+            </Text>
+          </View>
+        </View>
+      )}
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
@@ -153,67 +258,30 @@ const Events = () => {
           scrollEventThrottle={16}       
           decelerationRate="normal"   
         >
-          <ImageBackground
-            source={require("@/assets/images/bg-home.png")}
-            className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
-
-          >
-            <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10 "> 
-              <View className="h-1/2 z-0 p-[0] w-full">
-                {!appIsReady && (
-                  <View className="flex-1 justify-center items-center bg-[#17273d] absolute z-40 w-full h-full">
-                    <ActivityIndicator size="large" color="#ffffff" />
+          <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+            UPCOMING EVENTS
+          </Text>
+          <View className="flex flex-col justify-center items-center pt-3 pb-20 flex-wrap w-full">
+            {eventsError ? (
+              <Text className="text-whs-blue text-center px-8 pt-10">{eventsError}</Text>
+            ) : events.length === 0 ? (
+              <Text className="text-whs-blue text-center px-8 pt-10">No upcoming events.</Text>
+            ) : (
+              events.map((event, index) => (
+                <View key={index} className="flex flex-row flex-nowrap self-center w-[90%] mx-[5%] p-5 mb-3 bg-whs-blue">
+                  <View className="justify-center items-start border-r-2 border-white pr-5">
+                    <Text className="text-white text-center font-roboto-bold">{event.month}</Text>
+                    <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">{event.day}</Text>
                   </View>
-                )}
-                
-                  <WebView
-                    className="h-full w-[100vw]"
-                    style={{width: '100%'}}
-                    ref={webViewRef}
-                    source={{
-                    uri: "https://www.waipahuhigh.org",
-                    }}
-                    injectedJavaScript={`
-                        setTimeout(() => {
-                        const style = document.createElement('style');
-                        style.innerHTML = \`
-                            #enheader5, #enfooter1, #index-wrapper, #first-row, #third-row, #fourth-row, #fifth-row, div.en-events-slider-footer {
-                                display: none !important;
-                            }
-                            #second-row {
-                                padding-top: 40px;
-                            }
-                            body {
-                                overflow: hidden;
-                            }
-                        \`;
-                        const meta = document.createElement('meta');
-                        meta.name = 'viewport';
-                        meta.content = 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no';
-                        document.getElementsByTagName('head')[0].appendChild(meta);
-                        document.head.appendChild(style);
-
-                        // Send a message back to React Native signaling success
-                        window.ReactNativeWebView.postMessage("INJECTION_SUCCESS");     
-                        }, 250);
-                        true;
-                    `}
-                    javaScriptEnabled={true}
-                    domStorageEnabled={true}
-                    onMessage={(event) => {
-                        if (event.nativeEvent.data === "INJECTION_SUCCESS") {
-                           setAppIsReady(true);
-                        }
-                    }}
-                    onNavigationStateChange={(navState) => {
-                    setCanGoBack(navState.canGoBack);
-                    }}
-                    sharedCookiesEnabled={true}
-                    thirdPartyCookiesEnabled={true}
-                />
-              </View>
-            </View>
-          </ImageBackground>
+                  <View className="flex-1 justify-center items-start pl-5">
+                    <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold">{event.name}</Text>
+                    <Text className="text-white text-center text-[0.75rem] font-light">{event.time}</Text>
+                  </View>
+                  
+                </View>
+              ))
+            )}
+          </View>
         </ScrollView>
       </View>
       
@@ -222,13 +290,5 @@ const Events = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5', justifyContent: 'center', alignItems: 'center' },
-  card: { backgroundColor: '#fff', padding: 30, borderRadius: 20, width: '85%', alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10 },
-  clock: { fontSize: 18, color: '#666', marginBottom: 20, fontWeight: '600' },
-  label: { fontSize: 14, color: '#aaa', textTransform: 'uppercase', letterSpacing: 1, marginTop: 15 },
-  periodText: { fontSize: 32, fontWeight: 'bold', color: '#1a1a1a', textAlign: 'center', marginVertical: 5 },
-  timerText: { fontSize: 40, fontWeight: 'bold', color: '#ff4757', marginTop: 5 },
-});
 
 export default Events;
