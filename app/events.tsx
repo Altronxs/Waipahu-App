@@ -21,7 +21,7 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -29,17 +29,14 @@ import {
   TouchableOpacity,
   View,
   Linking,
-  StyleSheet,
   ScrollView,
   ImageBackground,
-  Dimensions,
+  RefreshControl,
+  useWindowDimensions,
 } from "react-native";
 import { DOMParser } from 'react-native-html-parser';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import type { WebView as WebViewType } from "react-native-webview";
-import { WebView } from "react-native-webview";
 
-const { width, height } = Dimensions.get("window");
 interface SchoolEvent {
   name: string;
   month: string; // e.g., "August" or "08"
@@ -48,35 +45,34 @@ interface SchoolEvent {
 }
 
 const Events = () => {
+  const { height } = useWindowDimensions();
   const [events, setEvents] = useState<SchoolEvent[]>([]);
   const [eventsError, setEventsError] = useState<string | null>(null);
-  const webViewRef = useRef<WebViewType>(null);
   const [appIsReady, setAppIsReady] = useState(false);
-  const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 
+  // Re-fetch events every time this screen comes into focus, not just on mount.
   useFocusEffect(
     React.useCallback(() => {
-        if (webViewRef.current) {
-            webViewRef.current.reload();
-        }
+      const controller = new AbortController();
+      fetchWebsiteData(controller.signal);
+      return () => controller.abort();
     }, []),
   );
 
-  const [canGoBack, setCanGoBack] = useState(false);
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    const controller = new AbortController();
+    await fetchWebsiteData(controller.signal);
+    setRefreshing(false);
+  };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (webViewRef.current?.reload) {
-          webViewRef.current.reload();
-      }
-    }, []),
-  );
-
-  useEffect(() => {
-    // Call the function when the component loads
-    fetchWebsiteData();
-  }, []);
+  const openLink = (url: string) => {
+    Linking.openURL(url).catch((error) => {
+      console.error("Failed to open URL:", error);
+    });
+  };
 
   const parseEventsXML = (xmlString: string): SchoolEvent[] => {
     const parser = new DOMParser();
@@ -102,8 +98,10 @@ const Events = () => {
       // Match date formats like "8/18/2026" or "08/18/2026"
       const dateMatch = rawDesc.match(/^(\d{1,2})\/(\d{1,2})\/\d{4}/);
       if (dateMatch) {
-        // set month to "january" or "1" based on your preference
-        month = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[parseInt(dateMatch[1], 10) - 1];
+        const monthNum = parseInt(dateMatch[1], 10);
+        if (monthNum >= 1 && monthNum <= 12) {
+          month = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[monthNum - 1];
+        }
         day = dateMatch[2];   // "18"
       }
 
@@ -131,25 +129,39 @@ const Events = () => {
     return extractedEvents;
   };
 
-  const fetchWebsiteData = async () => {
+  const fetchWebsiteData = async (externalSignal?: AbortSignal) => {
+    // Guard against a hung request on a slow/flaky connection.
+    const timeoutController = new AbortController();
+    const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
+
+    // Abort if either the caller cancels (screen blurred/unmounted) or we time out.
+    externalSignal?.addEventListener("abort", () => timeoutController.abort());
+
     try {
-      // 1. Send the network request
-      const response = await fetch('https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0');
+      const response = await fetch(
+        'https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0',
+        { signal: timeoutController.signal },
+      );
 
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
-      // 2. Parse the readable stream into text
       const htmlString = await response.text();
       const parsedEvents = parseEventsXML(htmlString);
       setEvents(parsedEvents);
       setEventsError(null);
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.name === "AbortError") {
+        // Screen lost focus/unmounted or the request timed out — don't show
+        // a scary error for a routine navigation-away.
+        return;
+      }
       console.error("Network request failed: ", error);
       setEventsError("Unable to load events right now.");
     } finally {
-       setAppIsReady(true);
+      clearTimeout(timeoutId);
+      setAppIsReady(true);
     }
   };
 
@@ -213,43 +225,25 @@ const Events = () => {
           </View>
       </View>
 
-      {canGoBack ? (
-            <View className="justify-center items-center bg-whs-gold">
-            <TouchableOpacity
-                className="w-10 h-10 left self-start pt-3 z-30"
-                onPress={() => webViewRef.current?.goBack()}
-            >
-                <Image
-                source={require("@/assets/images/back.png")}
-                style={{
-                    tintColor: "#17273d",
-                }}
-                className="size-10 self-center"
-                />
-            </TouchableOpacity>
-            <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-                Events & Activities
-            </Text>
-            </View>
-        ) : (
-            <View className="justify-center items-center bg-whs-gold ">
-            <TouchableOpacity
-                className="w-10 h-10 left self-start pt-3 z-30"
-                onPress={() => router.push("/")}
-            >
-                <Image
-                source={require("@/assets/images/back.png")}
-                style={{
-                    tintColor: "#17273d",
-                }}
-                className="size-10 self-center"
-                />
-            </TouchableOpacity>
-            <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-                Events & Activities
-            </Text>
-            </View>
-        )}
+      <View className="justify-center items-center bg-whs-gold">
+        <TouchableOpacity
+            className="w-10 h-10 left self-start pt-3 z-30"
+            onPress={() => router.push("/")}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+        >
+            <Image
+            source={require("@/assets/images/back.png")}
+            style={{
+                tintColor: "#17273d",
+            }}
+            className="size-10 self-center"
+            />
+        </TouchableOpacity>
+        <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
+            Events & Activities
+        </Text>
+      </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
         <ScrollView
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
@@ -257,7 +251,10 @@ const Events = () => {
           bounces={false}                
           overScrollMode="never"          
           scrollEventThrottle={16}       
-          decelerationRate="normal"   
+          decelerationRate="normal"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         >
           <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
             UPCOMING EVENTS
@@ -316,7 +313,7 @@ const Events = () => {
                   Waipahu High School Spirit Weeks are high-energy traditions held throughout the year—including back-to-school, homecoming, and holidays—to unite the campus and boost Marauder pride. These seasonal celebrations feature creative daily dress-up themes, lively lunchtime courtyard rallies, and friendly grade-level competitions that give students a fun break from classes.
                 </Text>
                 <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
-                  Get Spirit Week dates and themes by clicking <Text className="underline" onPress={() => Linking.openURL("https://www.instagram.com/waipahuhs.stugov/")}>HERE</Text>
+                  Get Spirit Week dates and themes by clicking <Text className="underline" onPress={() => openLink("https://www.instagram.com/waipahuhs.stugov/")}>HERE</Text>
                 </Text>
               </View>
             </ImageBackground>
@@ -349,7 +346,7 @@ const Events = () => {
                 <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
                   The Freshman & Sophomore Banquet is a celebratory milestone marking the end of the underclassman years. Bring your classmates together for an elegant evening of great food, music, and dancing. It is the perfect chance to dress up, take photos, and celebrate your high school journey so far!
                 </Text>
-                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => Linking.openURL("https://www.instagram.com/div2ne_crus9ders/")}>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => openLink("https://www.instagram.com/div2ne_crus9ders/")}>
                   Get FSB dates and details by clicking <Text className="underline">HERE</Text>
                 </Text>
               </View>
@@ -366,7 +363,7 @@ const Events = () => {
                 <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
                   The Junior Prom is a formal dance event that celebrates the achievements and milestones of our junior class. It is an opportunity for students to showcase their style, connect with peers, and create unforgettable memories. Expect elegant attire, fantastic music, and a night to remember!
                 </Text>
-                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => Linking.openURL("https://www.instagram.com/vali2nt.vip8rs/")}>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => openLink("https://www.instagram.com/vali2nt.vip8rs/")}>
                   Get Junior Prom dates and details by clicking <Text className="underline">HERE</Text>
                 </Text>
               </View>
@@ -383,7 +380,7 @@ const Events = () => {
                 <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3">
                   The Senior Prom is a formal dance event that celebrates the achievements and milestones of our senior class. It is an opportunity for students to showcase their style, connect with peers, and create unforgettable memories. Expect elegant attire, fantastic music, and a night to remember!
                 </Text>
-                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => Linking.openURL("https://www.instagram.com/moonlightsoldiers27/")}>
+                <Text className="z-20 font-barlow-regular text-sm text-white w-full p-3 pt-3" onPress={() => openLink("https://www.instagram.com/moonlightsoldiers27/")}>
                   Get Senior Prom dates and details by clicking <Text className="underline">HERE</Text>
                 </Text>
               </View>
