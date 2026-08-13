@@ -23,7 +23,8 @@ module.exports = {
           ...fontFamily.sans,
         ],
         "barlow-italic": [
-          "BarlowSemiCondensed_400Regular_Italic",
+         
+          "BarlowSemiCondensed_600SemiBold_Italic",
           ...fontFamily.sans,
         ],
         "barlow-semibold": [
