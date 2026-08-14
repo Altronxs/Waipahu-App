@@ -21,7 +21,7 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -34,7 +34,7 @@ import {
   RefreshControl,
   useWindowDimensions,
 } from "react-native";
-import { DOMParser } from 'react-native-html-parser';
+import { fetchSchoolEvents } from '../assets/json/eventService';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 interface SchoolEvent {
@@ -54,17 +54,20 @@ const Events = () => {
 
   // Re-fetch events every time this screen comes into focus, not just on mount.
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       const controller = new AbortController();
-      fetchWebsiteData(controller.signal);
-      return () => controller.abort();
-    }, []),
+      handleFetchWebsiteData(controller.signal);
+
+      return () => {
+        controller.abort();
+      };
+    }, [])
   );
 
   const handleRefresh = async () => {
     setRefreshing(true);
     const controller = new AbortController();
-    await fetchWebsiteData(controller.signal);
+    await handleFetchWebsiteData(controller.signal);
     setRefreshing(false);
   };
 
@@ -74,93 +77,22 @@ const Events = () => {
     });
   };
 
-  const parseEventsXML = (xmlString: string): SchoolEvent[] => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlString, 'text/html');
-    
-    // 1. Gather all <item> elements into a collection
-    const items = doc.getElementsByTagName('item');
-    const extractedEvents: SchoolEvent[] = [];
-
-    const itemCount = Math.min(3, items.length);
-    for (let i = 0; i < itemCount; i++) {
-      const item = items[i];
-
-      // 2. Fetch standard node text content safely
-      const titleNode = item.getElementsByTagName('title')[0];
-      const descNode = item.getElementsByTagName('description')[0];
-      const eventName = titleNode && titleNode.textContent ? titleNode.textContent.trim() : 'Unknown Event';
-      const rawDesc = descNode && descNode.textContent ? descNode.textContent.trim() : ''; // e.g. "8/18/2026 11:11 AM - 11:41 AM (WHS)"
-      
-      let month = '';
-      let day = '';
-      
-      // Match date formats like "8/18/2026" or "08/18/2026"
-      const dateMatch = rawDesc.match(/^(\d{1,2})\/(\d{1,2})\/\d{4}/);
-      if (dateMatch) {
-        const monthNum = parseInt(dateMatch[1], 10);
-        if (monthNum >= 1 && monthNum <= 12) {
-          month = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[monthNum - 1];
-        }
-        day = dateMatch[2];   // "18"
-      }
-
-      // 4. Parse out the Time Range using Regex
-      let time = 'All Day'; // Default fallback value
-      
-      // Matches time formats like "11:11 AM - 11:41 AM" or "1:00 PM"
-      const timeRegex = /(\d{1,2}:\d{2}\s*(?:AM|PM)(?:\s*-\s*\d{1,2}:\d{2}\s*(?:AM|PM))?)/i;
-      const timeMatch = rawDesc.match(timeRegex);
-      
-      if (timeMatch) {
-        time = timeMatch[0].trim().replace(/\s*-\s*/, '-'); // Captures "11:11 AM - 11:41 AM"
-        
-      }
-
-      // 5. Append to your parsed state list
-      extractedEvents.push({
-        name: eventName,
-        month,
-        day,
-        time,
-      });
-    }
-
-    return extractedEvents;
-  };
-
-  const fetchWebsiteData = async (externalSignal?: AbortSignal) => {
-    // Guard against a hung request on a slow/flaky connection.
-    const timeoutController = new AbortController();
-    const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
-
-    // Abort if either the caller cancels (screen blurred/unmounted) or we time out.
-    externalSignal?.addEventListener("abort", () => timeoutController.abort());
-
+  const handleFetchWebsiteData = async (externalSignal?: AbortSignal) => {
     try {
-      const response = await fetch(
-        'https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0',
-        { signal: timeoutController.signal },
-      );
+      const parsedEvents = await fetchSchoolEvents(externalSignal);
+      
+      // If signal was aborted mid-flight or returned empty, exit cleanly
+      if (!parsedEvents) return;
 
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-
-      const htmlString = await response.text();
-      const parsedEvents = parseEventsXML(htmlString);
       setEvents(parsedEvents);
       setEventsError(null);
-    } catch (error: any) {
+    } catch (error) {
       if (error?.name === "AbortError") {
-        // Screen lost focus/unmounted or the request timed out — don't show
-        // a scary error for a routine navigation-away.
-        return;
+        return; // Navigation away or timeout — fail silently
       }
       console.error("Network request failed: ", error);
       setEventsError("Unable to load events right now.");
     } finally {
-      clearTimeout(timeoutId);
       setAppIsReady(true);
     }
   };

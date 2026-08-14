@@ -19,6 +19,7 @@
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
+    "@xmldom/xmldom": "^0.9.11",
     "babel-preset-expo": "~57.0.0",
     "expo": "~57.0.12",
     "expo-asset": "~57.0.7",

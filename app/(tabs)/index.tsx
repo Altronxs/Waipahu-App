@@ -1,6 +1,7 @@
 import {
     BarlowSemiCondensed_400Regular,
     BarlowSemiCondensed_400Regular_Italic,
+    BarlowSemiCondensed_600SemiBold_Italic,
     BarlowSemiCondensed_600SemiBold,
 } from "@expo-google-fonts/barlow-semi-condensed";
 import {
@@ -104,9 +105,6 @@ export default function Index() {
   ];
 
 
-
-
-
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
@@ -115,6 +113,7 @@ export default function Index() {
     NotoSerif_700Bold_Italic,
     BarlowSemiCondensed_400Regular,
     BarlowSemiCondensed_400Regular_Italic,
+    BarlowSemiCondensed_600SemiBold_Italic,
     BarlowSemiCondensed_600SemiBold,
     SourceSerifPro_400Regular,
     SourceSerifPro_400Regular_Italic,
@@ -266,14 +265,14 @@ export default function Index() {
                 <View className="h-[30px] w-full"></View>
               )}
               
-              <View className="flex flex-row justify-center items-center gap-5 w-full ">
+              <View className="flex flex-row justify-center items-center gap-[1.5rem] w-full">
                 <Image
                   source={require("@/assets/images/marauder-script.png")} 
                   className="self-center object-contain" 
-                  style={{ height: 40, width: 'auto', aspectRatio: 198 / 50 }} 
+                  style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
                 >
                 </Image>
-                <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue text-center  ">
+                <Text className="z-20 font-barlow-italic text-3xl text-whs-blue text-center relative top-[1px] ">
                   WELCOME!
                 </Text>
               </View>
@@ -282,16 +281,16 @@ export default function Index() {
                   <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
                     {section.title}
                   </Text>
-                  <View className="flex-row flex-wrap justify-center">
+                  <View className="flex-row flex-wrap justify-center gap-4">
                     {section.items.map((item) => (
                       <TouchableOpacity
                         key={item.label}
-                        className="w-1/4 h-min justify-center items-center"
+                        className="w-[20%] h-min justify-center items-center"
                         onPress={item.onPress}
                         accessibilityRole="button"
                         accessibilityLabel={item.label}
                       >
-                        <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-14 self-center" />
+                        <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[3.75rem] self-center" />
                         <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                           {item.label}
                         </Text>
