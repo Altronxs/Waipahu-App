@@ -28,13 +28,14 @@ import {
     Image,
     ImageBackground,
     Linking,
+    RefreshControl,
     ScrollView,
     Text,
     TouchableOpacity,
     useWindowDimensions,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"; 
+import { SafeAreaProvider } from "react-native-safe-area-context"; 
 import "../globals.css";
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
@@ -56,17 +57,29 @@ const openLink = (url: string) => {
 export default function Index() {
   const router = useRouter(); // Get the router instance
   const { height } = useWindowDimensions();
+
+  // --- Bell-schedule / "current period" state ---
+  // These are recomputed every second by the interval effect below.
   const [currentPeriod, setCurrentPeriod] = useState<string>('');
   const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string>('')
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
+
+  // Gate for the splash/loading screen. Only flips true once fonts are loaded
+  // AND the first tick of the interval effect has run (see effect below).
   const [appIsReady, setAppIsReady] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
 
   const [events, setEvents] = useState<SchoolEvent[]>([]);
   const [eventsError, setEventsError] = useState<string | null>(null);
+
+  // Drives the pull-to-refresh spinner on the ScrollView (see
+  // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
+
+  // Ref mirror of `events` so the 1s interval callback (which has an empty
+  // dependency array and is created once) can always read the latest
+  // events without needing to be re-created every time events changes.
   const eventsRef = useRef(events);
 
   type IconItem = {
@@ -75,6 +88,7 @@ export default function Index() {
     onPress: () => void;
   };
 
+  // Static nav/menu configuration grouped into sections for the home grid.
   const sections: { title: string; items: IconItem[] }[] = [
     {
       title: "School Info",
@@ -93,7 +107,7 @@ export default function Index() {
         { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/athletics") },
         { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
         { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.push("/events") },
-        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.push("/events") },
+        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.push("/academies") },
         { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
       ],
     },
@@ -135,6 +149,9 @@ export default function Index() {
   });
 
   // Re-fetch events every time this screen comes into focus, not just on mount.
+  // AbortController cancels the in-flight fetch if the screen loses focus
+  // (or unmounts) before it resolves, preventing state updates on an
+  // unfocused/unmounted screen.
   useFocusEffect(
     useCallback(() => {
       const controller = new AbortController();
@@ -153,6 +170,7 @@ export default function Index() {
   );
 
 
+  // Manual refresh trigger, wired to the ScrollView's RefreshControl below.
   const handleRefresh = async () => {
     setRefreshing(true);
     const controller = new AbortController();
@@ -167,39 +185,56 @@ export default function Index() {
     setRefreshing(false);
   };
 
-  // 1. Always keep ref updated
+  // 1. Always keep ref updated so the interval effect (empty dep array)
+  // can access the latest `events` without staleness.
   useEffect(() => {
     eventsRef.current = events;
   }, [events]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const currentEventsList = eventsRef.current;
-      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        
-        const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
-          currentPeriod: string;
-          currentPeriodStart: string;
-          currentPeriodEnd: string;
-          timeLeft: string;
-          loadingBarFactor: string;
-        };
-        setCurrentPeriod(periodData.currentPeriod);
-        setCurrentPeriodStart(periodData.currentPeriodStart);
-        setCurrentPeriodEnd(periodData.currentPeriodEnd);
-        setTimeLeft(periodData.timeLeft);
-        setLoadingBarFactor(periodData.loadingBarFactor);
-        setCurrentTime(now);
-      }
+  // Ticks once per second to recompute the "current period" / bell-schedule
+  // progress bar. Tied to useFocusEffect so the interval is started when
+  // this screen gains focus and cleared when it loses focus/unmounts —
+  // it no longer keeps ticking in the background on other tabs.
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setInterval(() => {
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const currentEventsList = eventsRef.current;
+        // Guard against calculateCurrentPeriod being called before events
+        // have loaded (currentEventsList would otherwise be an empty array
+        // and currentEventsList[0] would be undefined).
+        if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
+            currentPeriod: string;
+            currentPeriodStart: string;
+            currentPeriodEnd: string;
+            timeLeft: string;
+            loadingBarFactor: string;
+          };
+          setCurrentPeriod(periodData.currentPeriod);
+          setCurrentPeriodStart(periodData.currentPeriodStart);
+          setCurrentPeriodEnd(periodData.currentPeriodEnd);
+          setTimeLeft(periodData.timeLeft);
+          setLoadingBarFactor(periodData.loadingBarFactor);
+        }
 
-      setAppIsReady(true);
-    }, 1000);
+        // Flips the splash screen off once fonts are loaded + the first
+        // tick has run. React bails out of the re-render here once this is
+        // already true, since setState with an unchanged primitive is a
+        // no-op, so this is safe to call every tick.
+        setAppIsReady(true);
+      }, 1000);
 
-    return () => clearInterval(timer);
-  }, []); // Re-subscribes timer whenever events state updates
+      return () => clearInterval(timer);
+      // Re-created each time this screen refocuses; `eventsRef` (kept in
+      // sync by the effect above) lets the callback always read the
+      // latest events without needing `events` in this dependency array.
+    }, [])
+  );
 
+  // Splash/loading screen: shown until fonts are loaded AND the first
+  // interval tick has fired (see setAppIsReady(true) in the focus effect above).
   if ((appIsReady == false) || !fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
@@ -216,6 +251,11 @@ export default function Index() {
   } else {
     return (
       <SafeAreaProvider className="flex-col">
+        {/* Header banner with logo + "MY VOICE / MY CHOICE / MY FUTURE" stack.
+            NOTE: uses vh/vw-style units ("h-[13rem]", "w-[100vw]") mixed with
+            rem-based utility classes; vw/vh work via NativeWind's web target
+            but may not behave the same on native depending on setup — worth
+            confirming this renders as expected on iOS/Android, not just web. */}
         <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
             <Image
                 source={require("@/assets/images/whs-logo.png")}
@@ -234,7 +274,10 @@ export default function Index() {
             bounces={false}                
             overScrollMode="never"          
             scrollEventThrottle={16}       
-            decelerationRate="normal"   
+            decelerationRate="normal"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
           >
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
@@ -242,6 +285,10 @@ export default function Index() {
               style={{ height: height * 1.5}}
             >
               
+              {/* Bell-schedule widget: current period name, time range, and
+                  a progress bar showing how far through the period we are.
+                  Only renders once currentPeriod has been computed
+                  (i.e. on a weekday, after the first interval tick). */}
               {currentPeriod !== '' ? (
                 <View className="p-[20] w-[100%] "> 
                   <View className="flex flex-column">
@@ -250,7 +297,9 @@ export default function Index() {
                       <View>
                         <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{currentPeriodStart}-{currentPeriodEnd}</Text>
                         <View>
+                          {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                          {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
                           <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
                         </View>
                       </View>
@@ -265,9 +314,12 @@ export default function Index() {
                   ) : null}
                 </View> 
               ) : (
+                // Placeholder spacer on weekends / before period data is ready,
+                // so layout doesn't jump when the widget above appears.
                 <View className="h-[30px] w-full"></View>
               )}
               
+              {/* Welcome banner: script logo + "WELCOME!" text */}
               <View className="flex flex-row justify-center items-center gap-[1rem] w-full">
                 <Image
                   source={require("@/assets/images/marauder-script.png")} 
@@ -279,6 +331,10 @@ export default function Index() {
                   WELCOME!
                 </Text>
               </View>
+
+              {/* Main icon grid, grouped by section (School Info, Campus Life,
+                  People & Records, Links). Each item is a fixed-width (20%)
+                  tile so 5 fit per row before wrapping. */}
               {sections.map((section) => (
                 <View key={section.title} className="w-full mt-4 px-4">
                   <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">

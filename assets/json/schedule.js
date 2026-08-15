@@ -1,181 +1,229 @@
-import scheduleJSON from '@/assets/json/school_schedule.json'
-import calendarJSON from '@/assets/json/calendar.json'
+// ==========================================
+// IMPORTS
+// ==========================================
+import scheduleJSON from '@/assets/json/school_schedule.json';
+import calendarJSON from '@/assets/json/calendar.json';
 import { fetchSchoolEvents } from '@/assets/json/eventService';
 
-const today = new Date()
-var todaySchedule = {}
-
-const dayOfWeek = today.getDay() // 0 = Sunday, 1 = Monday, ... 6 = Saturday
-
+// ==========================================
+// HELPER FUNCTIONS
+// ==========================================
 
 /**
- * Finds the calendar entry (e.g. a week/period definition) whose date range
- * contains the given date.
+ * Finds the calendar entry containing a specific date.
+ * Maps the target date to an academic week/period definition.
+ * 
+ * @param {Date} inputDate - The date to search for.
+ * @returns {Object|null} The matching calendar entry object or null.
  */
 const findCalendarEntryForDate = (inputDate) => {
-  const targetTimestamp = new Date(inputDate).setHours(0, 0, 0, 0);
+    // Strip time to focus solely on the calendar day
+    const targetTimestamp = new Date(inputDate).setHours(0, 0, 0, 0);
 
-  // Calendar dates are stored as "MM-DD-YY" strings; convert to a comparable timestamp
-  const parseCalendarDateString = (dateStr) => {
-    const [month, day, twoDigitYear] = dateStr.split('-').map(Number);
-    return new Date(2000 + twoDigitYear, month - 1, day).setHours(0, 0, 0, 0);
-  };
+    /**
+     * Converts a "MM-DD-YY" string into a midnight timestamp.
+     */
+    const parseCalendarDateString = (dateStr) => {
+        const [month, day, twoDigitYear] = dateStr.split('-').map(Number);
+        return new Date(2000 + twoDigitYear, month - 1, day).setHours(0, 0, 0, 0);
+    };
 
-  return calendarJSON.calendar.find(entry => {
-    const rangeStart = parseCalendarDateString(entry.start);
-    const rangeEnd = parseCalendarDateString(entry.end);
-    return targetTimestamp >= rangeStart && targetTimestamp <= rangeEnd;
-  }) || null;
+    // Find the range that wraps around our target date
+    return calendarJSON.calendar.find(entry => {
+        const rangeStart = parseCalendarDateString(entry.start);
+        const rangeEnd = parseCalendarDateString(entry.end);
+        return targetTimestamp >= rangeStart && targetTimestamp <= rangeEnd;
+    }) || null;
 };
-
-// Converts a "HH:MM" time string into total minutes since midnight,
-// making start/end times easy to compare numerically
-const timeToMinutes = (timeString) => {
-  const [hours, minutes] = timeString.split(':').map(Number);
-  return hours * 60 + minutes;
-};
-
-const buildFinalSchedule = (scheduleID) => {
-  let SCHOOL_SCHEDULE = [];
-  if (scheduleID < 8) {
-    todaySchedule = scheduleJSON.schedule[scheduleID]
-    
-    // Build the final schedule as a flat array of { name, start, end } periods,
-    // with start/end converted to minutes-since-midnight for easy comparisons
-    for (let i = 0; i < todaySchedule.timeSchedule.length; i++) {
-      const period = todaySchedule.timeSchedule[i];
-      SCHOOL_SCHEDULE[i] = {
-        name: period.name,
-        start: timeToMinutes(period.start),
-        end: timeToMinutes(period.end)
-      }
-    }
-  }
-  
-  return SCHOOL_SCHEDULE;
-}
-
-const getTodaySchedule = (currentEvents) => {
-  let SCHOOL_SCHEDULE = [];
-  // Only look up a schedule on weekdays (Monday - Friday)
-  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-    const calendarEntry = findCalendarEntryForDate(today)
-    // scheduleID is an array indexed by weekday (Mon = index 0 ... Fri = index 4)
-    let scheduleID = calendarEntry.scheduleID[dayOfWeek - 1]
-    
-    if (Number(currentEvents.day) == (today.getDate())) {
-      
-      if ((currentEvents.name).toLowerCase().includes('friday') && (currentEvents.name).toLowerCase().includes('schedule') && scheduleID != 4) {
-        SCHOOL_SCHEDULE = buildFinalSchedule(4)
-      } else if ((currentEvents.name).toLowerCase().includes("assembly 'b'") && scheduleID != 6) {
-        SCHOOL_SCHEDULE = buildFinalSchedule(6)
-      } else if ((currentEvents.name).toLowerCase().includes("schedule c") && scheduleID != 7) {
-        SCHOOL_SCHEDULE = buildFinalSchedule(7)
-      } else if (((currentEvents.name).toLowerCase().includes("holiday") || (currentEvents.name).toLowerCase().includes("no students")) && scheduleID != 8) {
-        //scheduleID = 8;
-        console.log('calendar incorrect so following')
-      } else {
-        //console.log('following calendar')
-        SCHOOL_SCHEDULE = buildFinalSchedule(scheduleID)
-        
-      }
-    } else {
-      //console.log('following calendar')
-      SCHOOL_SCHEDULE = buildFinalSchedule(scheduleID)
-    }
-    
-    return SCHOOL_SCHEDULE;
-  }
-}
-
 
 /**
- * Converts minutes into a formatted "H:MM" string.
- * @param {number} minutes 
- * @returns {string}
+ * Converts a 24-hour "HH:MM" time string into total minutes since midnight.
+ * This makes period comparisons straightforward using simple numbers.
+ * 
+ * @param {string} timeString - "HH:MM" formatted string.
+ * @returns {number} Minutes since midnight.
+ */
+const timeToMinutes = (timeString) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours * 60 + minutes;
+};
+
+/**
+ * Converts total minutes back into a standard "H:MM" clock string.
+ * 
+ * @param {number} minutes - Total minutes.
+ * @returns {string} Formatted time string.
  */
 const minutesToString = (minutes) => {
-  const hours = Math.floor(minutes / 60);
-  const minute = Math.round((minutes / 60 - hours) * 60);
-  const paddedMinute = minute < 10 ? "0" + minute : minute;
-  return hours + ":" + paddedMinute;
+    const hours = Math.floor(minutes / 60);
+    const mins = Math.round(minutes % 60);
+    const paddedMinute = mins < 10 ? `0${mins}` : mins;
+    return `${hours}:${paddedMinute}`;
 };
 
 /**
- * Calculates current school period details based on the given Date and schedule.
- * @param {Date} now 
- * @param {Array<{name: string, start: number, end: number}>} schedule 
- * @returns {Object} Period status data
+ * Maps a specific Schedule ID into a flat timeline array.
+ * 
+ * @param {number} scheduleID - Key pointing to a school schedule configuration.
+ * @returns {Array} List of processed period objects with minute-converted boundaries.
+ */
+const buildFinalSchedule = (scheduleID) => {
+    const finalTimeline = [];
+    
+    // IDs 8 and higher signify holidays or exceptions without structured bell schedules
+    if (scheduleID < 8) {
+        const structuralSchedule = scheduleJSON.schedule[scheduleID];
+        
+        // Loop over the raw JSON blocks and format their bounds into absolute minutes
+        for (let i = 0; i < structuralSchedule.timeSchedule.length; i++) {
+            const period = structuralSchedule.timeSchedule[i];
+            finalTimeline[i] = {
+                name: period.name,
+                start: timeToMinutes(period.start),
+                end: timeToMinutes(period.end)
+            };
+        }
+    }
+    return finalTimeline;
+};
+
+/**
+ * Evaluates calendar rules against active real-time events to build the daily matrix.
+ * 
+ * @param {Object} currentEvents - The event block retrieved for the current day.
+ * @param {Date} targetDate - The live date object instance.
+ * @returns {Array} Final collection of periods active for the day.
+ */
+const getTodaySchedule = (currentEvents, targetDate) => {
+    const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+
+    // Only process schedules for regular school days (Monday through Friday)
+    if (dayOfWeek < 1 || dayOfWeek > 5) {
+        return [];
+    }
+
+    const calendarEntry = findCalendarEntryForDate(targetDate);
+    if (!calendarEntry) return [];
+
+    // Map day to the zero-indexed schedule ID array (Mon = 0, Tue = 1, etc.)
+    let scheduleID = calendarEntry.scheduleID[dayOfWeek - 1];
+
+    // Check if the passed API event applies directly to today's date
+    if (currentEvents && Number(currentEvents.day) === targetDate.getDate()) {
+        const eventNameLower = currentEvents.name.toLowerCase();
+
+        // Helper boolean flags for override evaluation
+        const isFridaySchedule = eventNameLower.includes('friday') && eventNameLower.includes('schedule');
+        const isAssemblyB = eventNameLower.includes("assembly 'b'");
+        const isScheduleC = eventNameLower.includes("schedule c");
+        const isHoliday = eventNameLower.includes("holiday") || eventNameLower.includes("no students");
+
+        // Run overrides if the calendar does not already match the event intent
+        if (isFridaySchedule && scheduleID !== 4) {
+            return buildFinalSchedule(4);
+        } 
+        if (isAssemblyB && scheduleID !== 6) {
+            return buildFinalSchedule(6);
+        } 
+        if (isScheduleC && scheduleID !== 7) {
+            return buildFinalSchedule(7);
+        } 
+        if (isHoliday && scheduleID !== 8) {
+            // Logs an exception if manual events clash with structural definitions
+            console.log('Calendar out of sync with holiday event; skipping generation.');
+            return [];
+        }
+    }
+
+    // Default back to standard calendar schedule mapping if no exceptions trip
+    return buildFinalSchedule(scheduleID);
+};
+
+// ==========================================
+// EXPORTED CORE SERVICE
+// ==========================================
+
+/**
+ * Processes live operational metrics for the current ongoing school block.
+ * 
+ * @param {Date} now - The system clock date.
+ * @param {Object} currentEvents - Live scraped calendar event configuration.
+ * @returns {Object} Metric payload feeding UI display components.
  */
 export const calculateCurrentPeriod = (now, currentEvents) => {
-  const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
-  const currentSeconds = now.getSeconds();
-  
-  const activePeriod = getTodaySchedule(currentEvents).find(
-    (p) => currentMinutes >= p.start && currentMinutes < p.end
-  );
-
-  if (!activePeriod) {
-    return {
-      currentPeriod: '',
-      currentPeriodStart: '',
-      currentPeriodEnd: '',
-      timeLeft: '',
-      loadingBarFactor: '0%',
-      isSchoolHours: false,
-    };
-  }
-  if (!currentEvents) {
-    return {
-      currentPeriod: 'Loading...',
-      currentPeriodStart: '',
-      currentPeriodEnd: '',
-      timeLeft: '',
-      loadingBarFactor: '0%',
-      isSchoolHours: false,
-    };
-  }
-
-  // Format start time
-  let currentPeriodStart = '';
-  if (activePeriod.start >= 780) {
-    currentPeriodStart = minutesToString(activePeriod.start - 720);
-  } else {
-    currentPeriodStart = minutesToString(activePeriod.start);
-  }
-
-  // Format end time
-  let currentPeriodEnd = '';
-  if (activePeriod.end >= 720) {
-    if (activePeriod.end >= 780) {
-      currentPeriodEnd = minutesToString(activePeriod.end - 720) + "pm";
-    } else {
-      currentPeriodEnd = minutesToString(activePeriod.end) + "pm";
+    // Early exit state: Data still resolving upstream
+    if (!currentEvents) {
+        return {
+            currentPeriod: 'Loading...',
+            currentPeriodStart: '',
+            currentPeriodEnd: '',
+            timeLeft: '',
+            loadingBarFactor: '0%',
+            isSchoolHours: false,
+        };
     }
-  } else {
-    currentPeriodEnd = minutesToString(activePeriod.end) + "am";
-  }
 
-  // Calculate remaining time
-  const minutesRemaining = activePeriod.end - currentMinutes - 1;
-  const secondsRemaining = 60 - currentSeconds;
-  const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
-  const timeLeft = `${minutesRemaining}m ${displaySeconds}s`;
+    const currentMinutes = ((now.getHours()) * 60) + now.getMinutes();
+    const currentSeconds = now.getSeconds();
 
-  // Calculate progress bar percentage
-  const totalDuration = activePeriod.end - activePeriod.start;
-  const timeElapsed = totalDuration - (minutesRemaining + secondsRemaining / 60);
-  const progressPercent = 100 * (timeElapsed / totalDuration);
+    // Query active layout structure and filter down to the timeframe containing the current minute
+    const todayActiveSchedule = getTodaySchedule(currentEvents, now);
+    const activePeriod = todayActiveSchedule.find(
+        (p) => currentMinutes >= p.start && currentMinutes < p.end
+    );
 
-  const loadingBarFactor = progressPercent >= 5 ? `${progressPercent}%` : '5%';
+    // Early exit state: Not school hours, or in between structured periods
+    if (!activePeriod) {
+        return {
+            currentPeriod: '',
+            currentPeriodStart: '',
+            currentPeriodEnd: '',
+            timeLeft: '',
+            loadingBarFactor: '0%',
+            isSchoolHours: false,
+        };
+    }
 
-  return {
-    currentPeriod: activePeriod.name,
-    currentPeriodStart,
-    currentPeriodEnd,
-    timeLeft,
-    loadingBarFactor,
-    isSchoolHours: true,
-  };
-}; 
+    // Convert start boundaries into clean, non-military presentation formats
+    let currentPeriodStart = '';
+    if (activePeriod.start >= 780) { // 1:00 PM or later
+        currentPeriodStart = minutesToString(activePeriod.start - 720);
+    } else {
+        currentPeriodStart = minutesToString(activePeriod.start);
+    }
 
+    // Append standard AM/PM designators directly onto localized period ends
+    let currentPeriodEnd = '';
+    if (activePeriod.end >= 720) { // 12:00 PM or later
+        if (activePeriod.end >= 780) {
+            currentPeriodEnd = `${minutesToString(activePeriod.end - 720)}pm`;
+        } else {
+            currentPeriodEnd = `${minutesToString(activePeriod.end)}pm`;
+        }
+    } else {
+        currentPeriodEnd = `${minutesToString(activePeriod.end)}am`;
+    }
+
+    // Dynamic Countdown Calculations
+    const minutesRemaining = activePeriod.end - currentMinutes - 1;
+    const secondsRemaining = 60 - currentSeconds;
+    const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
+    const timeLeft = `${minutesRemaining}m ${displaySeconds}s`;
+
+    // Visual Loading Bar Component Normalization
+    const totalDuration = activePeriod.end - activePeriod.start;
+    const timeElapsed = totalDuration - (minutesRemaining + (secondsRemaining / 60));
+    const progressPercent = 100 * (timeElapsed / totalDuration);
+    
+    // Caps minimum width to 5% to ensure visibility even at initial period launch
+    const loadingBarFactor = progressPercent >= 5 ? `${progressPercent}%` : '5%';
+
+    return {
+        currentPeriod: activePeriod.name,
+        currentPeriodStart,
+        currentPeriodEnd,
+        timeLeft,
+        loadingBarFactor,
+        isSchoolHours: true,
+    };
+};

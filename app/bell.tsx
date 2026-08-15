@@ -28,18 +28,18 @@ import {
   Text,
   TouchableOpacity,
   View,
-  StyleSheet,
   ScrollView,
   ImageBackground,
   Dimensions,
+  RefreshControl,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 interface SchoolEvent {
   name: string;
@@ -57,7 +57,6 @@ const Bell = () => {
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
 
   const [events, setEvents] = useState<SchoolEvent[]>([]);
   const [eventsError, setEventsError] = useState<string | null>(null);
@@ -126,36 +125,44 @@ const Bell = () => {
     eventsRef.current = events;
   }, [events]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const currentEventsList = eventsRef.current;
-      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
-          currentPeriod: string;
-          currentPeriodStart: string;
-          currentPeriodEnd: string;
-          timeLeft: string;
-          loadingBarFactor: string;
-        };
-        setCurrentPeriod(periodData.currentPeriod);
-        setCurrentPeriodStart(periodData.currentPeriodStart);
-        setCurrentPeriodEnd(periodData.currentPeriodEnd);
-        setTimeLeft(periodData.timeLeft);
-        setLoadingBarFactor(periodData.loadingBarFactor);
-        setCurrentTime(now);
-      } else {
-        setCurrentPeriod('School is Out');
-        setTimeLeft('');
-      }
+  // Ticks once per second to recompute the "current period" / bell-schedule
+  // progress bar. Tied to useFocusEffect so the interval starts when this
+  // screen gains focus and is cleared when it loses focus/unmounts, instead
+  // of ticking forever in the background.
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setInterval(() => {
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const currentEventsList = eventsRef.current;
+        // Guard against calling calculateCurrentPeriod before events have
+        // loaded (currentEventsList would otherwise be empty, making
+        // currentEventsList[0] undefined).
+        if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
+            currentPeriod: string;
+            currentPeriodStart: string;
+            currentPeriodEnd: string;
+            timeLeft: string;
+            loadingBarFactor: string;
+          };
+          setCurrentPeriod(periodData.currentPeriod);
+          setCurrentPeriodStart(periodData.currentPeriodStart);
+          setCurrentPeriodEnd(periodData.currentPeriodEnd);
+          setTimeLeft(periodData.timeLeft);
+          setLoadingBarFactor(periodData.loadingBarFactor);
+        }
 
-      setAppIsReady(true);
-    }, 1000);
+        setAppIsReady(true);
+      }, 1000);
 
-    return () => clearInterval(timer);
-  }, []); // Re-subscribes timer whenever events state updates
-  
+      return () => clearInterval(timer);
+      // Re-created each time this screen refocuses; `eventsRef` (kept in
+      // sync by the effect above) lets the callback read the latest events
+      // without needing `events` in this dependency array.
+    }, [])
+  );
+
 
   if ((appIsReady == false) || !fontsLoaded) {
     return (
@@ -210,7 +217,10 @@ const Bell = () => {
           bounces={false}                
           overScrollMode="never"          
           scrollEventThrottle={16}       
-          decelerationRate="normal"   
+          decelerationRate="normal"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         >
           <ImageBackground
             source={require("@/assets/images/bg-home.png")}
@@ -256,14 +266,5 @@ const Bell = () => {
     </SafeAreaProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5', justifyContent: 'center', alignItems: 'center' },
-  card: { backgroundColor: '#fff', padding: 30, borderRadius: 20, width: '85%', alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10 },
-  clock: { fontSize: 18, color: '#666', marginBottom: 20, fontWeight: '600' },
-  label: { fontSize: 14, color: '#aaa', textTransform: 'uppercase', letterSpacing: 1, marginTop: 15 },
-  periodText: { fontSize: 32, fontWeight: 'bold', color: '#1a1a1a', textAlign: 'center', marginVertical: 5 },
-  timerText: { fontSize: 40, fontWeight: 'bold', color: '#ff4757', marginTop: 5 },
-});
 
 export default Bell;
