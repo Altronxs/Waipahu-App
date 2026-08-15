@@ -21,7 +21,7 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -36,19 +36,33 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
+import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
+
 const { width, height } = Dimensions.get("window");
+
+interface SchoolEvent {
+  name: string;
+  month: string; // e.g., "August" or "08"
+  day: string;   // e.g., "17"
+  time: string;  // e.g., "All Day" or a specific time string
+}
 
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [currentPeriod, setCurrentPeriod] = useState<String>('');
-  const [currentPeriodStart, setCurrentPeriodStart] = useState<String>('')
-  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<String>('')
+  const [currentPeriod, setCurrentPeriod] = useState<string>('');
+  const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
+  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string>('')
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  const [events, setEvents] = useState<SchoolEvent[]>([]);
+  const [eventsError, setEventsError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const eventsRef = useRef(events);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -74,15 +88,57 @@ const Bell = () => {
     SourceSerifPro_600SemiBold,
   });
 
+  // Re-fetch events every time this screen comes into focus, not just on mount.
+  useFocusEffect(
+    useCallback(() => {
+      const controller = new AbortController();
+
+      loadWebsiteData({
+        signal: controller.signal,
+        setEvents,
+        setEventsError,
+        setAppIsReady,
+      });
+      
+      return () => {
+        controller.abort();
+      };
+    }, [])
+  );
+
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    const controller = new AbortController();
+
+    await loadWebsiteData({
+      signal: controller.signal,
+      setEvents,
+      setEventsError,
+      setAppIsReady,
+    });
+    
+    setRefreshing(false);
+  };
+
+  // 1. Always keep ref updated
+  useEffect(() => {
+    eventsRef.current = events;
+  }, [events]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
       const dayOfWeek = now.getDay();
-
-      // Monday (1) through Friday (5)
+      const currentEventsList = eventsRef.current;
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        const periodData = calculateCurrentPeriod(now);
-        
+        const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
+          currentPeriod: string;
+          currentPeriodStart: string;
+          currentPeriodEnd: string;
+          timeLeft: string;
+          loadingBarFactor: string;
+        };
         setCurrentPeriod(periodData.currentPeriod);
         setCurrentPeriodStart(periodData.currentPeriodStart);
         setCurrentPeriodEnd(periodData.currentPeriodEnd);
@@ -98,9 +154,7 @@ const Bell = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
-
-
+  }, []); // Re-subscribes timer whenever events state updates
   
 
   if ((appIsReady == false) || !fontsLoaded) {

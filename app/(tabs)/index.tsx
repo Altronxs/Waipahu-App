@@ -270,14 +270,14 @@ export default function Index() {
                 <View className="h-[30px] w-full"></View>
               )}
               
-              <View className="flex flex-row justify-center items-center gap-[1.5rem] w-full">
+              <View className="flex flex-row justify-center items-center gap-[1rem] w-full">
                 <Image
                   source={require("@/assets/images/marauder-script.png")} 
                   className="self-center object-contain" 
-                  style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
+                  style={{ height: 40, width: 'auto', aspectRatio: 198 / 50 }} 
                 >
                 </Image>
-                <Text className="z-20 font-barlow-italic text-3xl text-whs-blue text-center relative top-[1px] ">
+                <Text className="z-20 font-barlow-italic text-2xl text-whs-blue text-center relative top-[1px] ">
                   WELCOME!
                 </Text>
               </View>

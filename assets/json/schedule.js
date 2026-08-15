@@ -84,7 +84,7 @@ const minutesToString = (minutes) => {
  * @returns {Object} Period status data
  */
 export const calculateCurrentPeriod = (now, currentEvents) => {
-  const currentMinutes = (now.getHours()-6) * 60 + now.getMinutes();
+  const currentMinutes = (now.getHours()-6) * 60 + (now.getMinutes() + 1);
   const currentSeconds = now.getSeconds();
   
   const activePeriod = getTodaySchedule(currentEvents).find(
