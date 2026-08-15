@@ -35,21 +35,11 @@ const timeToMinutes = (timeString) => {
   return hours * 60 + minutes;
 };
 
-const getTodaySchedule = (currentEvents) => {
-  // Only look up a schedule on weekdays (Monday - Friday)
-  console.log(currentEvents)
+const buildFinalSchedule = (scheduleID) => {
   let SCHOOL_SCHEDULE = [];
-  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-    const calendarEntry = findCalendarEntryForDate(today)
-    // scheduleID is an array indexed by weekday (Mon = index 0 ... Fri = index 4)
-    const scheduleID = calendarEntry.scheduleID[dayOfWeek - 1]
-
-    // scheduleID Values of 0-7 correspond to valid schedule entries in school_schedule.json
-    // scheduleID values of 8+ could be added to add special schedules (e.g. for holidays, testing days, etc.) in the future
-    if (scheduleID < 8) {
-      todaySchedule = scheduleJSON.schedule[scheduleID]
-    }
-
+  if (scheduleID < 8) {
+    todaySchedule = scheduleJSON.schedule[scheduleID]
+    
     // Build the final schedule as a flat array of { name, start, end } periods,
     // with start/end converted to minutes-since-midnight for easy comparisons
     for (let i = 0; i < todaySchedule.timeSchedule.length; i++) {
@@ -60,6 +50,40 @@ const getTodaySchedule = (currentEvents) => {
         end: timeToMinutes(period.end)
       }
     }
+  }
+  
+  return SCHOOL_SCHEDULE;
+}
+
+const getTodaySchedule = (currentEvents) => {
+  let SCHOOL_SCHEDULE = [];
+  // Only look up a schedule on weekdays (Monday - Friday)
+  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+    const calendarEntry = findCalendarEntryForDate(today)
+    // scheduleID is an array indexed by weekday (Mon = index 0 ... Fri = index 4)
+    let scheduleID = calendarEntry.scheduleID[dayOfWeek - 1]
+    
+    if (Number(currentEvents.day) == (today.getDate())) {
+      
+      if ((currentEvents.name).toLowerCase().includes('friday') && (currentEvents.name).toLowerCase().includes('schedule') && scheduleID != 4) {
+        SCHOOL_SCHEDULE = buildFinalSchedule(4)
+      } else if ((currentEvents.name).toLowerCase().includes("assembly 'b'") && scheduleID != 6) {
+        SCHOOL_SCHEDULE = buildFinalSchedule(6)
+      } else if ((currentEvents.name).toLowerCase().includes("schedule c") && scheduleID != 7) {
+        SCHOOL_SCHEDULE = buildFinalSchedule(7)
+      } else if (((currentEvents.name).toLowerCase().includes("holiday") || (currentEvents.name).toLowerCase().includes("no students")) && scheduleID != 8) {
+        //scheduleID = 8;
+        console.log('calendar incorrect so following')
+      } else {
+        //console.log('following calendar')
+        SCHOOL_SCHEDULE = buildFinalSchedule(scheduleID)
+        
+      }
+    } else {
+      //console.log('following calendar')
+      SCHOOL_SCHEDULE = buildFinalSchedule(scheduleID)
+    }
+    
     return SCHOOL_SCHEDULE;
   }
 }
@@ -84,7 +108,7 @@ const minutesToString = (minutes) => {
  * @returns {Object} Period status data
  */
 export const calculateCurrentPeriod = (now, currentEvents) => {
-  const currentMinutes = (now.getHours()-6) * 60 + (now.getMinutes() + 1);
+  const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
   const currentSeconds = now.getSeconds();
   
   const activePeriod = getTodaySchedule(currentEvents).find(
@@ -93,7 +117,7 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
 
   if (!activePeriod) {
     return {
-      currentPeriod: 'School is Out',
+      currentPeriod: '',
       currentPeriodStart: '',
       currentPeriodEnd: '',
       timeLeft: '',

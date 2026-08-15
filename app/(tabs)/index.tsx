@@ -178,6 +178,7 @@ export default function Index() {
       const dayOfWeek = now.getDay();
       const currentEventsList = eventsRef.current;
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        
         const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
           currentPeriod: string;
           currentPeriodStart: string;
@@ -191,9 +192,6 @@ export default function Index() {
         setTimeLeft(periodData.timeLeft);
         setLoadingBarFactor(periodData.loadingBarFactor);
         setCurrentTime(now);
-      } else {
-        setCurrentPeriod('School is Out');
-        setTimeLeft('');
       }
 
       setAppIsReady(true);

@@ -14,7 +14,7 @@ export const parseEventsXML = (xmlString) => {
   const items = doc.getElementsByTagName('item');
   const extractedEvents = [];
 
-  const itemCount = Math.min(3, items.length);
+  const itemCount = Math.min(5, items.length);
   for (let i = 0; i < itemCount; i++) {
     const item = items[i];
 
