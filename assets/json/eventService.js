@@ -64,7 +64,7 @@ export const parseEventsXML = (xmlString) => {
  * @param {AbortSignal} [externalSignal] 
  * @returns {Promise<Array>}
  */
-export const fetchSchoolEvents = async (externalSignal) => {
+const fetchSchoolEvents = async (externalSignal) => {
   const timeoutController = new AbortController();
   const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
 
@@ -86,5 +86,40 @@ export const fetchSchoolEvents = async (externalSignal) => {
     return parseEventsXML(htmlString);
   } finally {
     clearTimeout(timeoutId);
+  }
+};
+
+/**
+* Executes event fetching and safely handles component state updates.
+ * * @param {Object} params
+ * @param {AbortSignal} [params.signal] - Abort controller signal for cancellation.
+ * @param {Function} params.setEvents - State setter for events list.
+ * @param {Function} params.setEventsError - State setter for error messages.
+ * @param {Function} params.setAppIsReady - State setter indicating readiness.
+ */
+export const loadWebsiteData = async ({
+  signal,
+  setEvents,
+  setEventsError,
+  setAppIsReady,
+}) => {
+  try {
+    const parsedEvents = await fetchSchoolEvents(signal);
+
+    // Don't overwrite state if request was cancelled or returned empty
+    if (!parsedEvents || parsedEvents.length === 0) return;
+
+    setEvents(parsedEvents);
+    setEventsError(null);
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      return; // Navigation away or timeout — fail silently
+    }
+    console.error("Network request failed: ", error);
+    setEventsError("Unable to load events right now.");
+  } finally {
+    if (setAppIsReady) {
+      setAppIsReady(true);
+    }
   }
 };

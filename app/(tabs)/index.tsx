@@ -21,8 +21,8 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useRouter } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
     ActivityIndicator,
     Image,
@@ -36,8 +36,15 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"; 
 import "../globals.css";
-import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
+import { loadWebsiteData } from '@/assets/json/eventService';
+import { calculateCurrentPeriod } from '@/assets/json/schedule'
 
+interface SchoolEvent {
+  name: string;
+  month: string; // e.g., "August" or "08"
+  day: string;   // e.g., "17"
+  time: string;  // e.g., "All Day" or a specific time string
+}
 // Shared helper so openURL rejections (app not installed, malformed URL, etc.)
 // don't surface as unhandled promise rejections.
 const openLink = (url: string) => {
@@ -55,7 +62,12 @@ export default function Index() {
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
+  const [events, setEvents] = useState<SchoolEvent[]>([]);
+  const [eventsError, setEventsError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const eventsRef = useRef(events);
 
   type IconItem = {
     label: string;
@@ -122,80 +134,73 @@ export default function Index() {
     SourceSerifPro_600SemiBold,
   });
 
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        calculateCurrentPeriod(now);
-      } else {
-        // Weekend: explicitly clear so we never keep showing a stale
-        // period/timer from before the week rolled over while the
-        // screen was left open.
-        setCurrentPeriod('');
-        setCurrentPeriodStart('');
-        setCurrentPeriodEnd('');
-        setTimeLeft('');
-      }
-    };
+  // Re-fetch events every time this screen comes into focus, not just on mount.
+  useFocusEffect(
+    useCallback(() => {
+      const controller = new AbortController();
 
-    // Run once immediately so the screen doesn't sit on the loading
-    // state for a full extra second waiting on the first interval tick.
-    tick();
-    setAppIsReady(true);
-
-    const timer = setInterval(tick, 1000);
-    return () => clearInterval(timer);
-  }, []);
+      loadWebsiteData({
+        signal: controller.signal,
+        setEvents,
+        setEventsError,
+        setAppIsReady,
+      });
+      
+      return () => {
+        controller.abort();
+      };
+    }, [])
+  );
 
 
-  const minutesToString = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const minute = Math.round(((minutes / 60) - hours) * 60);
-    const paddedMinute = minute < 10 ? "0" + minute : minute;
-    return hours + ":" + paddedMinute;
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    const controller = new AbortController();
+
+    await loadWebsiteData({
+      signal: controller.signal,
+      setEvents,
+      setEventsError,
+      setAppIsReady,
+    });
+    
+    setRefreshing(false);
   };
 
-  const calculateCurrentPeriod = (now: Date): void => {
+  // 1. Always keep ref updated
+  useEffect(() => {
+    eventsRef.current = events;
+  }, [events]);
 
-    const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
-    const currentSeconds = now.getSeconds();
-    
-    const activePeriod = SCHOOL_SCHEDULE.find(
-      (p) => currentMinutes >= p.start && currentMinutes < p.end
-    );
-    if (activePeriod) {
-      setCurrentPeriod(activePeriod.name);
-      if (activePeriod.start >= 780) {
-        setCurrentPeriodStart(minutesToString(activePeriod.start - 720));
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      const dayOfWeek = now.getDay();
+      const currentEventsList = eventsRef.current;
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
+          currentPeriod: string;
+          currentPeriodStart: string;
+          currentPeriodEnd: string;
+          timeLeft: string;
+          loadingBarFactor: string;
+        };
+        setCurrentPeriod(periodData.currentPeriod);
+        setCurrentPeriodStart(periodData.currentPeriodStart);
+        setCurrentPeriodEnd(periodData.currentPeriodEnd);
+        setTimeLeft(periodData.timeLeft);
+        setLoadingBarFactor(periodData.loadingBarFactor);
+        setCurrentTime(now);
       } else {
-        setCurrentPeriodStart(minutesToString(activePeriod.start));
+        setCurrentPeriod('School is Out');
+        setTimeLeft('');
       }
-      if (activePeriod.end >= 720) {
-        if (activePeriod.end >= 780) {
-          setCurrentPeriodEnd(minutesToString(activePeriod.end - 720) + "pm")
-        } else {
-          setCurrentPeriodEnd(minutesToString(activePeriod.end) + "pm")
-        }
-      } else {
-        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "am")
-      }
-      const minutesRemaining = activePeriod.end - currentMinutes - 1;
-      const secondsRemaining = 60 - currentSeconds;
 
-      const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
-      setTimeLeft(`${minutesRemaining}m ${displaySeconds}s`);
+      setAppIsReady(true);
+    }, 1000);
 
-      if ((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) >= 5) {
-        setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) + "%")
-      } else {
-        setLoadingBarFactor('5%')
-      }
-    } else {
-      setCurrentPeriod('');
-      setTimeLeft('');
-    }
-  };  
+    return () => clearInterval(timer);
+  }, []); // Re-subscribes timer whenever events state updates
 
   if ((appIsReady == false) || !fontsLoaded) {
     return (

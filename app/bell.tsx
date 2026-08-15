@@ -36,8 +36,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
- 
-import { SCHOOL_SCHEDULE } from '@/assets/json/schedule';
+import { calculateCurrentPeriod } from '@/assets/json/schedule'
 const { width, height } = Dimensions.get("window");
 
 const Bell = () => {
@@ -76,69 +75,33 @@ const Bell = () => {
   });
 
   useEffect(() => {
-    // Update timer every single second
     const timer = setInterval(() => {
       const now = new Date();
       const dayOfWeek = now.getDay();
+
+      // Monday (1) through Friday (5)
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        calculateCurrentPeriod(now);
+        const periodData = calculateCurrentPeriod(now);
+        
+        setCurrentPeriod(periodData.currentPeriod);
+        setCurrentPeriodStart(periodData.currentPeriodStart);
+        setCurrentPeriodEnd(periodData.currentPeriodEnd);
+        setTimeLeft(periodData.timeLeft);
+        setLoadingBarFactor(periodData.loadingBarFactor);
         setCurrentTime(now);
+      } else {
+        setCurrentPeriod('School is Out');
+        setTimeLeft('');
       }
-      setAppIsReady(true)
+
+      setAppIsReady(true);
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
 
 
-  const minutesToString = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const minute = Math.round(((minutes / 60) - hours) * 60);
-    const paddedMinute = minute < 10 ? "0" + minute : minute;
-    return hours + ":" + paddedMinute;
-  };
-
-  const calculateCurrentPeriod = (now: Date): void => {
   
-    const currentMinutes = (now.getHours()) * 60 + (now.getMinutes());
-    const currentSeconds = now.getSeconds();
-    
-    const activePeriod = SCHOOL_SCHEDULE.find(
-      (p) => currentMinutes >= p.start && currentMinutes < p.end
-    );
-    if (activePeriod) {
-      setCurrentPeriod(activePeriod.name);
-      if (activePeriod.start >= 780) {
-        setCurrentPeriodStart(minutesToString(activePeriod.start - 720));
-      } else {
-        setCurrentPeriodStart(minutesToString(activePeriod.start));
-      }
-      if (activePeriod.end >= 720) {
-        if (activePeriod.end >= 780) {
-          setCurrentPeriodEnd(minutesToString(activePeriod.end - 720) + "pm")
-        } else {
-          setCurrentPeriodEnd(minutesToString(activePeriod.end) + "pm")
-        }
-      } else {
-        setCurrentPeriodEnd(minutesToString(activePeriod.end) + "am")
-      }
-      const minutesRemaining = activePeriod.end - currentMinutes - 1;
-      const secondsRemaining = 60 - currentSeconds;
-
-      const displaySeconds = secondsRemaining < 10 ? `0${secondsRemaining}` : secondsRemaining;
-      setTimeLeft(`${minutesRemaining}m ${displaySeconds}s`);
-
-      if ((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) >= 5) {
-        setLoadingBarFactor((100 * (((activePeriod.end - activePeriod.start) - (minutesRemaining + (secondsRemaining/60))) / (activePeriod.end - activePeriod.start))) + "%")
-      } else {
-        setLoadingBarFactor('5%')
-      }
-    } else {
-      setCurrentPeriod('School is Out');
-      setTimeLeft('');
-    }
-  };  
-
 
   if ((appIsReady == false) || !fontsLoaded) {
     return (

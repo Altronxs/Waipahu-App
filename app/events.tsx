@@ -21,7 +21,7 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -34,7 +34,7 @@ import {
   RefreshControl,
   useWindowDimensions,
 } from "react-native";
-import { fetchSchoolEvents } from '../assets/json/eventService';
+import { loadWebsiteData } from '@/assets/json/eventService';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 interface SchoolEvent {
@@ -43,7 +43,11 @@ interface SchoolEvent {
   day: string;   // e.g., "17"
   time: string;  // e.g., "All Day" or a specific time string
 }
-
+const openLink = (url: string) => {
+  Linking.openURL(url).catch((error) => {
+    console.error("Failed to open URL:", error);
+  });
+};
 const Events = () => {
   const { height } = useWindowDimensions();
   const [events, setEvents] = useState<SchoolEvent[]>([]);
@@ -56,7 +60,13 @@ const Events = () => {
   useFocusEffect(
     useCallback(() => {
       const controller = new AbortController();
-      handleFetchWebsiteData(controller.signal);
+
+      loadWebsiteData({
+        signal: controller.signal,
+        setEvents,
+        setEventsError,
+        setAppIsReady,
+      });
 
       return () => {
         controller.abort();
@@ -67,34 +77,15 @@ const Events = () => {
   const handleRefresh = async () => {
     setRefreshing(true);
     const controller = new AbortController();
-    await handleFetchWebsiteData(controller.signal);
-    setRefreshing(false);
-  };
 
-  const openLink = (url: string) => {
-    Linking.openURL(url).catch((error) => {
-      console.error("Failed to open URL:", error);
+    await loadWebsiteData({
+      signal: controller.signal,
+      setEvents,
+      setEventsError,
+      setAppIsReady,
     });
-  };
 
-  const handleFetchWebsiteData = async (externalSignal?: AbortSignal) => {
-    try {
-      const parsedEvents = await fetchSchoolEvents(externalSignal);
-      
-      // If signal was aborted mid-flight or returned empty, exit cleanly
-      if (!parsedEvents) return;
-
-      setEvents(parsedEvents);
-      setEventsError(null);
-    } catch (error) {
-      if (error?.name === "AbortError") {
-        return; // Navigation away or timeout — fail silently
-      }
-      console.error("Network request failed: ", error);
-      setEventsError("Unable to load events right now.");
-    } finally {
-      setAppIsReady(true);
-    }
+    setRefreshing(false);
   };
 
 
