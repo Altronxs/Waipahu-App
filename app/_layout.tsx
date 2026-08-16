@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import './globals.css';
 
 const HIDDEN_ROUTE_TITLES: Record<string, string> = {
+  academy: "Academy",
   cafe: "Cafe",
   staff: "Staff",
   bell: "Bell",
