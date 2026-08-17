@@ -204,7 +204,7 @@ const Events = () => {
             )}
             <View className="w-[90%] h-3 border-b-2 border-whs-blue"></View>
             <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
-              ACTIVITIES
+              MAJOR EVENTS & ACTIVITIES
             </Text>
             <ImageBackground
               source={require("@/assets/images/IMG_0059.jpeg")}

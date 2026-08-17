@@ -20,8 +20,8 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useRef } from "react";
+import { useRouter } from "expo-router";
+import React from "react";
 import {
     ActivityIndicator,
     Dimensions,
@@ -33,9 +33,8 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import type { WebView as WebViewType } from "react-native-webview";
- 
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -54,7 +53,65 @@ const officialAccounts: SocialItem[] = [
   {
     label: "WHS Student Government",
     image: require("@/assets/images/social/whs-gov.jpg"),
-      url: "https://www.instagram.com/waipahuhigh.stugov/",
+      url: "https://www.instagram.com/waipahuhs.stugov/",
+  },
+];
+
+const officialAthleticAccounts: SocialItem[] = [
+  {
+    label: "Official Athletics Account",
+    image: require("@/assets/images/social/sports-1.jpg"),
+      url: "https://www.instagram.com/waipahumarauderathletics/",
+  },
+  {
+    label: "Football",
+    image: require("@/assets/images/social/sports-2.jpg"),
+      url: "https://www.instagram.com/waipahufb/",
+  },
+  {
+    label: "Boys Basketball",
+    image: require("@/assets/images/social/sports-3.jpg"),
+      url: "https://www.instagram.com/_whsbasketball/",
+  },
+  {
+    label: "Girls Basketball",
+    image: require("@/assets/images/social/sports-31.jpg"),
+      url: "https://www.instagram.com/waipahugirlsbasketball/",
+  },
+  {
+    label: "Boys Volleyball",
+    image: require("@/assets/images/social/sports-5.jpg"),
+      url: "https://www.instagram.com/waipahuvb/",
+  },
+  {
+    label: "Girls Volleyball",
+    image: require("@/assets/images/social/sports-5.jpg"),
+      url: "https://www.instagram.com/waipahugvb/",
+  },
+  {
+    label: "Cheerleading",
+    image: require("@/assets/images/social/sports-6.jpg"),
+      url: "https://www.instagram.com/waipahugvb/",
+  },
+  {
+    label: "Golf",
+    image: require("@/assets/images/social/sports-7.jpg"),
+      url: "https://www.instagram.com/waipahugolf/",
+  },
+  {
+    label: "Judo",
+    image: require("@/assets/images/social/sports-8.jpg"),
+      url: "https://www.instagram.com/waipahujudo/",
+  },
+  {
+    label: "Softball",
+    image: require("@/assets/images/social/sports-9.jpg"),
+      url: "https://www.instagram.com/marauder_softball/",
+  },
+  {
+    label: "Tennis",
+    image: require("@/assets/images/social/sports-10'.jpg"),
+      url: "https://www.instagram.com/waipahutennis/",
   },
 ];
 
@@ -131,21 +188,13 @@ const classLegacyAccounts: SocialItem[] = [
 const socialSections: { title: string; items: SocialItem[] }[] = [
   { title: "Official Accounts", items: officialAccounts },
   { title: "Class Legacies", items: classLegacyAccounts },
+  { title: "Official Sports Accounts", items: officialAthleticAccounts},
 ];
 
 const Legacy = () => {
-  const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (webViewRef.current) {
-        webViewRef.current.reload();
-      }
-    }, []),
-  );
-
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
     NotoSerif_400Regular,

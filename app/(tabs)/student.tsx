@@ -45,11 +45,28 @@ type IconItem = {
   onPress: () => void;
 };
 
+const openLink = (url: string) => {
+  Linking.openURL(url).catch((error) => {
+    console.error("Failed to open URL:", error);
+  });
+};
+
 const Students = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
 
-  const studentSections: { title: string; items: IconItem[] }[] = [
+  const sections: { title: string; items: IconItem[] }[] = [
+    {
+      title: "Campus Life",
+      items: [
+        { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.push("/map") },
+        { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.push("/cafe") },
+        { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/athletics") },
+        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
+        { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.push("/events") },
+        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
+      ],
+    },
     {
       title: "School Info",
       items: [
@@ -68,14 +85,7 @@ const Students = () => {
           onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp"),
         },
       ],
-    },
-    {
-      title: "Campus Life",
-      items: [
-        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
-        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
-      ],
-    },
+    }
   ];
 
   useFocusEffect(
@@ -171,25 +181,24 @@ const Students = () => {
               life.
             </Text>
 
-            {studentSections.map((section) => (
-              <View key={section.title} className="w-full mt-2 px-4">
+            {/* Main icon grid, grouped by section (School Info, Campus Life,
+                People & Records, Links). Each item is a fixed-width (20%)
+                tile so 5 fit per row before wrapping. */}
+            {sections.map((section) => (
+              <View key={section.title} className="w-full mt-4 px-4">
                 <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
                   {section.title}
                 </Text>
-                <View className="flex-row flex-wrap justify-center">
+                <View className="flex-row flex-wrap justify-center gap-4">
                   {section.items.map((item) => (
                     <TouchableOpacity
                       key={item.label}
-                      className="w-1/4 h-min  justify-center items-center"
+                      className="w-[20%] h-min justify-center items-center"
                       onPress={item.onPress}
+                      accessibilityRole="button"
+                      accessibilityLabel={item.label}
                     >
-                      <Image
-                        source={item.image}
-                        style={{
-                          tintColor: "#17273d",
-                        }}
-                        className="size-14 self-center"
-                      />
+                      <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[3.75rem] self-center" />
                       <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                         {item.label}
                       </Text>

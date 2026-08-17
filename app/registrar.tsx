@@ -37,7 +37,7 @@ import { WebView } from "react-native-webview";
 const Registrar = () => {
   const router = useRouter();
   const webViewRef = useRef<WebViewType>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   useFocusEffect(
     React.useCallback(() => {
       if (webViewRef.current) {
@@ -90,6 +90,20 @@ const Registrar = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
+      {isLoading == true && (
+        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
+          <View className="flex-1 justify-center items-center bg-[#17273d]">
+            <Image
+              source={require("@/assets/images/whs-logo.png")}
+              className="size-32 mb-6 self-center"
+            />
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
+              Loading...
+            </Text>
+          </View>
+        </View>
+      )}
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
@@ -157,13 +171,19 @@ const Registrar = () => {
                     }
                 \`;
                 document.head.appendChild(style);
+                window.ReactNativeWebView.postMessage("styles_injected");
                 }, 250);
                 true;
             `}
             javaScriptEnabled={true}
             domStorageEnabled={true}
             onMessage={(event) => {
-              console.log("WebView message:", event.nativeEvent.data);
+              if (event.nativeEvent.data === "styles_injected") {
+                console.log("Styles injected successfully.");
+                setIsLoading(false);
+              } else {
+                console.log("WebView message:", event.nativeEvent.data);
+              }
             }}
             onNavigationStateChange={(navState) => {
               setCanGoBack(navState.canGoBack);
