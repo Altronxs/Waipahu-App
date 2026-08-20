@@ -91,17 +91,12 @@ export default function Index() {
   // Static nav/menu configuration grouped into sections for the home grid.
   const sections: { title: string; items: IconItem[] }[] = [
     {
-      title: "School Info",
+      title: "",
       items: [
         { label: "Mission & Vision", image: require("@/assets/images/school.png"), onPress: () => router.push("/vision") },
         { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.push("/calendar") },
         { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.push("/bell") },
         { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.push("/news") },
-      ],
-    },
-    {
-      title: "Campus Life",
-      items: [
         { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.push("/map") },
         { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.push("/cafe") },
         { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/athletics") },
@@ -109,25 +104,15 @@ export default function Index() {
         { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.push("/events") },
         { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.push("/academy") },
         { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
-      ],
-    },
-    {
-      title: "People & Records",
-      items: [
         { label: "Student", image: require("@/assets/images/user.png"), onPress: () => router.push("/student") },
         { label: "Staff", image: require("@/assets/images/staff.png"), onPress: () => router.push("/staff") },
         { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
         { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.push("/contacts") },
-      ],
-    },
-    {
-      title: "Links",
-      items: [
         { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://hawaii.infinitecampus.org/campus/hawaii.jsp") },
         { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://www.waipahuhigh.org/") },
         { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/author") },
       ],
-    },
+    }
   ];
 
 
@@ -285,12 +270,30 @@ export default function Index() {
               style={{ height: height * 1.5}}
             >
               
+              
+              
+              {/* Welcome banner: script logo + "WELCOME!" text */}
+              <View className="justify-center items-center gap-[0px] pt-10 w-[90%]">
+                <View className="flex flex-col">
+                  <Text className="z-20 font-barlow-italic text-6xl text-whs-blue text-center self-center">
+                    WELCOME!
+                  </Text>
+                  <Image
+                    source={require("@/assets/images/marauder-script.png")} 
+                    className="self-end object-contain " 
+                    style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
+                  >
+                  </Image>
+                </View>
+              </View>
+            
+
               {/* Bell-schedule widget: current period name, time range, and
                   a progress bar showing how far through the period we are.
                   Only renders once currentPeriod has been computed
                   (i.e. on a weekday, after the first interval tick). */}
               {currentPeriod !== '' ? (
-                <View className="p-[20] w-[100%] "> 
+                <View className="pt- px-5 w-[90%] "> 
                   <View className="flex flex-column">
                     <Text className="font-bold font-barlow text-whs-blue text-sm/none">{currentPeriod}</Text>
                     {timeLeft ? (
@@ -316,28 +319,16 @@ export default function Index() {
               ) : (
                 // Placeholder spacer on weekends / before period data is ready,
                 // so layout doesn't jump when the widget above appears.
-                <View className="h-[30px] w-full"></View>
+                <View className="h-[20px] w-full"></View>
               )}
-              
-              {/* Welcome banner: script logo + "WELCOME!" text */}
-              <View className="flex flex-row justify-center items-center gap-[1rem] w-full">
-                <Image
-                  source={require("@/assets/images/marauder-script.png")} 
-                  className="self-center object-contain" 
-                  style={{ height: 40, width: 'auto', aspectRatio: 198 / 50 }} 
-                >
-                </Image>
-                <Text className="z-20 font-barlow-italic text-2xl text-whs-blue text-center relative top-[1px] ">
-                  WELCOME!
-                </Text>
-              </View>
+
 
               {/* Main icon grid, grouped by section (School Info, Campus Life,
                   People & Records, Links). Each item is a fixed-width (20%)
                   tile so 5 fit per row before wrapping. */}
               {sections.map((section) => (
-                <View key={section.title} className="w-full mt-4 px-4">
-                  <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
+                <View key={section.title} className="w-[90%] px-4">
+                  <Text className="font-barlow-semibold text-center">
                     {section.title}
                   </Text>
                   <View className="flex-row flex-wrap justify-center gap-4">

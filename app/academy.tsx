@@ -123,14 +123,14 @@ const Academy = () => {
           decelerationRate="normal"
         >
           <View 
-            className="flex flex-row justify-center items-center pt-3 pb-20 flex-wrap w-full gap-2"
+            className="flex flex-row justify-center items-center pt-3 pb-20 flex-wrap w-full gap-2 bg-whs-blue"
             //style={{ height: height * 10}}  
           >
             
-            <Text className="z-20 font-barlow-semibold text-3xl/none text-whs-blue w-full text-center !pt-5">
+            <Text className="z-20 font-barlow-semibold text-3xl/none text-white w-full text-center !pt-5">
               ACADEMIES OF
             </Text>
-            <Text className="z-20 font-barlow-semibold text-3xl/none text-whs-blue w-[90%] text-center pb-5 border-b-2 border-black/10">
+            <Text className="z-20 font-barlow-semibold text-3xl/none text-white w-[90%] text-center pb-5 border-b-2 border-white/50">
               WAIPAHU HIGH SCHOOL
             </Text>
             
@@ -170,13 +170,13 @@ const Academy = () => {
             >
               <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555345&type=d")}></TouchableOpacity>
             </ImageBackground>
-            <Text className="z-20 font-source-serif-bold text-whs-blue text-base ml-9 mr-9 pt-5 self-start text-start">
+            <Text className="z-20 font-source-serif-bold text-white text-base ml-9 mr-9 pt-5 self-start text-start">
               What is an Academy?
             </Text>
-            <Text className="z-20 font-source-serif-regular text-whs-blue text-sm pl-9 pr-9 text-center">
+            <Text className="w-[90%] z-20 font-source-serif-regular text-white text-sm pl-9 pr-9 text-center pb-5 border-b-2 border-white/50">
               An academy is a thematic course of study that each student can pick as a freshman. Each academy offers courses specific to their theme, allowing students to have a more meaningful education that is fixed on their interests.
             </Text>
-            <View className="w-[90%] justify-center pt-10 mt-20 border-t-2 border-black/10">
+            <View className="w-[90%] justify-center pt-10 pb-10 mt-10 bg-white">
               <Image
                 className="h-[100px] self-center overflow-hidden aspect-square object-center"
                 source={require('@/assets/images/ql-link-logo1.png')}
@@ -215,7 +215,7 @@ const Academy = () => {
                 Band, Choir, Ceramics, Creative, Dance, AP Drawing & Painting, Photography, Yearbook
               </Text>
             </View>
-            <View className="w-[90%] justify-center pt-10 mt-10 border-t-2 border-black/10">
+            <View className="w-[90%] justify-center pt-10 pb-10 bg-white">
               <Image
                 className="h-[100px] self-center overflow-hidden aspect-square object-center"
                 source={require('@/assets/images/ql-link-logo2.png')}
@@ -248,7 +248,7 @@ const Academy = () => {
                 Diagnostic Services & Medical Biotechnology{'\n'}Human Performance & Kinesiology{'\n'}Nursing Services
               </Text>
             </View>
-            <View className="w-[90%] justify-center pt-10 mt-10 border-t-2 border-black/10">
+            <View className="w-[90%] justify-center pt-10 pb-10 bg-white">
               <Image
                 className="h-[100px] self-center overflow-hidden aspect-square object-center"
                 source={require('@/assets/images/ql-link-logo3.png')}
@@ -290,7 +290,7 @@ const Academy = () => {
                 Architectural Design{'\n'}Automation & Robotics Technology{'\n'}Automotive Maintenance & Light Repair{'\n'}Cybersecurity{'\n'}Engineering{'\n'}Residential & Commercial Construction{'\n'}Welding
               </Text>
             </View>
-            <View className="w-[90%] justify-center pt-10 mt-10 border-t-2 border-black/10">
+            <View className="w-[90%] justify-center pt-10 pb-10 bg-white">
               <Image
                 className="h-[100px] self-center overflow-hidden aspect-square object-center"
                 source={require('@/assets/images/ql-link-logo4.png')}
@@ -326,7 +326,7 @@ const Academy = () => {
                 Food Systems{'\n'}Natural Resources Business{'\n'}Natural Resources Management
               </Text>
             </View>
-            <View className="w-[90%] justify-center pt-10 mt-10 border-t-2 border-black/10">
+            <View className="w-[90%] justify-center pt-10 pb-10 bg-white">
               <Image
                 className="h-[100px] self-center overflow-hidden aspect-square object-center"
                 source={require('@/assets/images/ql-link-logo5.png')}
@@ -350,7 +350,7 @@ const Academy = () => {
                 Ohana of Excellence Academy, in partnership with all stakeholders, provides innovative hands-on learning opportunities for all students to cultivate independence and self-advocacy. 
               </Text>
             </View>
-            <View className="w-[90%] justify-center pt-10 mt-10 border-t-2 border-black/10">
+            <View className="w-[90%] justify-center pt-10 pb-10 bg-white">
               <Image
                 className="h-[100px] self-center overflow-hidden aspect-square object-center"
                 source={require('@/assets/images/ql-link-logo6.png')}
