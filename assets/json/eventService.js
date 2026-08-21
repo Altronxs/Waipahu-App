@@ -102,7 +102,7 @@ export const fetchSchoolEvents = async (externalSignal) => {
             'https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0', 
             { signal: timeoutController.signal }
         );
-
+        
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
         }

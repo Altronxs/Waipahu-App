@@ -71,7 +71,7 @@ const buildFinalSchedule = (scheduleID) => {
     const finalTimeline = [];
     
     // IDs 8 and higher signify holidays or exceptions without structured bell schedules
-    if (scheduleID < 8) {
+    if (scheduleID < 8 || scheduleID > 8) {
         const structuralSchedule = scheduleJSON.schedule[scheduleID];
         
         // Loop over the raw JSON blocks and format their bounds into absolute minutes
@@ -107,7 +107,7 @@ const getTodaySchedule = (currentEvents, targetDate) => {
 
     // Map day to the zero-indexed schedule ID array (Mon = 0, Tue = 1, etc.)
     let scheduleID = calendarEntry.scheduleID[dayOfWeek - 1];
-
+    const allowedValues = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
     // Check if the passed API event applies directly to today's date
     if (currentEvents && Number(currentEvents.day) === targetDate.getDate()) {
         const eventNameLower = currentEvents.name.toLowerCase();
@@ -116,23 +116,30 @@ const getTodaySchedule = (currentEvents, targetDate) => {
         const isFridaySchedule = eventNameLower.includes('friday') && eventNameLower.includes('schedule');
         const isAssemblyB = eventNameLower.includes("assembly 'b'");
         const isScheduleC = eventNameLower.includes("schedule c");
-        const isHoliday = eventNameLower.includes("holiday") || eventNameLower.includes("no students");
+        const isHoliday = eventNameLower.includes("holiday") || eventNameLower.includes("no students") || eventNameLower.includes("break");
+        
 
         // Run overrides if the calendar does not already match the event intent
-        if (isFridaySchedule && scheduleID !== 4) {
+        if (isFridaySchedule && scheduleID !== '4') {
             return buildFinalSchedule(4);
         } 
-        if (isAssemblyB && scheduleID !== 6) {
+        if (isAssemblyB && scheduleID !== '6') {
             return buildFinalSchedule(6);
         } 
-        if (isScheduleC && scheduleID !== 7) {
+        if (isScheduleC && scheduleID !== '7') {
             return buildFinalSchedule(7);
         } 
-        if (isHoliday && scheduleID !== 8) {
+        if (isHoliday && scheduleID !== '8') {
             // Logs an exception if manual events clash with structural definitions
-            console.log('Calendar out of sync with holiday event; skipping generation.');
+            //console.log('Calendar out of sync with holiday event; skipping generation.');
+        
             return [];
         }
+    }
+
+    if (allowedValues.includes(scheduleID)) {
+        const index = allowedValues.indexOf(scheduleID)
+        return buildFinalSchedule(9 + index);
     }
 
     // Default back to standard calendar schedule mapping if no exceptions trip

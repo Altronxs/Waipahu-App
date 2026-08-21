@@ -273,15 +273,15 @@ export default function Index() {
               
               
               {/* Welcome banner: script logo + "WELCOME!" text */}
-              <View className="justify-center items-center gap-[0px] pt-10 w-[90%]">
-                <View className="flex flex-col">
-                  <Text className="z-20 font-barlow-italic text-6xl text-whs-blue text-center self-center">
-                    WELCOME!
+              <View className="justify-center items-center pt-10 w-[90%]">
+                <View className="flex flex-col gap-[0px]">
+                  <Text className="z-20 font-barlow-italic text-5xl text-whs-blue text-center self-center">
+                    WELCOME
                   </Text>
                   <Image
                     source={require("@/assets/images/marauder-script.png")} 
                     className="self-end object-contain " 
-                    style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
+                    style={{ height: 35, width: 'auto', aspectRatio: 198 / 50 }} 
                   >
                   </Image>
                 </View>
