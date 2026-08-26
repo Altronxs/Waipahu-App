@@ -27,20 +27,23 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  Modal,
   View,
   ScrollView,
-  Dimensions,
+  useWindowDimensions,
   RefreshControl,
 } from "react-native";
 // NOTE: `ImageBackground` was imported but never used — removed.
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
+import { Dropdown } from 'react-native-element-dropdown';
+import { GlassView } from 'expo-glass-effect';
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod, findCalendarEntryForDate } from '@/assets/json/schedule'
 import schoolSchedule from '@/assets/json/school_schedule.json'
 
-const { height } = Dimensions.get("window");
+
 
 interface SchoolEvent {
   name: string;
@@ -52,9 +55,23 @@ interface ScheduleItem {
   date: Date;
   schedule: (typeof schoolSchedule.schedule)[number];
 }
-// NOTE: The `Event` interface below was defined but never referenced anywhere
-// in this file — removed as dead code. If something elsewhere imports it,
-// move it to a shared types file instead of redeclaring it here.
+
+// Your strict alphanumeric mapping array
+const SCHEDULE_OPTIONS = [
+  { label: 'No Override', value: '-1' },
+  { label: 'Monday Schedule', value: '0' },
+  { label: 'Tuesday Schedule', value: '1' },
+  { label: 'Wednesday Schedule', value: '2' },
+  { label: 'Thursday Schedule', value: '3' },
+  { label: 'Friday Schedule', value: '4' },
+  { label: 'A Assembly', value: '5' },
+  { label: 'Double B Assembly', value: '6' },
+  { label: 'C Assembly', value: '7' },
+  { label: 'No School / Holiday', value: '8' },
+  { label: 'EXAM A Schedule', value: '9' },
+  { label: 'EXAM B Schedule', value: '10' },
+];
+
 
 // Shape returned by `calculateCurrentPeriod`. Declaring this once here (instead
 // of inline `as {...}` casts at every call site) makes it easier to keep in
@@ -78,6 +95,7 @@ interface CalendarEntry {
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
+  const { height, width } = useWindowDimensions();
 
   // "Current period" bell-schedule state (progress bar, period name, times left, etc.)
   const [currentPeriod, setCurrentPeriod] = useState<string>('');
@@ -104,6 +122,13 @@ const Bell = () => {
   // every single tick — only when the calendar day (or the schedule for
   // that day) actually changes.
   const lastScheduleKeyRef = useRef<string>('');
+
+  //
+  const [isSheetVisible, setIsSheetVisible] = useState(false);
+
+  //
+  const [selectedSchedule, setSelectedSchedule] = useState<string>('');
+  const [isFocus, setIsFocus] = useState(false);
 
   // Reload the bell-schedule PDF WebView every time the screen regains focus,
   // so it doesn't sit on a stale/blank load if the user navigated away mid-load.
@@ -258,9 +283,8 @@ const Bell = () => {
         // loaded (currentEventsList would otherwise be empty, making
         // currentEventsList[0] undefined).
         if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
-          const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as PeriodData;
-
-          setCurrentSchedule(periodData.schedule);
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule)) as PeriodData;
+          setCurrentSchedule(periodData.schedule)
           setCurrentPeriod(periodData.currentPeriod);
           setCurrentPeriodStart(periodData.currentPeriodStart);
           setCurrentPeriodEnd(periodData.currentPeriodEnd);
@@ -285,6 +309,10 @@ const Bell = () => {
       // without needing `events` in this dependency array.
     }, [])
   );
+
+  const openSheetFor = () => {
+    setIsSheetVisible(true);
+  };
 
   if (appIsReady === false || !fontsLoaded) {
     return (
@@ -333,7 +361,7 @@ const Bell = () => {
         </Text>
       </View>
 
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center" style={{ height: (height - 208) }}>
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center" style={{ height: (height) }}>
         <ScrollView
           // NOTE: `className="h-96"` here is immediately overridden by the
           // inline `style={{ height: height * 2.5 }}` below — the class has
@@ -351,7 +379,7 @@ const Bell = () => {
         >
           <View
             className="flex-row flex-wrap justify-center items-start w-[100vw]"
-            style={{ height: height * 1.5 }}
+            style={{ height: height * 1.75 }}
           > 
             
             <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10">
@@ -362,10 +390,26 @@ const Bell = () => {
               {currentPeriod !== '' ? (
                 <View className="pt-10 px-5 w-[90%] "> 
                   <View className="flex flex-column">
-                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}</Text>
+                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
+                      <TouchableOpacity
+                        className="justify-center items-center z-30  aspect-square"
+                        style={{
+                          width: 30, height: 50
+                        }}
+                        onPress={() => openSheetFor()}
+                      >
+                        <Image
+                          source={require("@/assets/images/question.png")}
+                          style={{
+                            tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
+                          }}
+                          className="self-center object-contain"
+                        />
+                      </TouchableOpacity>
+                    </Text>
                     {timeLeft ? (
                       <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
                         <View>
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
@@ -432,10 +476,93 @@ const Bell = () => {
                   source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
                 />
               </View>
+              
             </View>
+
+            
           </View>
         </ScrollView>
+        <Modal
+          animationType="slide"
+          transparent
+          visible={isSheetVisible}
+          onRequestClose={() => setIsSheetVisible(false)}
+        >
+          {/* Dimmed background area that closes the sheet when tapped */}
+          <TouchableOpacity
+            className="flex-1 justify-end items-center bg-black/1"
+            activeOpacity={1}
+            onPressOut={() => setIsSheetVisible(false)}
+          />
+
+          <GlassView  className="w-full bg-whs-blue p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="#17273d">
+            <ScrollView style={{ width: '100%'}}>
+              <Text className="z-20 font-barlow-semibold text-2xl text-white w-full text-center text-nowrap">
+                BELL SCHEDULE SETTINGS
+              </Text>
+              <View className="flex-row flex-nowrap w-[90%] justify-center self-center items-center h-[50px] rounded-2xl">
+                <Text className="z-20 font-barlow-regular text-lg text-white px-5">
+                  OVERIDE
+                </Text>
+                {/* Dropdown Component */}
+                <Dropdown
+                  style={{
+                    width: '60%',
+                    height: 50,
+                    paddingHorizontal: 8,
+                    backgroundColor: '#b28d3e',
+                    borderRadius: 16,
+                  }}
+                  containerStyle={{
+                    backgroundColor: '#b28d3e',
+                    borderWidth: 0
+                  }}
+                  // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
+                  placeholderStyle={{ 
+                    fontSize: 16, 
+                    color: '#111827',
+                    flex: 1,
+                    fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
+                  }} 
+                  // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
+                  selectedTextStyle={{ 
+                    
+                    fontSize: 16, 
+                    color: '#111827',
+                    flex: 1,
+                    fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
+                  }} 
+                  // --- SET LINE LIMIT ON MAIN SELECTION TEXT ---
+                  selectedTextProps={{
+                    numberOfLines: 1,
+                  }}
+                  activeColor=""
+                  // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
+                  itemTextStyle={{
+                    fontSize: 16,
+                    color: '#111827',
+                    textAlign: 'left', // Explicitly aligns items in the open menu
+                    paddingTop: 10,
+                  }}
+                  data={SCHEDULE_OPTIONS}
+                  maxHeight={200}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!isFocus ? 'No Override' : '...'}
+                  value={selectedSchedule}
+                  onFocus={() => setIsFocus(true)}
+                  onBlur={() => setIsFocus(false)}
+                  onChange={(item) => {
+                    setSelectedSchedule(item.value);
+                    setIsFocus(false);
+                  }}
+                />
+              </View>
+            </ScrollView>
+          </GlassView>
+        </Modal>
       </View>
+      
     </SafeAreaProvider>
   );
 };

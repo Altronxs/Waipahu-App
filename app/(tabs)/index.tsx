@@ -53,6 +53,7 @@ interface SchoolEvent {
 
 // Your strict alphanumeric mapping array
 const SCHEDULE_OPTIONS = [
+  { label: 'No Override', value: '-1' },
   { label: 'Monday Schedule', value: '0' },
   { label: 'Tuesday Schedule', value: '1' },
   { label: 'Wednesday Schedule', value: '2' },
@@ -63,7 +64,7 @@ const SCHEDULE_OPTIONS = [
   { label: 'C Assembly', value: '7' },
   { label: 'No School / Holiday', value: '8' },
   { label: 'EXAM A Schedule', value: '9' },
-  { label: 'EXAM B Schedule', value: 'a' }, // 'a' handles perfectly as a string key
+  { label: 'EXAM B Schedule', value: '10' },
 ];
 
 // Shared helper so openURL rejections (app not installed, malformed URL, etc.)
@@ -102,7 +103,7 @@ export default function Index() {
   const [isSheetVisible, setIsSheetVisible] = useState(false);
 
   //
-  const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<string>('');
   const [isFocus, setIsFocus] = useState(false);
 
   // Ref mirror of `events` so the 1s interval callback (which has an empty
@@ -245,7 +246,8 @@ export default function Index() {
         // have loaded (currentEventsList would otherwise be an empty array
         // and currentEventsList[0] would be undefined).
         if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
-          const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
+
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule)) as {
             currentPeriod: string;
             currentPeriodStart: string;
             currentPeriodEnd: string;
@@ -273,7 +275,7 @@ export default function Index() {
       // Re-created each time this screen refocuses; `eventsRef` (kept in
       // sync by the effect above) lets the callback always read the
       // latest events without needing `events` in this dependency array.
-    }, [])
+    }, [selectedSchedule])
   );
 
   const openSheetFor = () => {
@@ -442,36 +444,38 @@ export default function Index() {
                   onPressOut={() => setIsSheetVisible(false)}
                 />
 
-                <GlassView  className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="white">
+                <GlassView  className="w-full bg-whs-blue p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="#17273d">
                   <ScrollView style={{ width: '100%'}}>
-                    <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3">
+                    <Text className="z-20 font-barlow-semibold text-2xl text-white w-full text-center text-nowrap">
                       BELL SCHEDULE SETTINGS
                     </Text>
-                    <View className="flex-row flex-nowrap w-[90%] justify-center self-center">
-                      <Text className="h-[50px] z-20 font-barlow-semibold text-lg text-whs-blue p-3">
+                    <View className="flex-row flex-nowrap w-[90%] justify-center self-center items-center h-[50px] rounded-2xl">
+                      <Text className="z-20 font-barlow-regular text-lg text-white px-5">
                         OVERIDE
                       </Text>
                       {/* Dropdown Component */}
                       <Dropdown
                         style={{
-                          width: '70%',
+                          width: '60%',
                           height: 50,
-                          borderRadius: 8,
-                          paddingHorizontal: 16,
-                          borderWidth: 0.5,
-                          backgroundColor: '#FAFAFA',
+                          paddingHorizontal: 8,
+                          backgroundColor: '#b28d3e',
+                          borderRadius: 16,
                         }}
                         containerStyle={{
-                          borderRadius: 8
+                          backgroundColor: '#b28d3e',
+                          borderWidth: 0
                         }}
                         // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
                         placeholderStyle={{ 
                           fontSize: 16, 
-                          color: '#9ca3af',
+                          color: '#111827',
+                          flex: 1,
                           fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
                         }} 
                         // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
                         selectedTextStyle={{ 
+                          
                           fontSize: 16, 
                           color: '#111827',
                           flex: 1,
@@ -481,7 +485,7 @@ export default function Index() {
                         selectedTextProps={{
                           numberOfLines: 1,
                         }}
-                        
+                        activeColor=""
                         // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
                         itemTextStyle={{
                           fontSize: 16,
@@ -493,30 +497,16 @@ export default function Index() {
                         maxHeight={200}
                         labelField="label"
                         valueField="value"
-                        placeholder={!isFocus ? 'Choose override state...' : '...'}
+                        placeholder={!isFocus ? 'No Override' : '...'}
                         value={selectedSchedule}
                         onFocus={() => setIsFocus(true)}
                         onBlur={() => setIsFocus(false)}
                         onChange={(item) => {
                           setSelectedSchedule(item.value);
-                          console.log(item.value)
                           setIsFocus(false);
                         }}
                       />
-
-                      {/* Active Status Display Box */}
-                      {/* {selectedSchedule && (
-                        <View className="mt-5 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <Text className="text-sm text-blue-800">
-                            Active Key: <Text className="font-mono font-bold">"{selectedSchedule}"</Text> ({
-                              SCHEDULE_OPTIONS.find((s) => s.value === selectedSchedule)?.label
-                            })
-                          </Text>
-                        </View>
-                      )} */}
                     </View>
-                    
-                    
                   </ScrollView>
                 </GlassView>
               </Modal>
