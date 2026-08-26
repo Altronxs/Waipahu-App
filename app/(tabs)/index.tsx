@@ -30,16 +30,18 @@ import {
     Linking,
     RefreshControl,
     ScrollView,
+    Modal,
     Text,
     TouchableOpacity,
     useWindowDimensions,
     View,
 } from "react-native";
+import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
 import "../globals.css";
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
-
+import { Dropdown } from 'react-native-element-dropdown';
 interface SchoolEvent {
   name: string;
   month: string; // e.g., "August" or "08"
@@ -56,7 +58,7 @@ const openLink = (url: string) => {
 
 export default function Index() {
   const router = useRouter(); // Get the router instance
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
 
   // --- Bell-schedule / "current period" state ---
   // These are recomputed every second by the interval effect below.
@@ -77,6 +79,9 @@ export default function Index() {
   // Drives the pull-to-refresh spinner on the ScrollView (see
   // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
+
+  //
+  const [isSheetVisible, setIsSheetVisible] = useState(false);
 
   // Ref mirror of `events` so the 1s interval callback (which has an empty
   // dependency array and is created once) can always read the latest
@@ -204,7 +209,6 @@ export default function Index() {
   }
 
 
-
   // Ticks once per second to recompute the "current period" / bell-schedule
   // progress bar. Tied to useFocusEffect so the interval is started when
   // this screen gains focus and cleared when it loses focus/unmounts —
@@ -250,6 +254,10 @@ export default function Index() {
     }, [])
   );
 
+  const openSheetFor = () => {
+    setIsSheetVisible(true);
+  };
+
   // Splash/loading screen: shown until fonts are loaded AND the first
   // interval tick has fired (see setAppIsReady(true) in the focus effect above).
   if ((appIsReady == false) || !fontsLoaded) {
@@ -284,22 +292,24 @@ export default function Index() {
                 <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
             </View>
         </View>
-        <View className="bg-white w-[100vw] h-[100vh] justify-center items-center " style={{ height: (height - 208)}}>
+        <View className="bg-white w-[100vw] h-[100vh] justify-center items-center ">
           <ScrollView
-            className="w-[100vw] h-96 bg-white flex-1 flex-col "
+            className="w-[100vw] bg-white flex-1 flex-col"
             style={{ height: height * 0.5}}
-            bounces={false}                
+            bounces={true}                
             overScrollMode="never"          
             scrollEventThrottle={16}       
             decelerationRate="normal"
+            
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
             }
           >
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
-              className="flex-row flex-wrap justify-center w-[100vw]"
-              style={{ height: height * 1.5}}
+              className="flex-row flex-wrap flex-1 justify-center  w-[100vw]"
+              style={{ flex: 1, height: height * 1.25}}
+              resizeMode="cover"
             >
               
               
@@ -327,10 +337,26 @@ export default function Index() {
               {currentPeriod !== '' ? (
                 <View className="pt- px-5 w-[90%] "> 
                   <View className="flex flex-column">
-                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}</Text>
+                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
+                      <TouchableOpacity
+                        className="justify-center items-center z-30  aspect-square"
+                        style={{
+                          width: 30, height: 50
+                        }}
+                        onPress={() => openSheetFor()}
+                      >
+                        <Image
+                          source={require("@/assets/images/question.png")}
+                          style={{
+                            tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
+                          }}
+                          className="self-center object-contain"
+                        />
+                      </TouchableOpacity>
+                    </Text>
                     {timeLeft ? (
                       <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
                         <View>
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
@@ -381,7 +407,30 @@ export default function Index() {
                   </View>
                 </View>
               ))}
-              
+              <Modal
+                animationType="slide"
+                transparent
+                visible={isSheetVisible}
+                onRequestClose={() => setIsSheetVisible(false)}
+              >
+                {/* Dimmed background area that closes the sheet when tapped */}
+                <TouchableOpacity
+                  className="flex-1 justify-end items-center bg-black/1"
+                  activeOpacity={1}
+                  onPressOut={() => setIsSheetVisible(false)}
+                />
+
+                <GlassView  className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="white">
+                  <ScrollView style={{height: '40%', width: '100%'}}>
+                    <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+                      BELL SCHEDULE SETTINGS
+                    </Text>
+                    <Text className="z-20 font-barlow-semibold text-base text-whs-blue w-full p-3 pl-10">
+                      Overide Current Schedule
+                    </Text>
+                  </ScrollView>
+                </GlassView>
+              </Modal>
             </ImageBackground>
           </ScrollView>
         </View>

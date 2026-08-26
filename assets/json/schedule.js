@@ -16,7 +16,7 @@ import { fetchSchoolEvents } from '@/assets/json/eventService';
  * @param {Date} inputDate - The date to search for.
  * @returns {Object|null} The matching calendar entry object or null.
  */
-const findCalendarEntryForDate = (inputDate) => {
+export const findCalendarEntryForDate = (inputDate) => {
     // Strip time to focus solely on the calendar day
     const targetTimestamp = new Date(inputDate).setHours(0, 0, 0, 0);
 
@@ -94,7 +94,7 @@ const buildFinalSchedule = (scheduleID) => {
  * @param {Date} targetDate - The live date object instance.
  * @returns {Array} Final collection of periods active for the day.
  */
-const getTodaySchedule = (currentEvents, targetDate) => {
+export const getTodaySchedule = (currentEvents, targetDate) => {
     const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 1 = Monday, ... 6 = Saturday
 
     // Only process schedules for regular school days (Monday through Friday)
@@ -151,6 +151,7 @@ const getTodaySchedule = (currentEvents, targetDate) => {
 // EXPORTED CORE SERVICE
 // ==========================================
 
+
 /**
  * Processes live operational metrics for the current ongoing school block.
  * 
@@ -174,7 +175,7 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
     }
     const calendarEntry = findCalendarEntryForDate(now);
     const scheduleID = calendarEntry.scheduleID;
-    const currentMinutes = ((now.getHours() - 5) * 60) + now.getMinutes(); // dev test
+    const currentMinutes = ((now.getHours() ) * 60) + now.getMinutes(); // dev test
     const currentSeconds = now.getSeconds();
 
     // Query active layout structure and filter down to the timeframe containing the current minute
@@ -219,7 +220,7 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
     }
 
     // Display Schedule
-    const schedule = scheduleJSON.schedule[todaySchedule.scheduleID].day
+    const schedule = scheduleJSON.schedule[todaySchedule.scheduleID].day;
 
     // Dynamic Countdown Calculations
     const minutesRemaining = activePeriod.end - currentMinutes - 1;

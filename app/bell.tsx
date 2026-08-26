@@ -29,15 +29,15 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ImageBackground,
   Dimensions,
   RefreshControl,
 } from "react-native";
+// NOTE: `ImageBackground` was imported but never used — removed.
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { loadWebsiteData } from '@/assets/json/eventService';
-import { calculateCurrentPeriod } from '@/assets/json/schedule'
+import { calculateCurrentPeriod, findCalendarEntryForDate } from '@/assets/json/schedule'
 import schoolSchedule from '@/assets/json/school_schedule.json'
 
 const { height } = Dimensions.get("window");
@@ -50,11 +50,36 @@ interface SchoolEvent {
 }
 interface ScheduleItem {
   date: Date;
+  schedule: (typeof schoolSchedule.schedule)[number];
+}
+// NOTE: The `Event` interface below was defined but never referenced anywhere
+// in this file — removed as dead code. If something elsewhere imports it,
+// move it to a shared types file instead of redeclaring it here.
+
+// Shape returned by `calculateCurrentPeriod`. Declaring this once here (instead
+// of inline `as {...}` casts at every call site) makes it easier to keep in
+// sync if `schedule.ts` changes, and gives you real type-checking on the
+// return value rather than an unchecked assertion.
+interface PeriodData {
+  currentPeriod: string;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  timeLeft: string;
+  loadingBarFactor: string;
+  scheduleID: string;
   schedule: string;
 }
+
+// Shape returned by `findCalendarEntryForDate`.
+interface CalendarEntry {
+  scheduleID: string;
+}
+
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
+
+  // "Current period" bell-schedule state (progress bar, period name, times left, etc.)
   const [currentPeriod, setCurrentPeriod] = useState<string>('');
   const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string>('')
@@ -64,13 +89,26 @@ const Bell = () => {
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
 
+  // Events pulled from the school website (used to look up the period schedule).
   const [events, setEvents] = useState<SchoolEvent[]>([]);
   const [eventsError, setEventsError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  // Kept in sync with `events` via the effect below so the 1s interval callback
+  // (which is only created once per focus, see the `useFocusEffect` further
+  // down) can always read the latest events without needing `events` itself
+  // in its dependency array.
   const eventsRef = useRef(events);
 
+  // Tracks the day/scheduleID we last built `weekdaySchedule` for, so the
+  // 1s interval doesn't rebuild 5 Date objects + look up 5 schedules on
+  // every single tick — only when the calendar day (or the schedule for
+  // that day) actually changes.
+  const lastScheduleKeyRef = useRef<string>('');
+
+  // Reload the bell-schedule PDF WebView every time the screen regains focus,
+  // so it doesn't sit on a stale/blank load if the user navigated away mid-load.
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (webViewRef.current) {
         webViewRef.current.reload();
       }
@@ -104,13 +142,12 @@ const Bell = () => {
         setEventsError,
         setAppIsReady,
       });
-      
+
       return () => {
         controller.abort();
       };
     }, [])
   );
-
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -122,11 +159,11 @@ const Bell = () => {
       setEventsError,
       setAppIsReady,
     });
-    
+
     setRefreshing(false);
   };
 
-  // 1. Always keep ref updated
+  // Always keep the ref updated so the interval callback below can see fresh events.
   useEffect(() => {
     eventsRef.current = events;
   }, [events]);
@@ -137,88 +174,106 @@ const Bell = () => {
    * @returns {Date} A Date object reflecting current Hawaii time.
    */
   const getHawaiiDate = () => {
-    // Get the current timestamp based on the user's device clock
+    // Get the current timestamp based on the user's device clock.
     const localTime = new Date();
-    
+
     // getTimezoneOffset() returns the difference in minutes between local time and UTC.
     // Multiplying by 60,000 converts those minutes into milliseconds.
     // Adding this to the local timestamp normalizes the time to absolute UTC (Greenwich Mean Time).
     const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
-    
-    // Hawaii is locked to UTC-10 and never changes for Daylight Saving Time.
+
+    // Hawaii is locked to UTC-10 and never observes Daylight Saving Time.
     const hawaiiOffsetHours = -10;
-    
+
     // Multiplying 3,600,000 (milliseconds in 1 hour) by -10 calculates the shift needed.
     // Adding this to the UTC time gives us the exact absolute time in Hawaii.
     const hawaiiMilliseconds = utcTime + (3600000 * hawaiiOffsetHours);
-    
+
     // Create and return a new Date object initialized to Hawaii's exact current time.
     // Methods like .getHours() or .getDate() will now return Hawaii-specific values.
     return new Date(hawaiiMilliseconds);
   }
 
+  /**
+   * Builds the Mon–Fri date/schedule list for the week containing `date`,
+   * using `scheduleID` (a 5-character string, one digit per weekday) to look
+   * up each day's bell schedule from `schoolSchedule.schedule`.
+   */
   const getWeekdays = (date: Date, scheduleID: string) => {
-    // 1. Get the current date and time
-    const current = date
-    
-    // 2. Find the current day index (0 for Sunday, 1 for Monday, etc.)
-    // If it is Sunday (0), we treat it as 7 to correctly calculate back to Monday
+    const current = date;
+
+    // Get the current day index (0 = Sunday .. 6 = Saturday). Treat Sunday (0)
+    // as 7 so the "days back to Monday" math below works uniformly.
     const dayIndex = current.getDay() === 0 ? 7 : current.getDay();
-    
-    // 3. Create a new Date object cloned from the current time
+
+    // Clone the current date and roll it back to Monday of this week.
+    // JS Date automatically rolls back months/years if the subtraction crosses one.
     const monday = new Date(current);
-    
-    // 4. Subtract days to shift the date back to Monday of this week
-    // JavaScript automatically rolls back months/years if necessary
     monday.setDate(current.getDate() - dayIndex + 1);
 
-    // 5. Generate an array with a length of exactly 5 elements
-    let weekDates = []
+    // Build exactly 5 entries: Monday through Friday.
+    const weekDates: ScheduleItem[] = [];
     for (let i = 0; i < 5; i++) {
-      // getSchedule
-      const index = Number(scheduleID[i])
-      const schedule = schoolSchedule.schedule[index].day
-      // Clone the Monday date object for each iteration
+      const index = Number(scheduleID[i]);
+      const schedule = schoolSchedule.schedule[index];
+
       const date = new Date(monday);
-      
-      // Add the current loop index (0 to 4) to get Mon, Tue, Wed, Thu, Fri
       date.setDate(monday.getDate() + i);
 
-      weekDates[i] = {date: date, schedule: schedule};
+      weekDates[i] = { date, schedule };
     }
     return weekDates;
   };
 
   // Ticks once per second to recompute the "current period" / bell-schedule
-  // progress bar. Tied to useFocusEffect so the interval starts when this
-  // screen gains focus and is cleared when it loses focus/unmounts, instead
-  // of ticking forever in the background.
+  // progress bar, and keeps the weekly schedule list in sync with "today".
+  // Tied to useFocusEffect so the interval starts when this screen gains
+  // focus and is cleared when it loses focus/unmounts, instead of ticking
+  // forever in the background.
   useFocusEffect(
     useCallback(() => {
       const timer = setInterval(() => {
-        const now = getHawaiiDate()
+        const now = getHawaiiDate();
         const dayOfWeek = now.getDay();
         const currentEventsList = eventsRef.current;
+
+        // `findCalendarEntryForDate` is the single source of truth for
+        // "what schedule is today on" — used both to build the weekly list
+        // and (below) to decide whether there's a live period to show.
+        // Previously this was computed twice per tick (once implicitly via
+        // `calculateCurrentPeriod`'s own scheduleID, and again here), which
+        // did redundant work and could disagree if the two ever diverged.
+        const calendarEntry = findCalendarEntryForDate(now) as CalendarEntry;
+
+        // Only rebuild the weekly list when the day or its scheduleID
+        // changes (e.g. once a day, or when an admin swaps in a snow-day
+        // schedule mid-day) — not on every single 1s tick.
+        const scheduleKey = `${now.toDateString()}-${calendarEntry.scheduleID}`;
+        if (scheduleKey !== lastScheduleKeyRef.current) {
+          lastScheduleKeyRef.current = scheduleKey;
+          setWeekdaySchedule(getWeekdays(now, calendarEntry.scheduleID));
+        }
+
         // Guard against calling calculateCurrentPeriod before events have
         // loaded (currentEventsList would otherwise be empty, making
         // currentEventsList[0] undefined).
         if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
-          const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as {
-            currentPeriod: string;
-            currentPeriodStart: string;
-            currentPeriodEnd: string;
-            timeLeft: string;
-            loadingBarFactor: string;
-            scheduleID: string;
-            schedule: string;
-          };
-          setWeekdaySchedule(getWeekdays(now, periodData.scheduleID));
-          setCurrentSchedule(periodData.schedule)
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0]) as PeriodData;
+
+          setCurrentSchedule(periodData.schedule);
           setCurrentPeriod(periodData.currentPeriod);
           setCurrentPeriodStart(periodData.currentPeriodStart);
           setCurrentPeriodEnd(periodData.currentPeriodEnd);
           setTimeLeft(periodData.timeLeft);
           setLoadingBarFactor(periodData.loadingBarFactor);
+        } else {
+          // Weekend, or events haven't loaded yet: clear out the "current
+          // period" fields instead of leaving Friday's stale values showing.
+          setCurrentPeriod('');
+          setCurrentPeriodStart('');
+          setCurrentPeriodEnd('');
+          setTimeLeft('');
+          setLoadingBarFactor('0%');
         }
 
         setAppIsReady(true);
@@ -231,8 +286,7 @@ const Bell = () => {
     }, [])
   );
 
-
-  if ((appIsReady == false) || !fontsLoaded) {
+  if (appIsReady === false || !fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
@@ -250,18 +304,18 @@ const Bell = () => {
   return (
     <SafeAreaProvider className="flex flex-col">
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-          <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28"
-          />
-          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
-          </View>
+        <Image
+          source={require("@/assets/images/whs-logo.png")}
+          className="w-32 h-32 relative bottom-28"
+        />
+        <View className="w-48 h-28 bottom-20 items-start z-40 relative">
+          <Text className="text-white font-barlow-semibold">MY VOICE</Text>
+          <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
+          <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+        </View>
       </View>
 
-      <View className="justify-center items-center bg-whs-gold ">
+      <View className="justify-center items-center bg-whs-gold">
         <TouchableOpacity
           className="w-10 h-10 left self-start pt-3 z-30"
           onPress={() => router.push("/")}
@@ -275,85 +329,113 @@ const Bell = () => {
           />
         </TouchableOpacity>
         <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          Bell Schedule SY25-26
+          Bell Schedule SY26-27
         </Text>
       </View>
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
+
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center" style={{ height: (height - 208) }}>
         <ScrollView
-          className="w-[100vw] h-96 bg-white flex-1 flex-col "
-          style={{ height: height * 0.5 }}
-          bounces={false}                
-          overScrollMode="never"          
-          scrollEventThrottle={16}       
+          // NOTE: `className="h-96"` here is immediately overridden by the
+          // inline `style={{ height: height * 2.5 }}` below — the class has
+          // no effect. Left as-is to avoid changing layout, but consider
+          // dropping the dead className.
+          className="w-[100vw] h-96 bg-white flex-1 flex-col"
+          style={{ height: height * 2.5 }}
+          bounces={false}
+          overScrollMode="never"
+          scrollEventThrottle={16}
           decelerationRate="normal"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
         >
-          <ImageBackground
-            source={require("@/assets/images/bg-home.png")}
-            className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
-
-          >
-            <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10 ">
-              <View className="flex bg-white p-[5%] w-[90%] mt-5  ">
-              
-                <View className="flex flex-column">
-                  <Text className="font-bold font-barlow text-whs-blue text-base">{currentPeriod}</Text>
+          <View
+            className="flex-row flex-wrap justify-center items-start w-[100vw]"
+            style={{ height: height * 1.5 }}
+          > 
+            
+            <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10">
+              {/* Bell-schedule widget: current period name, time range, and
+                  a progress bar showing how far through the period we are.
+                  Only renders once currentPeriod has been computed
+                  (i.e. on a weekday, after the first interval tick). */}
+              {currentPeriod !== '' ? (
+                <View className="pt-10 px-5 w-[90%] "> 
+                  <View className="flex flex-column">
+                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}</Text>
+                    {timeLeft ? (
+                      <View>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <View>
+                          {/* Track (background) */}
+                          <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                          {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
+                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+                        </View>
+                      </View>
+                    ) : null}
+                  </View>
+                  
+                  
                   {timeLeft ? (
                     <View>
-                      <Text className="font-light font-barlow-regular text-whs-blue text-sm">{currentSchedule}  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
-                      <View>
-                        <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
-                        <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
-                      </View>
+                      <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
                     </View>
                   ) : null}
-                </View>
-                
-                
-                {timeLeft ? (
-                  <View>
-                    <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
-                  </View>
-                ) : null}
-              </View> 
-              <View className="flex-row flex-wrap justify-center mt-5 w-[90%]">
+                </View> 
+              ) : (
+                // Placeholder spacer on weekends / before period data is ready,
+                // so layout doesn't jump when the widget above appears.
+                <View className="h-[10px] w-full"></View>
+              )}
+
+              <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+                THIS WEEKS SCHEDULE
+              </Text>
+              <View className="flex-row flex-wrap justify-center w-full">
                 {weekdaySchedule.map((day, index) => {
-                  // Convert the ISO string into a local readable date format
-                  const monthString = day.date.toLocaleString('en-US', { month: 'short' });
+                  // Convert the Date into locale-formatted day-of-week text.
                   const dayString = day.date.toLocaleString('en-US', { weekday: 'short' });
 
                   return (
                     <React.Fragment key={index}>
-                      <View className="flex flex-colflex-nowrap bg-whs-blue w-[20%] p-5">
-                        <View className="justify-center items-start border-b-2 border-white">
-                          
-                          <Text className="text-whs-gold text-center font-source-serif-bold font-black text-base/tight">{day.date.getDate()}</Text>
-                          <Text className="text-white text-xs/tight font-semibold font-source-serif-bold">{dayString}</Text>                       
+                      <View className="flex flex-row flex-nowrap self-center w-[90%] mx-[5%] p-5 mb-3 bg-whs-blue">
+                        <View className="justify-center items-start border-r-2 border-white pr-5">
+                          <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">
+                            {day.date.getDate()}
+                          </Text>
+                          <Text className="text-white text-center font-roboto-bold">{dayString}</Text>
                         </View>
-                        <View className="justify-center items-start">
-                          <Text className="text-white text-xs font-light font-source-serif-regular pt-3 shrink break-all">{day.schedule}</Text>
+                        <View className="flex-1 justify-center items-start pl-5">
+                          <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold font-source-serif-bold">
+                            {day.schedule.day}
+                          </Text>
+                          <Text className="text-white text-center text-xs font-light font-source-serif-regular"> 
+                            {day.schedule.timeSchedule
+                              .filter((schedule) => schedule.name.includes('Period'))
+                              .map((schedule, i) => (
+                                <React.Fragment key={i}>
+                                  <Text> {schedule.name.replace('Period ', '')}</Text>
+                                </React.Fragment>
+                              ))}</Text>
                         </View>
                       </View>
                     </React.Fragment>
                   );
                 })}
-
               </View>
-              <View className="self-center items-start flex-row h-3/4 z-0 p-[20]">
-                  <WebView
-                    className="relative h-[50%]"
-                    ref={webViewRef}
-                    source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
-                  />
+
+              <View className="self-center items-start flex-row h-3/4 z-0 p-[10]">
+                <WebView
+                  className="relative h-[50%]"
+                  ref={webViewRef}
+                  source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+                />
               </View>
             </View>
-          </ImageBackground>
+          </View>
         </ScrollView>
       </View>
-      
-      
     </SafeAreaProvider>
   );
 };

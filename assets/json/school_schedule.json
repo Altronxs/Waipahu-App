@@ -2,7 +2,7 @@
     "comment": "0 = monday | 1 = tuesday... | 5 = a_asem | 6 = bb_asem | 7 = c_asem | 8 = no school | 9 = EXAM A | a = EXAM B",
     "schedule": [
         {
-            "day": "Monday",
+            "day": "Monday Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -87,7 +87,7 @@
             ]
         },
         {
-            "day": "Tuesday",
+            "day": "Tuesday Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 2",
@@ -142,7 +142,7 @@
             ]
         },
         {
-            "day": "Wednesday",
+            "day": "Wednesday Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -197,7 +197,7 @@
             ]
         },
         {
-            "day": "Thursday",
+            "day": "Thursday Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 2",
@@ -262,7 +262,7 @@
             ]
         },
         {
-            "day": "Friday",
+            "day": "Friday Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -317,7 +317,7 @@
             ]
         },
         {
-            "day": "A Assembly",
+            "day": "A Assembly Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -377,7 +377,7 @@
             ]
         },
         {
-            "day": "Double B Assembly",
+            "day": "Double B Assembly Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -437,7 +437,7 @@
             ]
         },
         {
-            "day": "C Assembly",
+            "day": "C Assembly Schedule",
             "timeSchedule": [
                 {
                     "name": "Period 2",
@@ -497,7 +497,7 @@
             ]
         },
         {
-            "day": "Exam Schedule A",
+            "day": "Exam Schedule A Schedule",
             "timeSchedule": [
                 {
                     "name": "Exam 1",
@@ -537,7 +537,7 @@
             ]
         },
         {
-            "day": "Exam Schedule B",
+            "day": "Exam Schedule B Schedule",
             "timeSchedule": [
                 {
                     "name": "Exam 1",

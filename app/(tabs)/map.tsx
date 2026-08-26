@@ -37,7 +37,7 @@ import MapView, { Callout, Marker, Polygon } from "react-native-maps";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import type { WebView as WebViewType } from "react-native-webview";
- 
+import { GlassView } from 'expo-glass-effect'
 
 const { width, height } = Dimensions.get("window");
 
@@ -305,11 +305,11 @@ const Map = () => {
                 </View>
 
                 <Callout tooltip>
-                  <View className="flex flex-col items-center bg-white p-1 rounded-lg shadow-lg border border-gray-300 text-nowrap w-32">
-                    <Text className="font-barlow-semibold text-xs mb-1 text-gray-800 w-30">
+                  <GlassView className="items-center" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"clear"}>
+                    <Text className="font-barlow-semibold text-xs mb-1 text-white w-30 text-center self-center items-center">
                       {feature.name}
                     </Text>
-                  </View>
+                  </GlassView>
                 </Callout>
               </Marker>
             </React.Fragment>
@@ -340,7 +340,7 @@ const Map = () => {
             onPressOut={() => setIsSheetVisible(false)}
           />
 
-          <View className="w-full bg-white rounded-t-2xl p-4 shadow-2xl">
+          <GlassView className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="white">
             <ScrollView>
               {selectedFeature?.layoutNeed &&
                 selectedFeature.name !== WAIPAHU_CAMPUS_MAP_NAME && (
@@ -385,7 +385,7 @@ const Map = () => {
                 </View>
               )}
             </ScrollView>
-          </View>
+          </GlassView>
         </Modal>
       </View>
     </SafeAreaProvider>
