@@ -64,6 +64,7 @@ export default function Index() {
   const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string>('')
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
+  const [currentSchedule, setCurrentSchedule] = useState<string>('')
   const [timeLeft, setTimeLeft] = useState('');
 
   // Gate for the splash/loading screen. Only flips true once fonts are loaded
@@ -176,6 +177,34 @@ export default function Index() {
     eventsRef.current = events;
   }, [events]);
 
+  /**
+   * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
+   * completely bypassing the user's local system timezone settings.
+   * @returns {Date} A Date object reflecting current Hawaii time.
+   */
+  const getHawaiiDate = () => {
+    // Get the current timestamp based on the user's device clock
+    const localTime = new Date();
+    
+    // getTimezoneOffset() returns the difference in minutes between local time and UTC.
+    // Multiplying by 60,000 converts those minutes into milliseconds.
+    // Adding this to the local timestamp normalizes the time to absolute UTC (Greenwich Mean Time).
+    const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
+    
+    // Hawaii is locked to UTC-10 and never changes for Daylight Saving Time.
+    const hawaiiOffsetHours = -10;
+    
+    // Multiplying 3,600,000 (milliseconds in 1 hour) by -10 calculates the shift needed.
+    // Adding this to the UTC time gives us the exact absolute time in Hawaii.
+    const hawaiiMilliseconds = utcTime + (3600000 * hawaiiOffsetHours);
+    
+    // Create and return a new Date object initialized to Hawaii's exact current time.
+    // Methods like .getHours() or .getDate() will now return Hawaii-specific values.
+    return new Date(hawaiiMilliseconds);
+  }
+
+
+
   // Ticks once per second to recompute the "current period" / bell-schedule
   // progress bar. Tied to useFocusEffect so the interval is started when
   // this screen gains focus and cleared when it loses focus/unmounts —
@@ -183,7 +212,7 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       const timer = setInterval(() => {
-        const now = new Date();
+        const now = getHawaiiDate();
         const dayOfWeek = now.getDay();
         const currentEventsList = eventsRef.current;
         // Guard against calculateCurrentPeriod being called before events
@@ -196,7 +225,10 @@ export default function Index() {
             currentPeriodEnd: string;
             timeLeft: string;
             loadingBarFactor: string;
+            scheduleID: string;
+            schedule: string;
           };
+          setCurrentSchedule(periodData.schedule)
           setCurrentPeriod(periodData.currentPeriod);
           setCurrentPeriodStart(periodData.currentPeriodStart);
           setCurrentPeriodEnd(periodData.currentPeriodEnd);
@@ -295,10 +327,10 @@ export default function Index() {
               {currentPeriod !== '' ? (
                 <View className="pt- px-5 w-[90%] "> 
                   <View className="flex flex-column">
-                    <Text className="font-bold font-barlow text-whs-blue text-sm/none">{currentPeriod}</Text>
+                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}</Text>
                     {timeLeft ? (
                       <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
                         <View>
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>

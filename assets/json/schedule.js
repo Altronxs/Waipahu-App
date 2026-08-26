@@ -84,7 +84,7 @@ const buildFinalSchedule = (scheduleID) => {
             };
         }
     }
-    return finalTimeline;
+    return {finalTimeline: finalTimeline, scheduleID: scheduleID};
 };
 
 /**
@@ -137,6 +137,7 @@ const getTodaySchedule = (currentEvents, targetDate) => {
         }
     }
 
+    // Special Schedule uses 9 and hex: a == 10, b == 11...
     if (allowedValues.includes(scheduleID)) {
         const index = allowedValues.indexOf(scheduleID)
         return buildFinalSchedule(9 + index);
@@ -167,14 +168,18 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
             timeLeft: '',
             loadingBarFactor: '0%',
             isSchoolHours: false,
+            scheduleID: '',
+            schedule: '',
         };
     }
-
-    const currentMinutes = ((now.getHours()) * 60) + now.getMinutes();
+    const calendarEntry = findCalendarEntryForDate(now);
+    const scheduleID = calendarEntry.scheduleID;
+    const currentMinutes = ((now.getHours() - 5) * 60) + now.getMinutes(); // dev test
     const currentSeconds = now.getSeconds();
 
     // Query active layout structure and filter down to the timeframe containing the current minute
-    const todayActiveSchedule = getTodaySchedule(currentEvents, now);
+    const todaySchedule = getTodaySchedule(currentEvents, now);
+    const todayActiveSchedule = todaySchedule.finalTimeline
     const activePeriod = todayActiveSchedule.find(
         (p) => currentMinutes >= p.start && currentMinutes < p.end
     );
@@ -188,6 +193,8 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
             timeLeft: '',
             loadingBarFactor: '0%',
             isSchoolHours: false,
+            scheduleID: '',
+            schedule: '',
         };
     }
 
@@ -211,6 +218,9 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
         currentPeriodEnd = `${minutesToString(activePeriod.end)}am`;
     }
 
+    // Display Schedule
+    const schedule = scheduleJSON.schedule[todaySchedule.scheduleID].day
+
     // Dynamic Countdown Calculations
     const minutesRemaining = activePeriod.end - currentMinutes - 1;
     const secondsRemaining = 60 - currentSeconds;
@@ -232,5 +242,7 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
         timeLeft,
         loadingBarFactor,
         isSchoolHours: true,
+        scheduleID,
+        schedule,
     };
 };

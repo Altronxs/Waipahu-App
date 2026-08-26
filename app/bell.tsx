@@ -38,6 +38,7 @@ import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
+import schoolSchedule from '@/assets/json/school_schedule.json'
 
 const { height } = Dimensions.get("window");
 
@@ -47,7 +48,10 @@ interface SchoolEvent {
   day: string;   // e.g., "17"
   time: string;  // e.g., "All Day" or a specific time string
 }
-
+interface ScheduleItem {
+  date: Date;
+  schedule: string;
+}
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
@@ -55,6 +59,8 @@ const Bell = () => {
   const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string>('')
   const [loadingBarFactor, setLoadingBarFactor] = useState<string>('0%')
+  const [currentSchedule, setCurrentSchedule] = useState<string>('');
+  const [weekdaySchedule, setWeekdaySchedule] = useState<ScheduleItem[]>([]);
   const [timeLeft, setTimeLeft] = useState('');
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -125,6 +131,64 @@ const Bell = () => {
     eventsRef.current = events;
   }, [events]);
 
+  /**
+   * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
+   * completely bypassing the user's local system timezone settings.
+   * @returns {Date} A Date object reflecting current Hawaii time.
+   */
+  const getHawaiiDate = () => {
+    // Get the current timestamp based on the user's device clock
+    const localTime = new Date();
+    
+    // getTimezoneOffset() returns the difference in minutes between local time and UTC.
+    // Multiplying by 60,000 converts those minutes into milliseconds.
+    // Adding this to the local timestamp normalizes the time to absolute UTC (Greenwich Mean Time).
+    const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
+    
+    // Hawaii is locked to UTC-10 and never changes for Daylight Saving Time.
+    const hawaiiOffsetHours = -10;
+    
+    // Multiplying 3,600,000 (milliseconds in 1 hour) by -10 calculates the shift needed.
+    // Adding this to the UTC time gives us the exact absolute time in Hawaii.
+    const hawaiiMilliseconds = utcTime + (3600000 * hawaiiOffsetHours);
+    
+    // Create and return a new Date object initialized to Hawaii's exact current time.
+    // Methods like .getHours() or .getDate() will now return Hawaii-specific values.
+    return new Date(hawaiiMilliseconds);
+  }
+
+  const getWeekdays = (date: Date, scheduleID: string) => {
+    // 1. Get the current date and time
+    const current = date
+    
+    // 2. Find the current day index (0 for Sunday, 1 for Monday, etc.)
+    // If it is Sunday (0), we treat it as 7 to correctly calculate back to Monday
+    const dayIndex = current.getDay() === 0 ? 7 : current.getDay();
+    
+    // 3. Create a new Date object cloned from the current time
+    const monday = new Date(current);
+    
+    // 4. Subtract days to shift the date back to Monday of this week
+    // JavaScript automatically rolls back months/years if necessary
+    monday.setDate(current.getDate() - dayIndex + 1);
+
+    // 5. Generate an array with a length of exactly 5 elements
+    let weekDates = []
+    for (let i = 0; i < 5; i++) {
+      // getSchedule
+      const index = Number(scheduleID[i])
+      const schedule = schoolSchedule.schedule[index].day
+      // Clone the Monday date object for each iteration
+      const date = new Date(monday);
+      
+      // Add the current loop index (0 to 4) to get Mon, Tue, Wed, Thu, Fri
+      date.setDate(monday.getDate() + i);
+
+      weekDates[i] = {date: date, schedule: schedule};
+    }
+    return weekDates;
+  };
+
   // Ticks once per second to recompute the "current period" / bell-schedule
   // progress bar. Tied to useFocusEffect so the interval starts when this
   // screen gains focus and is cleared when it loses focus/unmounts, instead
@@ -132,7 +196,7 @@ const Bell = () => {
   useFocusEffect(
     useCallback(() => {
       const timer = setInterval(() => {
-        const now = new Date();
+        const now = getHawaiiDate()
         const dayOfWeek = now.getDay();
         const currentEventsList = eventsRef.current;
         // Guard against calling calculateCurrentPeriod before events have
@@ -145,7 +209,11 @@ const Bell = () => {
             currentPeriodEnd: string;
             timeLeft: string;
             loadingBarFactor: string;
+            scheduleID: string;
+            schedule: string;
           };
+          setWeekdaySchedule(getWeekdays(now, periodData.scheduleID));
+          setCurrentSchedule(periodData.schedule)
           setCurrentPeriod(periodData.currentPeriod);
           setCurrentPeriodStart(periodData.currentPeriodStart);
           setCurrentPeriodEnd(periodData.currentPeriodEnd);
@@ -231,10 +299,10 @@ const Bell = () => {
               <View className="flex bg-white p-[5%] w-[90%] mt-5  ">
               
                 <View className="flex flex-column">
-                  <Text className="font-bold font-barlow text-whs-blue text-lg/tight">{currentPeriod}</Text>
+                  <Text className="font-bold font-barlow text-whs-blue text-base">{currentPeriod}</Text>
                   {timeLeft ? (
                     <View>
-                      <Text className="font-light font-barlow-regular text-whs-blue text-base/tight">{currentPeriodStart}-{currentPeriodEnd}</Text>
+                      <Text className="font-light font-barlow-regular text-whs-blue text-sm">{currentSchedule}  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
                       <View>
                         <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
                         <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
@@ -250,6 +318,29 @@ const Bell = () => {
                   </View>
                 ) : null}
               </View> 
+              <View className="flex-row flex-wrap justify-center mt-5 w-[90%]">
+                {weekdaySchedule.map((day, index) => {
+                  // Convert the ISO string into a local readable date format
+                  const monthString = day.date.toLocaleString('en-US', { month: 'short' });
+                  const dayString = day.date.toLocaleString('en-US', { weekday: 'short' });
+
+                  return (
+                    <React.Fragment key={index}>
+                      <View className="flex flex-colflex-nowrap bg-whs-blue w-[20%] p-5">
+                        <View className="justify-center items-start border-b-2 border-white">
+                          
+                          <Text className="text-whs-gold text-center font-source-serif-bold font-black text-base/tight">{day.date.getDate()}</Text>
+                          <Text className="text-white text-xs/tight font-semibold font-source-serif-bold">{dayString}</Text>                       
+                        </View>
+                        <View className="justify-center items-start">
+                          <Text className="text-white text-xs font-light font-source-serif-regular pt-3 shrink break-all">{day.schedule}</Text>
+                        </View>
+                      </View>
+                    </React.Fragment>
+                  );
+                })}
+
+              </View>
               <View className="self-center items-start flex-row h-3/4 z-0 p-[20]">
                   <WebView
                     className="relative h-[50%]"

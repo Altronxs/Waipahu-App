@@ -1,8 +1,8 @@
 {
-    "comment": "0 = monday | 1 = tuesday... | 5 = a_asem | 6 = bb_asem | 7 = c_asem | 8 = no school",
+    "comment": "0 = monday | 1 = tuesday... | 5 = a_asem | 6 = bb_asem | 7 = c_asem | 8 = no school | 9 = EXAM A | a = EXAM B",
     "schedule": [
         {
-            "day": "monday",
+            "day": "Monday",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -87,7 +87,7 @@
             ]
         },
         {
-            "day": "tuesday",
+            "day": "Tuesday",
             "timeSchedule": [
                 {
                     "name": "Period 2",
@@ -142,7 +142,7 @@
             ]
         },
         {
-            "day": "wednesday",
+            "day": "Wednesday",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -197,7 +197,7 @@
             ]
         },
         {
-            "day": "thursday",
+            "day": "Thursday",
             "timeSchedule": [
                 {
                     "name": "Period 2",
@@ -262,7 +262,7 @@
             ]
         },
         {
-            "day": "friday",
+            "day": "Friday",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -317,7 +317,7 @@
             ]
         },
         {
-            "day": "a_assembly",
+            "day": "A Assembly",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -377,7 +377,7 @@
             ]
         },
         {
-            "day": "double_b_assembly",
+            "day": "Double B Assembly",
             "timeSchedule": [
                 {
                     "name": "Period 1",
@@ -437,7 +437,7 @@
             ]
         },
         {
-            "day": "c_assembly",
+            "day": "C Assembly",
             "timeSchedule": [
                 {
                     "name": "Period 2",
