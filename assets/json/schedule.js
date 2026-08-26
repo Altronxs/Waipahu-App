@@ -175,7 +175,7 @@ export const calculateCurrentPeriod = (now, currentEvents) => {
     }
     const calendarEntry = findCalendarEntryForDate(now);
     const scheduleID = calendarEntry.scheduleID;
-    const currentMinutes = ((now.getHours() ) * 60) + now.getMinutes(); // dev test
+    const currentMinutes = ((now.getHours() +11) * 60) + now.getMinutes(); // dev test
     const currentSeconds = now.getSeconds();
 
     // Query active layout structure and filter down to the timeframe containing the current minute

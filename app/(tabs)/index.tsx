@@ -42,12 +42,30 @@ import "../globals.css";
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
 import { Dropdown } from 'react-native-element-dropdown';
+
+
 interface SchoolEvent {
   name: string;
   month: string; // e.g., "August" or "08"
   day: string;   // e.g., "17"
   time: string;  // e.g., "All Day" or a specific time string
 }
+
+// Your strict alphanumeric mapping array
+const SCHEDULE_OPTIONS = [
+  { label: 'Monday Schedule', value: '0' },
+  { label: 'Tuesday Schedule', value: '1' },
+  { label: 'Wednesday Schedule', value: '2' },
+  { label: 'Thursday Schedule', value: '3' },
+  { label: 'Friday Schedule', value: '4' },
+  { label: 'A Assembly', value: '5' },
+  { label: 'Double B Assembly', value: '6' },
+  { label: 'C Assembly', value: '7' },
+  { label: 'No School / Holiday', value: '8' },
+  { label: 'EXAM A Schedule', value: '9' },
+  { label: 'EXAM B Schedule', value: 'a' }, // 'a' handles perfectly as a string key
+];
+
 // Shared helper so openURL rejections (app not installed, malformed URL, etc.)
 // don't surface as unhandled promise rejections.
 const openLink = (url: string) => {
@@ -82,6 +100,10 @@ export default function Index() {
 
   //
   const [isSheetVisible, setIsSheetVisible] = useState(false);
+
+  //
+  const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
+  const [isFocus, setIsFocus] = useState(false);
 
   // Ref mirror of `events` so the 1s interval callback (which has an empty
   // dependency array and is created once) can always read the latest
@@ -421,13 +443,80 @@ export default function Index() {
                 />
 
                 <GlassView  className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="white">
-                  <ScrollView style={{height: '40%', width: '100%'}}>
-                    <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+                  <ScrollView style={{ width: '100%'}}>
+                    <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3">
                       BELL SCHEDULE SETTINGS
                     </Text>
-                    <Text className="z-20 font-barlow-semibold text-base text-whs-blue w-full p-3 pl-10">
-                      Overide Current Schedule
-                    </Text>
+                    <View className="flex-row flex-nowrap w-[90%] justify-center self-center">
+                      <Text className="h-[50px] z-20 font-barlow-semibold text-lg text-whs-blue p-3">
+                        OVERIDE
+                      </Text>
+                      {/* Dropdown Component */}
+                      <Dropdown
+                        style={{
+                          width: '70%',
+                          height: 50,
+                          borderRadius: 8,
+                          paddingHorizontal: 16,
+                          borderWidth: 0.5,
+                          backgroundColor: '#FAFAFA',
+                        }}
+                        containerStyle={{
+                          borderRadius: 8
+                        }}
+                        // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
+                        placeholderStyle={{ 
+                          fontSize: 16, 
+                          color: '#9ca3af',
+                          fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
+                        }} 
+                        // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
+                        selectedTextStyle={{ 
+                          fontSize: 16, 
+                          color: '#111827',
+                          flex: 1,
+                          fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
+                        }} 
+                        // --- SET LINE LIMIT ON MAIN SELECTION TEXT ---
+                        selectedTextProps={{
+                          numberOfLines: 1,
+                        }}
+                        
+                        // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
+                        itemTextStyle={{
+                          fontSize: 16,
+                          color: '#111827',
+                          textAlign: 'left', // Explicitly aligns items in the open menu
+                          paddingTop: 10,
+                        }}
+                        data={SCHEDULE_OPTIONS}
+                        maxHeight={200}
+                        labelField="label"
+                        valueField="value"
+                        placeholder={!isFocus ? 'Choose override state...' : '...'}
+                        value={selectedSchedule}
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => setIsFocus(false)}
+                        onChange={(item) => {
+                          setSelectedSchedule(item.value);
+                          console.log(item.value)
+                          setIsFocus(false);
+                        }}
+                      />
+
+                      {/* Active Status Display Box */}
+                      {/* {selectedSchedule && (
+                        <View className="mt-5 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <Text className="text-sm text-blue-800">
+                            Active Key: <Text className="font-mono font-bold">"{selectedSchedule}"</Text> ({
+                              SCHEDULE_OPTIONS.find((s) => s.value === selectedSchedule)?.label
+                            })
+                          </Text>
+                        </View>
+                      )} */}
+                    </View>
+                    
+                    
                   </ScrollView>
                 </GlassView>
               </Modal>
