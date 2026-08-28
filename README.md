@@ -1,5 +1,3 @@
-
-
 Readme · MD
 # Waipahu High School App
  
@@ -20,26 +18,31 @@ A mobile app built for Waipahu High School students, staff, and families. Origin
 - 🔔 **Bell Schedule** — daily class period times
 - 🍽️ **Cafe** — cafeteria menu
 - 📅 **Calendar** — school events and important dates
+- 🎉 **Events** — upcoming school events feed
 - 📰 **News** — school announcements and news
 - 🏈 **Athletics** — sports info
 - 🎭 **Clubs** — clubs & organizations directory
+- 🏫 **Academy** — WHS's career academies (Arts & Communication, Health & Sciences, Industrial & Engineering Technology, Natural Resources, Professional Public Services)
 - 📋 **Registrar** — registrar info/resources
+- 👩‍🏫 **Staff** — embedded staff directory
 - ☎️ **Contacts** — school contact directory
 - 🎯 **Vision** — school vision/mission info
+- 🏛️ **Legacy** — social media links for classes, sports teams, and student groups
 - 👤 **Author** — credits/about page
 ## 🛠️ Tech Stack
  
 - **[Expo](https://expo.dev/)** (SDK 57) — build, run, and deploy tooling
-- **[React Native](https://reactnative.dev/)** 0.86 + **React** 19
+- **[React Native](https://reactnative.dev/)** 0.86 + **React** 19.2
 - **[Expo Router](https://docs.expo.dev/router/introduction/)** — file-based routing
 - **NativeTabs** (`expo-router/unstable-native-tabs`) — native bottom tab bar
 - **[NativeWind](https://www.nativewind.dev/)** + Tailwind CSS — utility-first styling
 - **[react-native-maps](https://github.com/react-native-maps/react-native-maps)** — interactive campus map
+- **react-native-webview** — embedded web content (e.g. Staff directory)
 - **@react-navigation** (bottom-tabs, native, elements)
 - **TypeScript**
 - **Expo Google Fonts** — Barlow Semi Condensed, Noto Serif, Roboto, Source Serif Pro
 - **EAS** — build/deployment configuration (`eas.json`)
-- **ESLint** (`eslint-config-expo`)
+- **ESLint** (`eslint-config-expo` via flat config, `eslint.config.js`)
 ## 🚀 Getting Started
  
 ### Prerequisites
@@ -80,12 +83,13 @@ npm run lint
 ```
 Waipahu-App/
 ├── app/                      # Expo Router screens (file-based routing)
-│   ├── (tabs)/                # Bottom tab screens
-│   │   ├── index.tsx           # Home
-│   │   ├── student.tsx         # Students
-│   │   ├── map.tsx             # Campus Map
-│   │   └── _layout.tsx         # NativeTabs navigation config
+│   ├── (tabs)/                 # Bottom tab screens
+│   │   ├── index.tsx            # Home
+│   │   ├── student.tsx          # Students
+│   │   ├── map.tsx              # Campus Map
+│   │   └── _layout.tsx          # NativeTabs navigation config
 │   ├── _layout.tsx             # Root layout
+│   ├── academy.tsx             # Career academies info
 │   ├── athletics.tsx
 │   ├── author.tsx
 │   ├── bell.tsx                 # Bell schedule
@@ -93,19 +97,25 @@ Waipahu-App/
 │   ├── calendar.tsx
 │   ├── clubs.tsx
 │   ├── contacts.tsx
+│   ├── events.tsx               # Upcoming events feed
+│   ├── globals.css              # Tailwind/NativeWind global styles
+│   ├── legacy.tsx               # Legacy classes/teams social links
 │   ├── news.tsx
 │   ├── registrar.tsx
-│   ├── vision.tsx
-│   └── legacy.tsx               
+│   ├── staff.tsx                # Embedded staff directory (WebView)
+│   └── vision.tsx
 ├── assets/
 │   ├── images/                  # Icons, backgrounds, campus/map assets
-│   ├── json/                    # clubData, mapdata, calendar, school_schedule
+│   ├── json/                    # clubData, mapdata, calendar, school_schedule, eventService, schedule
 │   └── pdf/                     # Campus map PDF
 ├── app.json                    # Expo app configuration
 ├── eas.json                    # EAS build configuration
 ├── tailwind.config.js
 ├── babel.config.js
 ├── metro.config.js
+├── eslint.config.js
+├── nativewind-env.d.ts
+├── tsconfig.json
 └── package.json
 ```
  
@@ -130,5 +140,3 @@ This project is maintained for Waipahu High School. License TBD.
 ## 📬 Contact
  
 Questions or feedback? Reach out at kyleboy1010@gmail.com.
- 
-
