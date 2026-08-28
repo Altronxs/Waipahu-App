@@ -42,6 +42,7 @@ import "../globals.css";
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod } from '@/assets/json/schedule'
 import { Dropdown } from 'react-native-element-dropdown';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 interface SchoolEvent {
@@ -278,6 +279,27 @@ export default function Index() {
     }, [selectedSchedule])
   );
 
+  // Run this lifecycle hook immediately when the component mounts to the screen
+  useEffect(() => {
+    // Define an internal asynchronous function since useEffect callbacks cannot be async
+    const loadSavedSchedule = async () => {
+      try {
+        // Await the asynchronous retrieval of the saved schedule string from disk
+        const savedValue = await AsyncStorage.getItem('setting.schedule');
+        
+        // If the key exists, update our state. If it returns null, fall back to our default empty string.
+        setSelectedSchedule(savedValue ?? '');
+      } catch (error) {
+        // Catch any filesystem errors to prevent the application from crashing
+        console.error("Failed to load local schedule settings data:", error);
+      }
+    };
+
+    // Execute the retrieval routine
+    loadSavedSchedule();
+  }, []); // Empty dependency array ensures this effect runs exactly once on mount
+
+
   const openSheetFor = () => {
     setIsSheetVisible(true);
   };
@@ -501,9 +523,23 @@ export default function Index() {
                         value={selectedSchedule}
                         onFocus={() => setIsFocus(true)}
                         onBlur={() => setIsFocus(false)}
-                        onChange={(item) => {
-                          setSelectedSchedule(item.value);
-                          setIsFocus(false);
+                        onChange={async (item) => { 
+                          // 1. Guard check: Ensure item and item.value actually exist
+                          if (item?.value) {
+                            // 2. Instantly update the React state to make the UI feel fast and snappy
+                            setSelectedSchedule(item.value); 
+                            
+                            try {
+                              // 3. Persist the string choice to local storage asynchronously
+                              // We cast item.value to a String to guarantee it matches AsyncStorage requirements
+                              await AsyncStorage.setItem('setting.schedule', String(item.value));
+                            } catch (error) {
+                              console.error("Failed to save schedule selection:", error);
+                            }
+                          }
+                          
+                          // 4. Close the dropdown menu overlay
+                          setIsFocus(false); 
                         }}
                       />
                     </View>
