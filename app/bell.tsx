@@ -42,7 +42,7 @@ import { GlassView } from 'expo-glass-effect';
 import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod, findCalendarEntryForDate } from '@/assets/json/schedule'
 import schoolSchedule from '@/assets/json/school_schedule.json'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 interface SchoolEvent {
@@ -193,6 +193,26 @@ const Bell = () => {
     eventsRef.current = events;
   }, [events]);
 
+  // Run this lifecycle hook immediately when the component mounts to the screen
+  useEffect(() => {
+    // Define an internal asynchronous function since useEffect callbacks cannot be async
+    const loadSavedSchedule = async () => {
+      try {
+        // Await the asynchronous retrieval of the saved schedule string from disk
+        const savedValue = await AsyncStorage.getItem('setting.schedule');
+        
+        // If the key exists, update our state. If it returns null, fall back to our default empty string.
+        setSelectedSchedule(savedValue ?? '');
+      } catch (error) {
+        // Catch any filesystem errors to prevent the application from crashing
+        console.error("Failed to load local schedule settings data:", error);
+      }
+    };
+
+    // Execute the retrieval routine
+    loadSavedSchedule();
+  }, []); // Empty dependency array ensures this effect runs exactly once on mount
+
   /**
    * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
    * completely bypassing the user's local system timezone settings.
@@ -307,7 +327,7 @@ const Bell = () => {
       // Re-created each time this screen refocuses; `eventsRef` (kept in
       // sync by the effect above) lets the callback read the latest events
       // without needing `events` in this dependency array.
-    }, [])
+    }, [selectedSchedule])
   );
 
   const openSheetFor = () => {
@@ -396,7 +416,7 @@ const Bell = () => {
                         style={{
                           width: 30, height: 50
                         }}
-                        onPress={() => openSheetFor()}
+                        onPress={() => router.push("/settings")}
                       >
                         <Image
                           source={require("@/assets/images/question.png")}
@@ -482,87 +502,7 @@ const Bell = () => {
             
           </View>
         </ScrollView>
-        <Modal
-          animationType="slide"
-          transparent
-          visible={isSheetVisible}
-          onRequestClose={() => setIsSheetVisible(false)}
-        >
-          {/* Dimmed background area that closes the sheet when tapped */}
-          <TouchableOpacity
-            className="flex-1 justify-end items-center bg-black/1"
-            activeOpacity={1}
-            onPressOut={() => setIsSheetVisible(false)}
-          />
-
-          <GlassView  className="w-full bg-whs-blue p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="#17273d">
-            <ScrollView style={{ width: '100%'}}>
-              <Text className="z-20 font-barlow-semibold text-2xl text-white w-full text-center text-nowrap">
-                BELL SCHEDULE SETTINGS
-              </Text>
-              <View className="flex-row flex-nowrap w-[90%] justify-center self-center items-center h-[50px] rounded-2xl">
-                <Text className="z-20 font-barlow-regular text-lg text-white px-5">
-                  OVERIDE
-                </Text>
-                {/* Dropdown Component */}
-                <Dropdown
-                  style={{
-                    width: '60%',
-                    height: 50,
-                    paddingHorizontal: 8,
-                    backgroundColor: '#b28d3e',
-                    borderRadius: 16,
-                  }}
-                  containerStyle={{
-                    backgroundColor: '#b28d3e',
-                    borderWidth: 0
-                  }}
-                  // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
-                  placeholderStyle={{ 
-                    fontSize: 16, 
-                    color: '#111827',
-                    flex: 1,
-                    fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
-                  }} 
-                  // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
-                  selectedTextStyle={{ 
-                    
-                    fontSize: 16, 
-                    color: '#111827',
-                    flex: 1,
-                    fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
-                  }} 
-                  // --- SET LINE LIMIT ON MAIN SELECTION TEXT ---
-                  selectedTextProps={{
-                    numberOfLines: 1,
-                  }}
-                  activeColor=""
-                  // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
-                  itemTextStyle={{
-                    fontSize: 16,
-                    color: '#111827',
-                    textAlign: 'left', // Explicitly aligns items in the open menu
-                    paddingTop: 10,
-                  }}
-                  data={SCHEDULE_OPTIONS}
-                  maxHeight={200}
-                  labelField="label"
-                  valueField="value"
-                  placeholder={!isFocus ? 'No Override' : '...'}
-                  value={selectedSchedule}
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
-                  onChange={(item) => {
-                    setSelectedSchedule(item.value);
-                    setIsFocus(false);
-                  }}
-                />
-              </View>
-            </ScrollView>
-          </GlassView>
-        </Modal>
       </View>
-      
     </SafeAreaProvider>
   );
 };

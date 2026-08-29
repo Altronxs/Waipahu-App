@@ -96,7 +96,7 @@ const Academy = () => {
 
       <View className="justify-center items-center bg-whs-gold">
         <TouchableOpacity
-            className="w-10 h-10 left self-start pt-3 z-30"
+            className="w-10 h-10 self-start pt-3 z-30"
             onPress={() => router.push("/")}
             accessibilityRole="button"
             accessibilityLabel="Go back"

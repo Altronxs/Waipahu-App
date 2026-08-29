@@ -140,6 +140,7 @@ export default function Index() {
         { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.push("/contacts") },
         { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://hawaii.infinitecampus.org/campus/hawaii.jsp") },
         { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://www.waipahuhigh.org/") },
+        { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.push("/settings") },
         { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/author") },
       ],
     }
@@ -389,7 +390,7 @@ export default function Index() {
                         style={{
                           width: 30, height: 50
                         }}
-                        onPress={() => openSheetFor()}
+                        onPress={() => router.push("/settings")}
                       >
                         <Image
                           source={require("@/assets/images/question.png")}
@@ -402,7 +403,7 @@ export default function Index() {
                     </Text>
                     {timeLeft ? (
                       <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart.replace('0:00', '12:00am')}-{currentPeriodEnd}</Text>
                         <View>
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
@@ -435,16 +436,16 @@ export default function Index() {
                   <Text className="font-barlow-semibold text-center">
                     {section.title}
                   </Text>
-                  <View className="flex-row flex-wrap justify-center gap-4">
+                  <View className="flex-row flex-wrap justify-center">
                     {section.items.map((item) => (
                       <TouchableOpacity
                         key={item.label}
-                        className="w-[20%] h-min justify-center items-center"
+                        className="w-[30%] h-min justify-center items-center py-3"
                         onPress={item.onPress}
                         accessibilityRole="button"
                         accessibilityLabel={item.label}
                       >
-                        <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[3.75rem] self-center" />
+                        <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[4.25rem] self-center" />
                         <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                           {item.label}
                         </Text>
@@ -453,99 +454,7 @@ export default function Index() {
                   </View>
                 </View>
               ))}
-              <Modal
-                animationType="slide"
-                transparent
-                visible={isSheetVisible}
-                onRequestClose={() => setIsSheetVisible(false)}
-              >
-                {/* Dimmed background area that closes the sheet when tapped */}
-                <TouchableOpacity
-                  className="flex-1 justify-end items-center bg-black/1"
-                  activeOpacity={1}
-                  onPressOut={() => setIsSheetVisible(false)}
-                />
-
-                <GlassView  className="w-full bg-whs-blue p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="#17273d">
-                  <ScrollView style={{ width: '100%'}}>
-                    <Text className="z-20 font-barlow-semibold text-2xl text-white w-full text-center text-nowrap">
-                      BELL SCHEDULE SETTINGS
-                    </Text>
-                    <View className="flex-row flex-nowrap w-[90%] justify-center self-center items-center h-[50px] rounded-2xl">
-                      <Text className="z-20 font-barlow-regular text-lg text-white px-5">
-                        OVERIDE
-                      </Text>
-                      {/* Dropdown Component */}
-                      <Dropdown
-                        style={{
-                          width: '60%',
-                          height: 50,
-                          paddingHorizontal: 8,
-                          backgroundColor: '#b28d3e',
-                          borderRadius: 16,
-                        }}
-                        containerStyle={{
-                          backgroundColor: '#b28d3e',
-                          borderWidth: 0
-                        }}
-                        // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
-                        placeholderStyle={{ 
-                          fontSize: 16, 
-                          color: '#111827',
-                          flex: 1,
-                          fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
-                        }} 
-                        // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
-                        selectedTextStyle={{ 
-                          
-                          fontSize: 16, 
-                          color: '#111827',
-                          flex: 1,
-                          fontFamily: 'BarlowSemiCondensed_400Regular_Italic'
-                        }} 
-                        // --- SET LINE LIMIT ON MAIN SELECTION TEXT ---
-                        selectedTextProps={{
-                          numberOfLines: 1,
-                        }}
-                        activeColor=""
-                        // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
-                        itemTextStyle={{
-                          fontSize: 16,
-                          color: '#111827',
-                          textAlign: 'left', // Explicitly aligns items in the open menu
-                          paddingTop: 10,
-                        }}
-                        data={SCHEDULE_OPTIONS}
-                        maxHeight={200}
-                        labelField="label"
-                        valueField="value"
-                        placeholder={!isFocus ? 'No Override' : '...'}
-                        value={selectedSchedule}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={async (item) => { 
-                          // 1. Guard check: Ensure item and item.value actually exist
-                          if (item?.value) {
-                            // 2. Instantly update the React state to make the UI feel fast and snappy
-                            setSelectedSchedule(item.value); 
-                            
-                            try {
-                              // 3. Persist the string choice to local storage asynchronously
-                              // We cast item.value to a String to guarantee it matches AsyncStorage requirements
-                              await AsyncStorage.setItem('setting.schedule', String(item.value));
-                            } catch (error) {
-                              console.error("Failed to save schedule selection:", error);
-                            }
-                          }
-                          
-                          // 4. Close the dropdown menu overlay
-                          setIsFocus(false); 
-                        }}
-                      />
-                    </View>
-                  </ScrollView>
-                </GlassView>
-              </Modal>
+              
             </ImageBackground>
           </ScrollView>
         </View>

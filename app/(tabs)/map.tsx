@@ -222,19 +222,28 @@ const Map = () => {
         </View>
     </View>
 
-      <View className="justify-center items-center bg-whs-gold">
-        <TouchableOpacity
-          className="w-10 h-10 left self-start pt-3 z-30"
-          onPress={() => router.push("/")}
+      <View className="justify-center items-center flex-nowrap bg-whs-gold">
+        <GlassView
+            style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
+            glassEffectStyle="clear"
+            isInteractive
         >
-          <Image
-            source={require("@/assets/images/back.png")}
-            style={{ tintColor: "#17273d" }}
-            className="size-10 self-center"
-          />
-        </TouchableOpacity>
-        <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          Campus Map 2025-2026
+            <TouchableOpacity
+                className="items-center"
+                onPress={() => router.push("/")}
+            >
+                <Image
+                source={require("@/assets/images/back.png")}
+                style={{
+                    tintColor: "#ffffff",
+                }}
+                className="size-10 self-center block m-auto pr-1"
+                />
+            </TouchableOpacity>
+        </GlassView>
+        <Text className="z-20 font-roboto-bold text-white text-xl w-full bg-whs-gold text-center absolute"
+        >
+          Campus Map SY26-27
         </Text>
       </View>
 
@@ -315,17 +324,23 @@ const Map = () => {
             </React.Fragment>
           ))}
         </MapView>
-
-        <TouchableOpacity
-          className="w-5 h-5 self-center justify-center absolute bottom-[10rem] z-50"
-          onPress={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
+        <GlassView
+          style={{alignSelf: 'flex-end', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 150}}
+          glassEffectStyle="clear"
+          isInteractive
         >
-          <Image
-            source={require("@/assets/images/whs-icon.png")}
-            style={{ tintColor: "#ffffff" }}
-            className="size-10 self-center"
-          />
-        </TouchableOpacity>
+          <TouchableOpacity
+            className="w-10 h-10"
+            onPress={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
+          >
+            <Image
+              source={require("@/assets/images/whs-icon.png")}
+              style={{ tintColor: "#ffffff" }}
+              className="size-10 self-center"
+            />
+          </TouchableOpacity>
+        </GlassView>
+        
 
         <Modal
           animationType="slide"

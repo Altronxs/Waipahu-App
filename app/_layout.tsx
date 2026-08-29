@@ -15,7 +15,8 @@ const HIDDEN_ROUTE_TITLES: Record<string, string> = {
   clubs: "Clubs",
   registrar: "Registrar",
   author: "Author",
-  legacy: "Legacy"
+  legacy: "Legacy",
+  settings: "Settings"
 };
 
 export default function RootLayout() {

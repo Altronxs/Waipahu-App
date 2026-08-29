@@ -197,8 +197,7 @@ export const calculateCurrentPeriod = (now, currentEvents, overrideID) => {
 
     const dayOfWeek = now.getDay(); // 0 = Sunday ... 6 = Saturday
     const calendarEntry = findCalendarEntryForDate(now);
-
-    const currentMinutes = ((now.getHours() - 6) * 60) + now.getMinutes();
+    const currentMinutes = ((now.getHours() - 0) * 60) + now.getMinutes();
     const currentSeconds = now.getSeconds();
 
     // Resolve which timeline to use: the live calendar-derived schedule,
