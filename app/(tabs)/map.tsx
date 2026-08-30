@@ -38,6 +38,8 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from 'expo-glass-effect'
+import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get("window");
 
@@ -109,7 +111,7 @@ const FloorRow = ({
 }) => {
   const containerClassName =
     variant === "second"
-      ? "flex-row flex-wrap justify-around flex-1"
+      ? "flex-row flex-nowrap justify-around flex-1"
       : "flex-row items-center justify-start self-center";
 
   const cellClassName =
@@ -141,6 +143,8 @@ const Map = () => {
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [isSheetVisible, setIsSheetVisible] = useState(false);
   const [region, setRegion] = useState(INITIAL_REGION);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [AllowMapLocation, setAllowMapLocation] = useState<boolean>(false)
 
   const [mapData] = useState<MapDataResponse>(
     require("@/assets/json/mapdata.json"),
@@ -168,6 +172,29 @@ const Map = () => {
     SourceSerifPro_600SemiBold,
   });
 
+  // Run this lifecycle hook immediately when the component mounts to the screen
+  useEffect(() => {
+    // Define an internal asynchronous function since useEffect callbacks cannot be async
+    const loadSavedSettings = async () => {
+      try {
+        // Await the asynchronous retrieval of the saved schedule string from disk
+        const savedValue = await AsyncStorage.getItem('setting.mapLocation');
+      
+        
+        // If the key exists, update our state. If it returns null, fall back to our default empty string.
+        setAllowMapLocation(savedValue !== null ? JSON.parse(savedValue) : false);
+      } catch (error) {
+        // Catch any filesystem errors to prevent the application from crashing
+        console.error("Failed to load local schedule settings data:", error);
+      }
+    };
+
+    // Execute the retrieval routine
+    loadSavedSettings();
+  }, []); // Empty dependency array ensures this effect runs exactly once on mount
+
+  
+
   useEffect(() => {
     async function loadMapAsset() {
       try {
@@ -187,6 +214,23 @@ const Map = () => {
     setInterestPoint(name);
     setIsSheetVisible(true);
   };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+    })();
+  }, []);
 
   const selectedFeature = mapData.mapData.find(
     (feature) => feature.name === interestPoint,
@@ -247,7 +291,7 @@ const Map = () => {
         </Text>
       </View>
 
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
+      <View className="bg-white w-[100vw] flex-1 justify-center items-center">
         <MapView
           ref={mapRef}
           style={{ width: "100%", height: "100%", zIndex: 20 }}
@@ -257,6 +301,7 @@ const Map = () => {
           cameraZoomRange={CAMERA_ZOOM_RANGE}
           mapType="standard"
           userInterfaceStyle="dark"
+          showsUserLocation={AllowMapLocation} 
         >
           {mapData.mapData.map((feature, index) => (
             <React.Fragment key={index}>
@@ -314,7 +359,7 @@ const Map = () => {
                 </View>
 
                 <Callout tooltip>
-                  <GlassView className="items-center" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"clear"}>
+                  <GlassView className="items-center bg-white" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"clear"}>
                     <Text className="font-barlow-semibold text-xs mb-1 text-white w-30 text-center self-center items-center">
                       {feature.name}
                     </Text>
@@ -325,9 +370,10 @@ const Map = () => {
           ))}
         </MapView>
         <GlassView
-          style={{alignSelf: 'flex-end', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 150}}
+          style={{alignSelf: 'center', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 120}}
           glassEffectStyle="clear"
           isInteractive
+          onTouchEnd={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
         >
           <TouchableOpacity
             className="w-10 h-10"
@@ -383,19 +429,21 @@ const Map = () => {
                     {selectedFeature.name}
                   </Text>
                   <View className="self-center m-auto block">
-                    <WebView
-                      ref={webViewRef}
-                      source={{ uri: pdfUri ?? undefined }}
-                      style={{ width: width * 0.8, height: height * 0.15 }}
-                      className="self-center m-auto block"
-                      // Critical security and file flags needed for local URIs
-                      originWhitelist={["*"]}
-                      allowFileAccess
-                      allowFileAccessFromFileURLs
-                      allowUniversalAccessFromFileURLs
-                      // Enables standard pinch-to-zoom controls inside the viewer
-                      scalesPageToFit
-                    />
+                    {pdfUri && (
+                      <WebView
+                        ref={webViewRef}
+                        source={{ uri: pdfUri }}
+                        style={{ width: width * 0.8, height: height * 0.15 }}
+                        className="self-center m-auto block"
+                        // Critical security and file flags needed for local URIs
+                        originWhitelist={["*"]}
+                        allowFileAccess
+                        allowFileAccessFromFileURLs
+                        allowUniversalAccessFromFileURLs
+                        // Enables standard pinch-to-zoom controls inside the viewer
+                        scalesPageToFit
+                      />
+                    )}
                   </View>
                 </View>
               )}

@@ -32,7 +32,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
- 
+import { GlassView } from 'expo-glass-effect';
 
 const Athletics = () => {
   const router = useRouter();
@@ -102,38 +102,52 @@ const Athletics = () => {
       </View>
 
       {canGoBack ? (
-        <View className="justify-center items-center bg-whs-gold">
-          <TouchableOpacity
-            className="w-10 h-10 left self-start pt-3 z-30"
-            onPress={() => webViewRef.current?.goBack()}
+        <View className="justify-center items-center flex-nowrap bg-whs-gold">
+          <GlassView
+              style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
+              glassEffectStyle="clear"
+              isInteractive
           >
-            <Image
-              source={require("@/assets/images/back.png")}
-              style={{
-                tintColor: "#17273d",
-              }}
-              className="size-10 self-center"
-            />
-          </TouchableOpacity>
-          <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
+              <TouchableOpacity
+                  className="items-center"
+                  onPress={() => webViewRef.current?.goBack()}
+              >
+                  <Image
+                  source={require("@/assets/images/back.png")}
+                  style={{
+                      tintColor: "#ffffff",
+                  }}
+                  className="size-10 self-center block m-auto pr-1"
+                  />
+              </TouchableOpacity>
+          </GlassView>
+          <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
+          >
             Athletics Homepage
           </Text>
         </View>
       ) : (
-        <View className="justify-center items-center bg-whs-gold ">
-          <TouchableOpacity
-            className="w-10 h-10 left self-start pt-3 z-30"
-            onPress={() => router.push("/")}
+        <View className="justify-center items-center flex-nowrap bg-whs-gold">
+          <GlassView
+              style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
+              glassEffectStyle="clear"
+              isInteractive
           >
-            <Image
-              source={require("@/assets/images/back.png")}
-              style={{
-                tintColor: "#17273d",
-              }}
-              className="size-10 self-center"
-            />
-          </TouchableOpacity>
-          <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
+              <TouchableOpacity
+                  className="items-center"
+                  onPress={() => router.push("/")}
+              >
+                  <Image
+                  source={require("@/assets/images/back.png")}
+                  style={{
+                      tintColor: "#ffffff",
+                  }}
+                  className="size-10 self-center block m-auto pr-1"
+                  />
+              </TouchableOpacity>
+          </GlassView>
+          <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
+          >
             Athletics Homepage
           </Text>
         </View>

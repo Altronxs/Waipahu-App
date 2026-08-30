@@ -36,7 +36,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
+import { GlassView } from 'expo-glass-effect';
 
 const openLink = (url: string) => {
   Linking.openURL(url).catch((error) => {
@@ -94,23 +94,28 @@ const Academy = () => {
           </View>
       </View>
 
-      <View className="justify-center items-center bg-whs-gold">
-        <TouchableOpacity
-            className="w-10 h-10 self-start pt-3 z-30"
-            onPress={() => router.push("/")}
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
+      <View className="justify-center items-center flex-nowrap bg-whs-gold">
+        <GlassView
+            style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
+            glassEffectStyle="clear"
+            isInteractive
         >
-            <Image
-            source={require("@/assets/images/back.png")}
-            style={{
-                tintColor: "#17273d",
-            }}
-            className="size-10 self-center"
-            />
-        </TouchableOpacity>
-        <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-            Academies of Waipahu High School
+            <TouchableOpacity
+                className="items-center"
+                onPress={() => router.push("/")}
+            >
+                <Image
+                source={require("@/assets/images/back.png")}
+                style={{
+                    tintColor: "#ffffff",
+                }}
+                className="size-10 self-center block m-auto pr-1"
+                />
+            </TouchableOpacity>
+        </GlassView>
+        <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
+        >
+          Academies of{'\n'} Waipahu High School
         </Text>
       </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>

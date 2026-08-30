@@ -35,6 +35,7 @@ import {
     TouchableOpacity,
     useWindowDimensions,
     View,
+    Switch,
 } from "react-native";
 import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
@@ -90,7 +91,8 @@ export default function Settings() {
   // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
 
-
+  const [AllowMapLocation, setAllowMapLocation] = useState<boolean>(false)
+  const toggleSwitch = () => setAllowMapLocation(previousState => !previousState);
   //
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
   const [isFocus, setIsFocus] = useState(false);
@@ -235,12 +237,14 @@ export default function Settings() {
   // Run this lifecycle hook immediately when the component mounts to the screen
   useEffect(() => {
     // Define an internal asynchronous function since useEffect callbacks cannot be async
-    const loadSavedSchedule = async () => {
+    const loadSavedSettings = async () => {
       try {
         // Await the asynchronous retrieval of the saved schedule string from disk
         const savedValue = await AsyncStorage.getItem('setting.schedule');
+        const savedAllowLocatorMark = await AsyncStorage.getItem('setting.mapLocation');
         
         // If the key exists, update our state. If it returns null, fall back to our default empty string.
+        setAllowMapLocation(savedAllowLocatorMark !== null ? JSON.parse(savedAllowLocatorMark) : false)
         setSelectedSchedule(savedValue ?? '');
       } catch (error) {
         // Catch any filesystem errors to prevent the application from crashing
@@ -249,7 +253,7 @@ export default function Settings() {
     };
 
     // Execute the retrieval routine
-    loadSavedSchedule();
+    loadSavedSettings();
   }, []); // Empty dependency array ensures this effect runs exactly once on mount
 
 
@@ -316,7 +320,7 @@ export default function Settings() {
                     className="w-full h-[100vh] flex flex-col justify-start"
                 >   
                     <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 mt-5 self-center"
+                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 mt-5 ml-3 self-center"
                         style={{color: '#5b5b5b'}}
                     >
                         Bell Schedule
@@ -339,7 +343,7 @@ export default function Settings() {
                         style={{
                           width: '50%',
                           height: 50,
-                          paddingHorizontal: 8,
+                          paddingHorizontal: 20,
                           borderRadius: 16,
                           marginLeft: 'auto',
                         }}
@@ -406,10 +410,147 @@ export default function Settings() {
                       />
                     </View>
                     <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-lg/tight p-3 self-center"
+                        className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
                         style={{color: '#8b8b8b'}}
                     >
-                        This setting controls which schedule the app uses when calculating your current period, time remaining, and period start/end times.
+                        Choose which bell schedule the app uses to show your current period. Leave it on Auto to match today's actual schedule, or manually select a specific day type (like an assembly or exam schedule) to preview it.
+                    </Text>
+
+                    <Text
+                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 ml-3 self-center"
+                        style={{color: '#5b5b5b'}}
+                    >
+                        Map
+                    </Text>
+                    <View
+                        className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                        style={{borderRadius: 20}}
+                    >
+                        <Image
+                            source={require("@/assets/images/whs-map.png")}
+                            className="self-center"
+                            style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                        />
+                        <Text
+                            className="z-20 font-barlow-semibold text-black text-xl p-3"
+                        >
+                            Location Marker
+                        </Text>
+                        <Switch
+                          style={{
+                            alignSelf: 'center',
+                            marginHorizontal: 10,
+                            borderRadius: 16,
+                            marginLeft: 'auto',
+                            backgroundColor: '#9e9e9e',
+                          }}
+                          trackColor={{false: '#545454', true: '#b28d3e'}}
+                          thumbColor={AllowMapLocation ? '#ffffff' : '#f4f3f4'}
+                          onValueChange={async (nextValue) => {
+                            setAllowMapLocation(nextValue);
+                            console.log(nextValue)
+                            try {
+                              await AsyncStorage.setItem('setting.mapLocation', String(nextValue));
+                            } catch (error) {
+                              console.error("Failed to save map location setting:", error);
+                            }
+                          }}
+                          value={AllowMapLocation}
+                        />
+                    </View>
+                    <Text
+                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 ml-3 self-center"
+                        style={{color: '#5b5b5b'}}
+                    >
+                        Information
+                    </Text>
+                    <TouchableOpacity
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                      style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
+                      onPress={() => {
+                        router.push("/author")
+                      }}
+                    >
+                      <View
+                          className="w-[100%] self-center bg-white flex flex-row flex-nowrap"
+                          style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
+                          
+                      >
+                  
+                          <Image
+                              source={require("@/assets/images/author.png")}
+                              className="self-center"
+                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                          />
+                          <Text
+                              className="z-20 font-barlow-semibold text-black text-xl p-3"
+                          >
+                              Authors
+                          </Text>
+                          <Image
+                              source={require("@/assets/images/forward.png")}
+                              className="self-center"
+                              
+                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                          />
+                      </View>
+                    </TouchableOpacity>
+                    
+                    <View
+                        className="w-[90%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
+                        
+                    >
+                        <Image
+                            source={require("@/assets/images/docs.png")}
+                            className="self-center"
+                            style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                        />
+                        <Text
+                            className="z-20 font-barlow-semibold text-black text-xl p-3"
+                        >
+                          App Version
+                        </Text>
+                        <Text className="self-center ml-auto mr-[20px]"
+                          style={{color: '#8b8b8b'}}
+                        >
+                          1.0.0
+                        </Text>
+                    </View>
+                    <TouchableOpacity
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                      style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}
+                      onPress={() => {
+                        openLink("https://github.com/Altronxs/Waipahu-App")
+                      }}
+                    >
+                      <View
+                        className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"  
+                        style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}  
+                      >
+                  
+                          <Image
+                              source={require("@/assets/images/globe.png")}
+                              className="self-center"
+                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                          />
+                          <Text
+                              className="z-20 font-barlow-semibold text-black text-xl p-3"
+                          >
+                              Source Code
+                          </Text>
+                          <Image
+                              source={require("@/assets/images/forward.png")}
+                              className="self-center"
+                              
+                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                          />
+                      </View>
+                    </TouchableOpacity>
+                    <Text
+                        className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
+                        style={{color: '#8b8b8b'}}
+                    >
+                        MADE BY STUDENTS & ALUMNI
                     </Text>
                 </View>
                 

@@ -282,22 +282,42 @@ const Bell = () => {
         const dayOfWeek = now.getDay();
         const currentEventsList = eventsRef.current;
 
-        // `findCalendarEntryForDate` is the single source of truth for
-        // "what schedule is today on" — used both to build the weekly list
-        // and (below) to decide whether there's a live period to show.
-        // Previously this was computed twice per tick (once implicitly via
-        // `calculateCurrentPeriod`'s own scheduleID, and again here), which
-        // did redundant work and could disagree if the two ever diverged.
-        const calendarEntry = findCalendarEntryForDate(now) as CalendarEntry;
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+          // `findCalendarEntryForDate` is the single source of truth for
+          // "what schedule is today on" — used both to build the weekly list
+          // and (below) to decide whether there's a live period to show.
+          // Previously this was computed twice per tick (once implicitly via
+          // `calculateCurrentPeriod`'s own scheduleID, and again here), which
+          // did redundant work and could disagree if the two ever diverged.
+          const calendarEntry = findCalendarEntryForDate(now) as CalendarEntry;
 
-        // Only rebuild the weekly list when the day or its scheduleID
-        // changes (e.g. once a day, or when an admin swaps in a snow-day
-        // schedule mid-day) — not on every single 1s tick.
-        const scheduleKey = `${now.toDateString()}-${calendarEntry.scheduleID}`;
-        if (scheduleKey !== lastScheduleKeyRef.current) {
-          lastScheduleKeyRef.current = scheduleKey;
-          setWeekdaySchedule(getWeekdays(now, calendarEntry.scheduleID));
+          // Only rebuild the weekly list when the day or its scheduleID
+          // changes (e.g. once a day, or when an admin swaps in a snow-day
+          // schedule mid-day) — not on every single 1s tick.
+          const scheduleKey = `${now.toDateString()}-${calendarEntry.scheduleID}`;
+          if (scheduleKey !== lastScheduleKeyRef.current) {
+            lastScheduleKeyRef.current = scheduleKey;
+            setWeekdaySchedule(getWeekdays(now, calendarEntry.scheduleID));
+          }
+        } else {
+          // Use a cloned Date instance so we can advance to the next day without
+          // mutating the current Hawaii time used elsewhere in this tick.
+          const nextDay = new Date(now);
+          if (dayOfWeek == 0) {
+            nextDay.setDate(now.getDate() + 1);
+          } else if (dayOfWeek == 6) {
+            nextDay.setDate(now.getDate() - 1);
+          }
+          
+          const calendarEntry = findCalendarEntryForDate(nextDay) as CalendarEntry;
+          
+          const scheduleKey = `${now.toDateString()}-${calendarEntry.scheduleID}`;
+          if (scheduleKey !== lastScheduleKeyRef.current) {
+            lastScheduleKeyRef.current = scheduleKey;
+            setWeekdaySchedule(getWeekdays(now, calendarEntry.scheduleID));
+          }
         }
+        
 
         // Guard against calling calculateCurrentPeriod before events have
         // loaded (currentEventsList would otherwise be empty, making
