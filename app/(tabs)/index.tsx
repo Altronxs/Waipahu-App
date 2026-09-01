@@ -342,7 +342,7 @@ export default function Index() {
         <View className="bg-white w-[100vw] h-[100vh] justify-center items-center ">
           <ScrollView
             className="w-[100vw] bg-white flex-1 flex-col"
-            style={{ height: height * 0.5}}
+            // style={{ height: height * 0.5}}
             bounces={true}                
             overScrollMode="never"          
             scrollEventThrottle={16}       
@@ -355,7 +355,7 @@ export default function Index() {
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
               className="flex-row flex-wrap flex-1 justify-center  w-[100vw]"
-              style={{ flex: 1, height: height * 1.25}}
+              style={{ flex: 1, height: height * 1.5, width: '100%' }}
               resizeMode="cover"
             >
               

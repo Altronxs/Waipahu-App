@@ -552,6 +552,7 @@ export default function Settings() {
                     >
                         MADE BY STUDENTS & ALUMNI
                     </Text>
+
                 </View>
                 
             </ScrollView>

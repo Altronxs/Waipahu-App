@@ -17,17 +17,13 @@ module.exports = {
     android: {
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
-        foregroundImage: "./assets/images/android-icon-foreground.png",
-        backgroundImage: "./assets/images/android-icon-background.png",
-        monochromeImage: "#assets/images/android-icon-monochrome.png"
+        // foregroundImage: "./assets/images/android-icon-foreground.png",
+        // backgroundImage: "./assets/images/android-icon-background.png",
+        // monochromeImage: "#assets/images/android-icon-monochrome.png"
       },
       predictiveBackGestureEnabled: false,
       package: "com.altronx.WaipahuHighSchoolApp",
       // REMOVE "config.googleMaps" from here completely to prevent conflicts
-    },
-    web: {
-      output: "static",
-      favicon: "./assets/images/favicon.png"
     },
     plugins: [
       "expo-router",

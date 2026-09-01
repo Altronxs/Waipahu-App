@@ -370,7 +370,7 @@ const Map = () => {
           ))}
         </MapView>
         <GlassView
-          style={{alignSelf: 'center', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 120}}
+          style={{alignSelf: 'center', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 70}}
           glassEffectStyle="clear"
           isInteractive
           onTouchEnd={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
