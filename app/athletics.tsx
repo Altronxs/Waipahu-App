@@ -107,6 +107,7 @@ const Athletics = () => {
               style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
               glassEffectStyle="clear"
               isInteractive
+              onTouchEnd={() => webViewRef.current?.goBack()}
           >
               <TouchableOpacity
                   className="items-center"
@@ -132,6 +133,7 @@ const Athletics = () => {
               style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
               glassEffectStyle="clear"
               isInteractive
+              onTouchEnd={() => router.push("/")}
           >
               <TouchableOpacity
                   className="items-center"

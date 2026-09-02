@@ -383,20 +383,28 @@ const Bell = () => {
         </View>
       </View>
 
-      <View className="justify-center items-center bg-whs-gold">
-        <TouchableOpacity
-          className="w-10 h-10 left self-start pt-3 z-30"
-          onPress={() => router.push("/")}
+      <View className="justify-center items-center flex-nowrap bg-whs-gold">
+        <GlassView
+            style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
+            glassEffectStyle="clear"
+            isInteractive
+            onTouchEnd={() => router.push("/")}
         >
-          <Image
-            source={require("@/assets/images/back.png")}
-            style={{
-              tintColor: "#17273d",
-            }}
-            className="size-10 self-center"
-          />
-        </TouchableOpacity>
-        <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
+            <TouchableOpacity
+                className="items-center"
+                onPress={() => router.push("/")}
+            >
+                <Image
+                source={require("@/assets/images/back.png")}
+                style={{
+                    tintColor: "#ffffff",
+                }}
+                className="size-10 self-center block m-auto pr-1"
+                />
+            </TouchableOpacity>
+        </GlassView>
+        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+        >
           Bell Schedule SY26-27
         </Text>
       </View>
@@ -454,7 +462,7 @@ const Bell = () => {
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
                           {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
-                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: `${loadingBarFactor || "0%"}` as any }}></View>
                         </View>
                       </View>
                     ) : null}

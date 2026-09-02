@@ -271,6 +271,7 @@ const Map = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
+            onTouchEnd={() => router.push("/")}
         >
             <TouchableOpacity
                 className="items-center"
@@ -285,7 +286,7 @@ const Map = () => {
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-xl w-full bg-whs-gold text-center absolute"
+        <Text className="z-20 font-roboto-bold text-white text-lg w-full bg-whs-gold text-center absolute"
         >
           Campus Map SY26-27
         </Text>

@@ -408,7 +408,7 @@ export default function Index() {
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
                           {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
-                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: loadingBarFactor || '0%'}}></View>
+                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: `${loadingBarFactor || '0%'}` as any}}></View>
                         </View>
                       </View>
                     ) : null}

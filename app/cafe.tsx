@@ -20,6 +20,7 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
+import { GlassView } from "expo-glass-effect";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -68,25 +69,25 @@ const Cafe = () => {
   });
 
   useEffect(() => {
-    const date = new Date();
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const monthNames = [
-      "JANUARY",
-      "FEBRUARY",
-      "MARCH",
-      "APRIL",
-      "MAY",
-      "JUNE",
-      "JULY",
-      "AUGUST",
-      "SEPTEMBER",
-      "OCTOBER",
-      "NOVEMBER",
-      "DECEMBER",
-    ];
-    const formattedMonth = monthNames[month];
-    const pdfUrl = `https://www.waipahuhigh.org/pdf/MONTHLY%20%20MENU%20${formattedMonth}-${year}.pdf`;
+    // const date = new Date();  Can't do this because the naming scheme for the PDF files is not consistent with the current month and year. The PDF files are named with a specific month and year, so we need to hardcode the URL for now.
+    // const month = date.getMonth();
+    // const year = date.getFullYear();
+    // const monthNames = [
+    //   "JANUARY",
+    //   "FEBRUARY",
+    //   "MARCH",
+    //   "APRIL",
+    //   "MAY",
+    //   "JUNE",
+    //   "JULY",
+    //   "AUGUST",
+    //   "SEPTEMBER",
+    //   "OCTOBER",
+    //   "NOVEMBER",
+    //   "DECEMBER",
+    // ];
+    // const formattedMonth = monthNames[month];
+    const pdfUrl = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%202026.pdf`;
     setMenuUrl(pdfUrl);
     console.log(pdfUrl);
   }, []);
@@ -119,23 +120,34 @@ const Cafe = () => {
               <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
           </View>
       </View>
+      <View className="justify-center items-center flex-nowrap bg-whs-gold">
+        <GlassView
+            style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
+            glassEffectStyle="clear"
+            isInteractive
+            onTouchEnd={() => router.push("/")}
+        >
+            <TouchableOpacity
+                className="items-center"
+                onPress={() => router.push("/")}
+            >
+                <Image
+                source={require("@/assets/images/back.png")}
+                style={{
+                    tintColor: "#ffffff",
+                }}
+                className="size-10 self-center block m-auto pr-1"
+                />
+            </TouchableOpacity>
+        </GlassView>
+        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+        >
+          School Cafe Menu
+        </Text>
+      </View>
 
       <View className="grow justify-center items-center bg-whs-gold">
-        <TouchableOpacity
-          className="w-10 h-10 left self-start pt-4 z-30"
-          onPress={() => router.push("/")}
-        >
-          <Image
-            source={require("@/assets/images/back.png")}
-            style={{
-              tintColor: "#17273d",
-            }}
-            className="size-10 self-center"
-          />
-        </TouchableOpacity>
-        <Text className="z-20 font-barlow-semibold text-white w-full bg-whs-gold text-center relative bottom-5">
-          Breakfast & Lunch Menu
-        </Text>
+        
         <View className="self-center items-center flex-row w-full flex-1 z-10">
           <WebView
             className="relative"
