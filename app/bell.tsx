@@ -124,12 +124,9 @@ const Bell = () => {
   const lastScheduleKeyRef = useRef<string>('');
 
   //
-  const [isSheetVisible, setIsSheetVisible] = useState(false);
-
-  //
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
-  const [isFocus, setIsFocus] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [isWeekReady, setIsWeekReady] = useState(false);
   // Reload the bell-schedule PDF WebView every time the screen regains focus,
   // so it doesn't sit on a stale/blank load if the user navigated away mid-load.
   useFocusEffect(
@@ -298,6 +295,7 @@ const Bell = () => {
           if (scheduleKey !== lastScheduleKeyRef.current) {
             lastScheduleKeyRef.current = scheduleKey;
             setWeekdaySchedule(getWeekdays(now, calendarEntry.scheduleID));
+            setIsWeekReady(true);
           }
         } else {
           // Use a cloned Date instance so we can advance to the next day without
@@ -315,6 +313,7 @@ const Bell = () => {
           if (scheduleKey !== lastScheduleKeyRef.current) {
             lastScheduleKeyRef.current = scheduleKey;
             setWeekdaySchedule(getWeekdays(now, calendarEntry.scheduleID));
+            setIsWeekReady(true);
           }
         }
         
@@ -350,10 +349,6 @@ const Bell = () => {
     }, [selectedSchedule])
   );
 
-  const openSheetFor = () => {
-    setIsSheetVisible(true);
-  };
-
   if (appIsReady === false || !fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
@@ -371,6 +366,20 @@ const Bell = () => {
 
   return (
     <SafeAreaProvider className="flex flex-col">
+      {isLoading || !isWeekReady && (
+        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
+          <View className="flex-1 justify-center items-center bg-[#17273d]">
+            <Image
+              source={require("@/assets/images/whs-logo.png")}
+              className="size-32 mb-6 self-center"
+            />
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
+              Loading...
+            </Text>
+          </View>
+        </View>
+      )}
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
         <Image
           source={require("@/assets/images/whs-logo.png")}
@@ -522,6 +531,24 @@ const Bell = () => {
                   className="relative h-[50%]"
                   ref={webViewRef}
                   source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+                  injectedJavaScript={`
+                      setTimeout(() => {
+                        window.ReactNativeWebView.postMessage("styles_injected");
+                      }, 100);
+                      true;
+                  `}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  onMessage={(event) => {
+                    if (event.nativeEvent.data === "styles_injected") {
+                      
+                      setIsLoading(false);
+                    } else {
+                      console.log("WebView message:", event.nativeEvent.data);
+                    }
+                  }}
+                  sharedCookiesEnabled={true}
+                  thirdPartyCookiesEnabled={true}
                 />
               </View>
               

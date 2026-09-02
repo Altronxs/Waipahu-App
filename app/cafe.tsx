@@ -42,6 +42,7 @@ const Cafe = () => {
   const [menuUrl, setMenuUrl] = useState<string>("");
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -109,6 +110,20 @@ const Cafe = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
+      {isLoading == true && (
+        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
+          <View className="flex-1 justify-center items-center bg-[#17273d]">
+            <Image
+              source={require("@/assets/images/whs-logo.png")}
+              className="size-32 mb-6 self-center"
+            />
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
+              Loading...
+            </Text>
+          </View>
+        </View>
+      )}
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
@@ -146,14 +161,33 @@ const Cafe = () => {
         </Text>
       </View>
 
-      <View className="grow justify-center items-center bg-whs-gold">
-        
+      <View className="grow justify-center items-center bg-white">
         <View className="self-center items-center flex-row w-full flex-1 z-10">
           <WebView
             className="relative"
             style={{ width: width, flex: 1 }}
             ref={webViewRef}
-            source={{ uri: menuUrl }}
+            source={{
+              uri: menuUrl,
+            }}
+            injectedJavaScript={`
+                setTimeout(() => {
+                  window.ReactNativeWebView.postMessage("styles_injected");
+                }, 100);
+                true;
+            `}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            onMessage={(event) => {
+              if (event.nativeEvent.data === "styles_injected") {
+                
+                setIsLoading(false);
+              } else {
+                console.log("WebView message:", event.nativeEvent.data);
+              }
+            }}
+            sharedCookiesEnabled={true}
+            thirdPartyCookiesEnabled={true}
           />
         </View>
       </View>
