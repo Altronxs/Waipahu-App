@@ -183,8 +183,65 @@ const News = () => {
                 setTimeout(() => {
                   const style = document.createElement('style');
                   style.innerHTML = \`
-                      #enheader5, #enfooter1, #shortcut-wrapper {
-                      display: none !important;
+                      #enheader5, #enfooter1, #shortcut-wrapper, #pageTitle {
+                        display: none !important;
+                      }
+                      .inside-page::before {
+                        background-color: #ffffff !important;
+                      }
+                      table:first-of-type  {
+                        padding-top: 30px !important;
+                      }
+                      #news0wrapper tbody tr td {
+                        display: grid !important;
+                        margin: 10px !important;
+                        background-color: #ffffff !important;
+                        
+                        grid-template-columns: 1fr !important;
+                        /* FIXED: Added 's' to grid-template-areas */
+                        grid-template-areas:
+                          "image" 
+                          "title"
+                          "summary" !important; 
+                      }
+                      #news0wrapper tbody tr {
+                        margin: 10px !important;
+                      }
+                      #news0wrapper tbody tr td a {
+                        width: 100% !important;
+                        text-decoration: underline !important;
+                        grid-area: image !important;
+                        top: 0 !important;
+                      }
+                      #news0wrapper tbody tr td span a {
+                        display: inline-block !important;
+                        text-decoration: none !important;
+                        font-weight: bold !important;
+                        color: #17273d !important;
+                        font-size: 1.82rem !important;
+                        padding: 10px 0 !important;
+                        border-bottom: 3px solid #17273d !important;
+                      }
+                      #news0wrapper tbody tr td span {
+                        grid-area: title !important;
+                      }
+                      #news0wrapper tbody tr td a img {
+                        width: 100% !important;
+                        height: auto !important;
+                        border-width: 0px !important;
+                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) !important;
+                      }
+                      #news0wrapper tbody tr td br {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        grid-area: summary !important;
+                      }
+                      .itemImages {
+                        width: 100% !important;
+                        height: auto !important;
+                        border-radius: 16px !important;
+                        border-width: 0px !important;
+                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) !important;
                       }
                   \`;
                   document.head.appendChild(style);
@@ -199,7 +256,7 @@ const News = () => {
                 console.log("Styles injected successfully.");
                 setIsLoading(false);
               } else {
-                console.log("WebView message:", event.nativeEvent.data);
+                console.log(event.nativeEvent.data);
               }
             }}
             onNavigationStateChange={(navState) => {
