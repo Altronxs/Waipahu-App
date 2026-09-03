@@ -116,10 +116,10 @@ const FloorRow = ({
 
   const cellClassName =
     variant === "third"
-      ? "text-gray-700 text-[0.5rem] text-center text-nowrap border-2 border-black self-center p-2 bg-gray-300"
+      ? "text-gray-700 text-[0.5rem] text-center text-nowrap border-2 border-black self-center p-2 bg-gray-400"
       : variant === "second"
-        ? "text-gray-700 text-[0.5rem] text-center text-nowrap border-2 border-black self-center pt-2 pb-2 pl-1 pr-1 bg-gray-200"
-        : "text-gray-700 text-[0.5rem] text-center border-2 border-black self-center pt-2 pb-2 pl-1 pr-1";
+        ? "text-gray-700 text-[0.5rem] text-center text-nowrap border-2 border-black self-center pt-2 pb-2 pl-1 pr-1 bg-gray-300"
+        : "text-gray-700 text-[0.5rem] text-center border-2 border-black self-center pt-2 pb-2 pl-1 pr-1 bg-white";
 
   const cellWidth = (width * 0.8) / rooms.length;
 
@@ -302,7 +302,10 @@ const Map = () => {
           cameraZoomRange={CAMERA_ZOOM_RANGE}
           mapType="standard"
           userInterfaceStyle="dark"
-          showsUserLocation={AllowMapLocation} 
+          showsUserLocation={AllowMapLocation}
+          showsPointsOfInterests={false}
+          appleLogoInsets={{ top: 10, left: 20, bottom: 600, right: 300 }}
+          
         >
           {mapData.mapData.map((feature, index) => (
             <React.Fragment key={index}>
@@ -360,7 +363,7 @@ const Map = () => {
                 </View>
 
                 <Callout tooltip>
-                  <GlassView className="items-center bg-white" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"clear"}>
+                  <GlassView className="items-center bg-white" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"regular"} tintColor={'#17273d'}>
                     <Text className="font-barlow-semibold text-xs mb-1 text-white w-30 text-center self-center items-center">
                       {feature.name}
                     </Text>
@@ -372,9 +375,10 @@ const Map = () => {
         </MapView>
         <GlassView
           style={{alignSelf: 'center', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 70}}
-          glassEffectStyle="clear"
+          glassEffectStyle="regular"
           isInteractive
           onTouchEnd={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
+          tintColor={'#17273d'}
         >
           <TouchableOpacity
             className="w-10 h-10"
@@ -394,6 +398,7 @@ const Map = () => {
           transparent
           visible={isSheetVisible}
           onRequestClose={() => setIsSheetVisible(false)}
+        
         >
           {/* Dimmed background area that closes the sheet when tapped */}
           <TouchableOpacity
@@ -402,15 +407,23 @@ const Map = () => {
             onPressOut={() => setIsSheetVisible(false)}
           />
 
-          <GlassView className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} glassEffectStyle={"clear"} tintColor="white">
-            <ScrollView>
+          <GlassView 
+            className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" 
+            style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} 
+            glassEffectStyle='regular' 
+            tintColor={'#17273d'}
+            
+          >
+            <ScrollView
+              className="w-full h-min flex-shrink"
+            >
               {selectedFeature?.layoutNeed &&
                 selectedFeature.name !== WAIPAHU_CAMPUS_MAP_NAME && (
                   <View className="mb-4">
-                    <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
+                    <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
                       {selectedFeature.name}
                     </Text>
-                    <View className="self-center items-center w-[80vw]">
+                    <View className="self-center items-center w-[80vw] rounded-2xl overflow-hidden">
                       {selectedFeature.thirdFloor && (
                         <FloorRow rooms={selectedFeature.thirdFloor} variant="third" />
                       )}
@@ -425,17 +438,17 @@ const Map = () => {
                 )}
 
               {selectedFeature?.name === WAIPAHU_CAMPUS_MAP_NAME && (
-                <View className="mb-[5rem] h-max">
-                  <Text className="mb-4 text-xl font-bold text-gray-800 text-center font-source-serif-italic">
+                <View>
+                  <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
                     {selectedFeature.name}
                   </Text>
-                  <View className="self-center m-auto block">
+                  <View className="self-center items-center aspect-[2/1.25] w-full rounded-2xl overflow-hidden">
                     {pdfUri && (
                       <WebView
                         ref={webViewRef}
                         source={{ uri: pdfUri }}
-                        style={{ width: width * 0.8, height: height * 0.15 }}
-                        className="self-center m-auto block"
+                        style={{ aspectRatio: 2/1.1 }}
+                        className="self-center w-full h-full"
                         // Critical security and file flags needed for local URIs
                         originWhitelist={["*"]}
                         allowFileAccess
@@ -446,10 +459,12 @@ const Map = () => {
                       />
                     )}
                   </View>
+                  
                 </View>
               )}
             </ScrollView>
           </GlassView>
+
         </Modal>
       </View>
     </SafeAreaProvider>
