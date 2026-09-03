@@ -362,15 +362,15 @@ export default function Index() {
               
               
               {/* Welcome banner: script logo + "WELCOME!" text */}
-              <View className="justify-center items-center pt-10 w-[90%]">
+              <View className="justify-center items-center pt-10 pb-2 w-[90%]">
                 <View className="flex flex-col gap-[0px]">
                   <Text className="z-20 font-barlow-italic text-5xl text-whs-blue text-center self-center">
                     WELCOME
                   </Text>
                   <Image
                     source={require("@/assets/images/marauder-script.png")} 
-                    className="self-end object-contain " 
-                    style={{ height: 35, width: 'auto', aspectRatio: 198 / 50 }} 
+                    className="self-center object-contain " 
+                    style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
                   >
                   </Image>
                 </View>
@@ -382,7 +382,7 @@ export default function Index() {
                   Only renders once currentPeriod has been computed
                   (i.e. on a weekday, after the first interval tick). */}
               {currentPeriod !== '' ? (
-                <View className="pt- px-5 w-[90%] "> 
+                <View className="pt-5 px-5 w-[90%] "> 
                   <View className="flex flex-column">
                     <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
                       <TouchableOpacity
@@ -421,11 +421,7 @@ export default function Index() {
                     </View>
                   ) : null}
                 </View> 
-              ) : (
-                // Placeholder spacer on weekends / before period data is ready,
-                // so layout doesn't jump when the widget above appears.
-                <View className="h-[20px] w-full"></View>
-              )}
+              ) : null}
 
 
               {/* Main icon grid, grouped by section (School Info, Campus Life,

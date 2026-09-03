@@ -11,7 +11,7 @@ const BAR_BACKGROUND = "#17273d";
 
 const _Layout = () => {
   // Use NativeTabs only on iOS 26 or newer
-  const useNativeTabs = Platform.OS === 'ios' && Number(Platform.Version) >= 26;
+  const useNativeTabs = Platform.OS === 'ios' && String(Platform.Version).startsWith('26');
 
   if (useNativeTabs) {
     return (

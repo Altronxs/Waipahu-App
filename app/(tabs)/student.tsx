@@ -85,6 +85,17 @@ const Students = () => {
           onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp"),
         },
       ],
+    },
+    {
+      title: "Early College",
+      items: [
+        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
+        {
+          label: "Infinite Campus",
+          image: require("@/assets/images/if.png"),
+          onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp"),
+        },
+      ],
     }
   ];
 
@@ -166,10 +177,10 @@ const Students = () => {
           Student Resources
         </Text>
       </View>
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center flex-1">
         <ScrollView
-          className="w-[100vw] h-96 bg-white flex-1 flex-col "
-          style={{ height: height * 0.5 }}
+          className="w-[100vw] h-96 bg-white flex-1 flex-col"
+          //style={{ height: height * 0.5 }}
           bounces={false}                
           overScrollMode="never"          
           scrollEventThrottle={16}       
@@ -177,7 +188,7 @@ const Students = () => {
         >
           <ImageBackground
             source={require("@/assets/images/bg-home.png")}
-            className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
+            className="flex-row flex-wrap justify-center items-start w-[100vw] flex-1 pb-40"
 
           >
             <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
@@ -193,20 +204,20 @@ const Students = () => {
                 People & Records, Links). Each item is a fixed-width (20%)
                 tile so 5 fit per row before wrapping. */}
             {sections.map((section) => (
-              <View key={section.title} className="w-full mt-4 px-4">
-                <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
+              <View key={section.title} className="w-[90%] px-4">
+                <Text className="font-barlow-semibold text-center">
                   {section.title}
                 </Text>
-                <View className="flex-row flex-wrap justify-center gap-4">
+                <View className="flex-row flex-wrap justify-center">
                   {section.items.map((item) => (
                     <TouchableOpacity
                       key={item.label}
-                      className="w-[20%] h-min justify-center items-center"
+                      className="w-[30%] h-min justify-center items-center py-3"
                       onPress={item.onPress}
                       accessibilityRole="button"
                       accessibilityLabel={item.label}
                     >
-                      <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[3.75rem] self-center" />
+                      <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[4.25rem] self-center" />
                       <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                         {item.label}
                       </Text>

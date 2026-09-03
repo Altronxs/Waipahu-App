@@ -418,14 +418,13 @@ const Bell = () => {
         </Text>
       </View>
 
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center" style={{ height: (height) }}>
+      <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
         <ScrollView
           // NOTE: `className="h-96"` here is immediately overridden by the
           // inline `style={{ height: height * 2.5 }}` below — the class has
           // no effect. Left as-is to avoid changing layout, but consider
           // dropping the dead className.
           className="w-[100vw] h-96 bg-white flex-1 flex-col"
-          style={{ height: height * 2.5 }}
           bounces={false}
           overScrollMode="never"
           scrollEventThrottle={16}
@@ -434,126 +433,125 @@ const Bell = () => {
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
         >
-          <View
-            className="flex-row flex-wrap justify-center items-start w-[100vw]"
+          <View 
+            className="self-center items-center flex flex-column w-[100vw] z-10 flex-1 pb-20"
             style={{ height: height * 1.75 }}
-          > 
-            
-            <View className="self-center items-center flex flex-column w-[100vw] h-[80vh] z-10">
-              {/* Bell-schedule widget: current period name, time range, and
-                  a progress bar showing how far through the period we are.
-                  Only renders once currentPeriod has been computed
-                  (i.e. on a weekday, after the first interval tick). */}
-              {currentPeriod !== '' ? (
-                <View className="pt-10 px-5 w-[90%] "> 
-                  <View className="flex flex-column">
-                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
-                      <TouchableOpacity
-                        className="justify-center items-center z-30  aspect-square"
+          >
+            {/* Bell-schedule widget: current period name, time range, and
+                a progress bar showing how far through the period we are.
+                Only renders once currentPeriod has been computed
+                (i.e. on a weekday, after the first interval tick). */}
+            {currentPeriod !== '' ? (
+              <View className="pt-10 px-5 w-[90%] "> 
+                <View className="flex flex-column">
+                  <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
+                    <TouchableOpacity
+                      className="justify-center items-center z-30  aspect-square"
+                      style={{
+                        width: 30, height: 50
+                      }}
+                      onPress={() => router.push("/settings")}
+                    >
+                      <Image
+                        source={require("@/assets/images/question.png")}
                         style={{
-                          width: 30, height: 50
+                          tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
                         }}
-                        onPress={() => router.push("/settings")}
-                      >
-                        <Image
-                          source={require("@/assets/images/question.png")}
-                          style={{
-                            tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
-                          }}
-                          className="self-center object-contain"
-                        />
-                      </TouchableOpacity>
-                    </Text>
-                    {timeLeft ? (
-                      <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
-                        <View>
-                          {/* Track (background) */}
-                          <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
-                          {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
-                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: `${loadingBarFactor || "0%"}` as any }}></View>
-                        </View>
-                      </View>
-                    ) : null}
-                  </View>
-                  
-                  
+                        className="self-center object-contain"
+                      />
+                    </TouchableOpacity>
+                  </Text>
                   {timeLeft ? (
                     <View>
-                      <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
+                      <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                      <View>
+                        {/* Track (background) */}
+                        <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                        {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
+                        <View className=" bg-whs-gold h-4 rounded-full" style={{ width: `${loadingBarFactor || "0%"}` as any }}></View>
+                      </View>
                     </View>
                   ) : null}
-                </View> 
-              ) : (
-                // Placeholder spacer on weekends / before period data is ready,
-                // so layout doesn't jump when the widget above appears.
-                <View className="h-[10px] w-full"></View>
-              )}
+                </View>
+                
+                
+                {timeLeft ? (
+                  <View>
+                    <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
+                  </View>
+                ) : null}
+              </View> 
+            ) : (
+              // Placeholder spacer on weekends / before period data is ready,
+              // so layout doesn't jump when the widget above appears.
+              <View className="h-[10px] w-full"></View>
+            )}
 
-              <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
-                THIS WEEKS SCHEDULE
-              </Text>
-              <View className="flex-row flex-wrap justify-center w-full">
-                {weekdaySchedule.map((day, index) => {
-                  // Convert the Date into locale-formatted day-of-week text.
-                  const dayString = day.date.toLocaleString('en-US', { weekday: 'short' });
+            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+              THIS WEEKS SCHEDULE
+            </Text>
+            <View className="flex-row flex-wrap justify-center w-full">
+              {weekdaySchedule.map((day, index) => {
+                // Convert the Date into locale-formatted day-of-week text.
+                const dayString = day.date.toLocaleString('en-US', { weekday: 'short' });
 
-                  return (
-                    <React.Fragment key={index}>
-                      <View className="flex flex-row flex-nowrap self-center w-[90%] mx-[5%] p-5 mb-3 bg-whs-blue">
-                        <View className="justify-center items-start border-r-2 border-white pr-5">
-                          <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">
-                            {day.date.getDate()}
-                          </Text>
-                          <Text className="text-white text-center font-roboto-bold">{dayString}</Text>
-                        </View>
-                        <View className="flex-1 justify-center items-start pl-5">
-                          <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold font-source-serif-bold">
-                            {day.schedule.day}
-                          </Text>
-                          <Text className="text-white text-center text-xs font-light font-source-serif-regular"> 
-                            {day.schedule.timeSchedule
-                              .filter((schedule) => schedule.name.includes('Period'))
-                              .map((schedule, i) => (
-                                <React.Fragment key={i}>
-                                  <Text> {schedule.name.replace('Period ', '')}</Text>
-                                </React.Fragment>
-                              ))}</Text>
-                        </View>
+                return (
+                  <React.Fragment key={index}>
+                    <View className="flex flex-row flex-nowrap self-center w-[90%] mx-[5%] p-5 mb-3 bg-whs-blue">
+                      <View className="justify-center items-start border-r-2 border-white pr-5">
+                        <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">
+                          {day.date.getDate()}
+                        </Text>
+                        <Text className="text-white text-center font-roboto-bold">{dayString}</Text>
                       </View>
-                    </React.Fragment>
-                  );
-                })}
-              </View>
-
-              <View className="self-center items-start flex-row h-3/4 z-0 p-[10]">
-                <WebView
-                  className="relative h-[50%]"
-                  ref={webViewRef}
-                  source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
-                  injectedJavaScript={`
-                      setTimeout(() => {
-                        window.ReactNativeWebView.postMessage("styles_injected");
-                      }, 100);
-                      true;
-                  `}
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  onMessage={(event) => {
-                    if (event.nativeEvent.data === "styles_injected") {
-                      
-                      setIsLoading(false);
-                    } else {
-                      console.log("WebView message:", event.nativeEvent.data);
-                    }
-                  }}
-                  sharedCookiesEnabled={true}
-                  thirdPartyCookiesEnabled={true}
-                />
-              </View>
-              
+                      <View className="flex-1 justify-center items-start pl-5">
+                        <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold font-source-serif-bold">
+                          {day.schedule.day}
+                        </Text>
+                        <Text className="text-white text-center text-xs font-light font-source-serif-regular"> 
+                          {day.schedule.timeSchedule
+                            .filter((schedule) => schedule.name.includes('Period'))
+                            .map((schedule, i) => (
+                              <React.Fragment key={i}>
+                                <Text> {schedule.name.replace('Period ', '')}</Text>
+                              </React.Fragment>
+                            ))}</Text>
+                      </View>
+                    </View>
+                  </React.Fragment>
+                );
+              })}
             </View>
-
+            <View className="w-[90%] h-3 border-b-2 border-whs-blue"></View>
+            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+              BELL SCHEDULE
+            </Text>
+            <View className="justify-center self-center h-[450px] z-0 p-[10]">
+              <WebView
+                className="relative self-center m-auto"
+                style={{ aspectRatio: 8.5/11}}
+                ref={webViewRef}
+                source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+                injectedJavaScript={`
+                    setTimeout(() => {
+                      window.ReactNativeWebView.postMessage("styles_injected");
+                    }, 100);
+                    true;
+                `}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                onMessage={(event) => {
+                  if (event.nativeEvent.data === "styles_injected") {
+                    
+                    setIsLoading(false);
+                  } else {
+                    console.log("WebView message:", event.nativeEvent.data);
+                  }
+                }}
+                sharedCookiesEnabled={true}
+                thirdPartyCookiesEnabled={true}
+              />
+            </View>
             
           </View>
         </ScrollView>
