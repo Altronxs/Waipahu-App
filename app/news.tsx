@@ -180,75 +180,153 @@ const News = () => {
               uri: "https://www.waipahuhigh.org/apps/news/index.jsp?id=0",
             }}
             injectedJavaScript={`
-                setTimeout(() => {
-                  const style = document.createElement('style');
-                  style.innerHTML = \`
-                      #enheader5, #enfooter1, #shortcut-wrapper, #pageTitle {
-                        display: none !important;
+              setTimeout(() => {
+                // 1. Inject your cleaned up styles
+                const style = document.createElement('style');
+                style.innerHTML = \`
+                  #enheader5, #enfooter1, #shortcut-wrapper, #pageTitle { display: none !important; }
+                  .inside-page::before { background-color: #ffffff !important; }
+                  table:first-of-type { display: none !important; }
+                  
+                  /* FORCE PARENT WRAPPERS TO FILL WIDE AND RE-CENTER CONTENT */
+                  #news0wrapper, #news0wrapper tbody {
+                    display: block !important;
+                    width: 100% !important;
+                    margin: 0 auto !important;
+                  }
+                  
+                  table:nth-of-type(2) { 
+                    display: flex !important; 
+                    flex-direction: column !important;
+                    align-items: center !important; 
+                    justify-content: center !important; 
+                    margin: 0 auto !important; 
+                    padding: 0px !important; 
+                    width: 100% !important;
+                  }
+                  
+                  /* THE NEW MASONRY CONTAINER - FIXED FOR PERFECT CENTERING */
+                  .masonry-container { 
+                    display: flex !important; 
+                    width: 95% !important;          /* Fills the screen beautifully on phone, scales out on tablets */
+                    max-width: 920px !important;    /* Keeps it from getting too ridiculously wide on giant iPad screens */
+                    margin: 0 auto !important;      /* CRITICAL: Perfectly centers the track on any device screen */
+                    padding: 0 !important; 
+                    
+                  } 
+                  
+                  .masonry-column { 
+                    flex: 1 !important; 
+                    display: flex !important; 
+                    flex-direction: column !important; 
+                    
+                  } 
+                  
+                  /* Cleaned up original styles */
+                  #news0wrapper tbody tr { 
+                    display: block !important; 
+                    width: 100% !important; 
+                    margin: 0 !important; 
+                    padding: 5px !important; 
+                    box-sizing: border-box !important; 
+                  } 
+                  
+                  #news0wrapper tbody tr td { 
+                    display: flex !important; 
+                    flex-direction: column-reverse !important; 
+                    align-items: center !important; 
+                    justify-content: center !important; 
+                    background-color: #ffffff !important; 
+                    padding-top: 10px !important; 
+                    padding-bottom: 10px !important; 
+                  } 
+                  
+                  #news0wrapper tbody tr td span { 
+                    display: block !important; 
+                    width: 100% !important; 
+                    margin: auto !important; 
+                    align-self: center !important; 
+                  } 
+                  
+                  #news0wrapper tbody tr td span a { 
+                    display: inline-block !important; 
+                    width: 100% !important; 
+                    color: #17273d !important; 
+                    font-size: 20px !important; 
+                    font-weight: bold !important; 
+                    text-decoration: none !important; 
+                    position: relative !important; 
+                    border-bottom: 2px solid #17273d !important; 
+                  } 
+                  
+                  #news0wrapper tbody tr td a { 
+                    width: 100% !important; 
+                    text-decoration: underline !important; 
+                    top: 0 !important; 
+                    align-self: center !important; 
+                  } 
+                  
+                  #news0wrapper tbody tr td a img { 
+                    display: block !important; 
+                    width: 100% !important; 
+                    height: auto !important; 
+                    margin-left: auto !important; 
+                    margin-right: auto !important; 
+                    border-width: 0px !important;   
+                  } 
+                  
+                  .itemImages { 
+                    width: 100% !important; 
+                    height: auto !important; 
+                    border-width: 0px !important; 
+                  } 
+                  
+                  .light { 
+                    color: #17273d !important; 
+                    font-size: 0rem !important; 
+                    line-height: 1.25 !important; 
+                  } 
+                \`;
+                document.head.appendChild(style);
+
+                // 2. AUTOMATIC JAVASCRIPT MASONRY CONVERSION
+                const tbody = document.querySelector('#news0wrapper tbody');
+                if (tbody) {
+                  const rows = Array.from(tbody.querySelectorAll('tr'));
+                  if (rows.length > 0) {
+                    // Create the parent masonry container
+                    const container = document.createElement('div');
+                    container.className = 'masonry-container';
+                    
+                    // Create left and right columns
+                    const col1 = document.createElement('div');
+                    col1.className = 'masonry-column';
+                    const col2 = document.createElement('div');
+                    col2.className = 'masonry-column';
+                    
+                    container.appendChild(col1);
+                    container.appendChild(col2);
+                    
+                    // Distribute items left-to-right alternately (keeps newer stuff first!)
+                    rows.forEach((row, index) => {
+                      if (index % 2 === 0) {
+                        col1.appendChild(row); // Item 1, 3, 5...
+                      } else {
+                        col2.appendChild(row); // Item 2, 4, 6...
                       }
-                      .inside-page::before {
-                        background-color: #ffffff !important;
-                      }
-                      table:first-of-type  {
-                        padding-top: 30px !important;
-                      }
-                      #news0wrapper tbody tr td {
-                        display: grid !important;
-                        margin: 10px !important;
-                        background-color: #ffffff !important;
-                        
-                        grid-template-columns: 1fr !important;
-                        /* FIXED: Added 's' to grid-template-areas */
-                        grid-template-areas:
-                          "image" 
-                          "title"
-                          "summary" !important; 
-                      }
-                      #news0wrapper tbody tr {
-                        margin: 10px !important;
-                      }
-                      #news0wrapper tbody tr td a {
-                        width: 100% !important;
-                        text-decoration: underline !important;
-                        grid-area: image !important;
-                        top: 0 !important;
-                      }
-                      #news0wrapper tbody tr td span a {
-                        display: inline-block !important;
-                        text-decoration: none !important;
-                        font-weight: bold !important;
-                        color: #17273d !important;
-                        font-size: 1.82rem !important;
-                        padding: 10px 0 !important;
-                        border-bottom: 3px solid #17273d !important;
-                      }
-                      #news0wrapper tbody tr td span {
-                        grid-area: title !important;
-                      }
-                      #news0wrapper tbody tr td a img {
-                        width: 100% !important;
-                        height: auto !important;
-                        border-width: 0px !important;
-                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) !important;
-                      }
-                      #news0wrapper tbody tr td br {
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        grid-area: summary !important;
-                      }
-                      .itemImages {
-                        width: 100% !important;
-                        height: auto !important;
-                        border-radius: 16px !important;
-                        border-width: 0px !important;
-                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) !important;
-                      }
-                  \`;
-                  document.head.appendChild(style);
-                  window.ReactNativeWebView.postMessage("styles_injected");
-                }, 100);
-                true;
+                    });
+                    
+                    // Clear tbody and inject the new responsive layout
+                    tbody.innerHTML = '';
+                    tbody.appendChild(container);
+                  }
+                }
+
+                window.ReactNativeWebView.postMessage("styles_injected");
+              }, 100);
+              true;
             `}
+
             javaScriptEnabled={true}
             domStorageEnabled={true}
             onMessage={(event) => {
@@ -266,6 +344,9 @@ const News = () => {
             thirdPartyCookiesEnabled={true}
           />
         </View>
+      </View>
+      <View className="text-sm">
+
       </View>
     </SafeAreaProvider>
   );
