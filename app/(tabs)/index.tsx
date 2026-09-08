@@ -36,11 +36,10 @@ import {
     useWindowDimensions,
     View,
 } from "react-native";
-import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
 import "../globals.css";
 import { loadWebsiteData } from '@/assets/json/eventService';
-import { calculateCurrentPeriod } from '@/assets/json/schedule'
+import { calculateCurrentPeriod, fetchSchoolCalendar } from '@/assets/json/schedule'
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -50,6 +49,15 @@ interface SchoolEvent {
   month: string; // e.g., "August" or "08"
   day: string;   // e.g., "17"
   time: string;  // e.g., "All Day" or a specific time string
+}
+interface Calendar {
+  comment: string;
+  calendar: {
+    week: number;
+    start: string;
+    end: string;
+    scheduleID: string;
+  }[];
 }
 
 // Your strict alphanumeric mapping array
@@ -78,7 +86,7 @@ const openLink = (url: string) => {
 
 export default function Index() {
   const router = useRouter(); // Get the router instance
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
 
   // --- Bell-schedule / "current period" state ---
   // These are recomputed every second by the interval effect below.
@@ -94,16 +102,14 @@ export default function Index() {
   const [appIsReady, setAppIsReady] = useState(false);
 
   const [events, setEvents] = useState<SchoolEvent[]>([]);
+  const [calendar, setCalendar] = useState<Calendar | null>(null);
   const [eventsError, setEventsError] = useState<string | null>(null);
 
   // Drives the pull-to-refresh spinner on the ScrollView (see
   // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
 
-  //
   const [isSheetVisible, setIsSheetVisible] = useState(false);
-
-  //
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
   const [isFocus, setIsFocus] = useState(false);
 
@@ -111,13 +117,14 @@ export default function Index() {
   // dependency array and is created once) can always read the latest
   // events without needing to be re-created every time events changes.
   const eventsRef = useRef(events);
+  const calendarRef = useRef(calendar);
 
   type IconItem = {
     label: string;
     image: any;
     onPress: () => void;
   };
-
+  
   // Static nav/menu configuration grouped into sections for the home grid.
   const sections: { title: string; items: IconItem[] }[] = [
     {
@@ -146,6 +153,27 @@ export default function Index() {
     }
   ];
 
+  // Function to SAVE your calendar
+  const saveCalendar = async (calendarObj : Calendar) => {
+    try {
+      const jsonValue = JSON.stringify(calendarObj);
+      await AsyncStorage.setItem('@school_calendar', jsonValue);
+      console.log('Calendar saved successfully!');
+    } catch (error) {
+      console.error('Failed to save calendar:', error);
+    }
+  };
+
+  // Function to READ your calendar
+  const getCalendar = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@school_calendar');
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.error('Failed to fetch calendar:', error);
+      return null;
+    }
+  };
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -164,10 +192,7 @@ export default function Index() {
     SourceSerifPro_600SemiBold,
   });
 
-  // Re-fetch events every time this screen comes into focus, not just on mount.
-  // AbortController cancels the in-flight fetch if the screen loses focus
-  // (or unmounts) before it resolves, preventing state updates on an
-  // unfocused/unmounted screen.
+
   useFocusEffect(
     useCallback(() => {
       const controller = new AbortController();
@@ -177,6 +202,11 @@ export default function Index() {
         setEvents,
         setEventsError,
         setAppIsReady,
+      });
+
+      fetchSchoolCalendar(controller.signal).then((calendar) => {
+        setCalendar(calendar as Calendar)
+        saveCalendar(calendar as Calendar)
       });
       
       return () => {
@@ -197,7 +227,10 @@ export default function Index() {
       setEventsError,
       setAppIsReady,
     });
-    
+
+    fetchSchoolCalendar(controller.signal).then((calendar) =>
+      setCalendar(calendar as Calendar)
+    );
     setRefreshing(false);
   };
 
@@ -206,6 +239,10 @@ export default function Index() {
   useEffect(() => {
     eventsRef.current = events;
   }, [events]);
+
+  useEffect(() => {
+    calendarRef.current = calendar;
+  }, [calendar])
 
   /**
    * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
@@ -244,12 +281,14 @@ export default function Index() {
         const now = getHawaiiDate();
         const dayOfWeek = now.getDay();
         const currentEventsList = eventsRef.current;
+        const currentCalendar = calendarRef.current;
+        
         // Guard against calculateCurrentPeriod being called before events
         // have loaded (currentEventsList would otherwise be an empty array
         // and currentEventsList[0] would be undefined).
         if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
 
-          const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule)) as {
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule), currentCalendar ?? undefined) as {
             currentPeriod: string;
             currentPeriodStart: string;
             currentPeriodEnd: string;
@@ -287,8 +326,10 @@ export default function Index() {
       try {
         // Await the asynchronous retrieval of the saved schedule string from disk
         const savedValue = await AsyncStorage.getItem('setting.schedule');
-        
         // If the key exists, update our state. If it returns null, fall back to our default empty string.
+        if (calendar == null) {
+          setCalendar(await getCalendar());
+        }
         setSelectedSchedule(savedValue ?? '');
       } catch (error) {
         // Catch any filesystem errors to prevent the application from crashing
@@ -304,6 +345,11 @@ export default function Index() {
   const openSheetFor = () => {
     setIsSheetVisible(true);
   };
+
+  // Displays "0:00" as "12:00am". Uses an exact match rather than a naive
+  // substring replace, since e.g. "10:00".replace('0:00', '12:00am') would
+  // incorrectly produce "112:00am".
+  const formatPeriodStart = (start: string) => (start === '0:00' ? '12:00am' : start);
 
   // Splash/loading screen: shown until fonts are loaded AND the first
   // interval tick has fired (see setAppIsReady(true) in the focus effect above).
@@ -403,7 +449,7 @@ export default function Index() {
                     </Text>
                     {timeLeft ? (
                       <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart.replace('0:00', '12:00am')}-{currentPeriodEnd}</Text>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {formatPeriodStart(currentPeriodStart)}-{currentPeriodEnd}</Text>
                         <View>
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>

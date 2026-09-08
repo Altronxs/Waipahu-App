@@ -4,6 +4,63 @@
 import scheduleJSON from '@/assets/json/school_schedule.json';
 import calendarJSON from '@/assets/json/calendar.json';
 
+/**
+ * Fetches school event data from a remote JSON file on GitHub.
+ * Uses a combined race timeout alongside external cancellation handles.
+ * 
+ * @param {AbortSignal} [externalSignal] - Optional signal passed from React/Vue components to cancel the request.
+ * @returns {Promise<Object|Array>} The parsed JSON data representing the school calendar.
+ */
+export const fetchSchoolCalendar = async (externalSignal) => {
+  // Create an internal controller to handle our network timeout
+  const timeoutController = new AbortController();
+  
+  // Set a hard 10-second limit for network fallbacks before aborting
+  const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
+
+  // Link the internal timeout controller with the external cancellation stream
+  const handleExternalAbort = () => timeoutController.abort();
+  
+  if (externalSignal) {
+    // If the component unmounts or cancels, immediately abort our fetch request
+    externalSignal.addEventListener("abort", handleExternalAbort);
+  }
+
+  try {
+    const response = await fetch(
+      'https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json',
+      { signal: timeoutController.signal }
+    );
+
+    // Verify the HTTP request was successful (status code 200-299)
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    // Parse the raw response body into a usable JavaScript object/array
+    const data = await response.json();   
+    
+    return data;
+
+  } catch (error) {
+    // Handle or rethrow errors so the calling component knows the fetch failed
+    if (error.name === 'AbortError') {
+      console.warn("Fetch school calendar request was aborted (either timeout or component unmount).");
+    } else {
+      console.error("Failed to fetch school calendar:", error);
+    }
+    throw error;
+
+  } finally {
+    // Clear timeout and remove event listener to eliminate memory leaks
+    clearTimeout(timeoutId);
+    if (externalSignal) {
+      externalSignal.removeEventListener("abort", handleExternalAbort);
+    }
+  }
+};
+
+
 // ==========================================
 // HELPER FUNCTIONS
 // ==========================================
@@ -15,20 +72,19 @@ import calendarJSON from '@/assets/json/calendar.json';
  * @param {Date} inputDate - The date to search for.
  * @returns {Object|null} The matching calendar entry object or null.
  */
-export const findCalendarEntryForDate = (inputDate) => {
+export const findCalendarEntryForDate = (inputDate, calendar = calendarJSON) => {
     // Strip time so we're only comparing calendar days, not times.
     const targetTimestamp = new Date(inputDate).setHours(0, 0, 0, 0);
 
     /**
      * Converts a "MM-DD-YY" string into a midnight timestamp.
-     */
+     */ 
     const parseCalendarDateString = (dateStr) => {
         const [month, day, twoDigitYear] = dateStr.split('-').map(Number);
         return new Date(2000 + twoDigitYear, month - 1, day).setHours(0, 0, 0, 0);
     };
-
     // Find the date range (start/end) that contains our target date.
-    return calendarJSON.calendar.find(entry => {
+    return calendar.calendar.find(entry => {
         const rangeStart = parseCalendarDateString(entry.start);
         const rangeEnd = parseCalendarDateString(entry.end);
         return targetTimestamp >= rangeStart && targetTimestamp <= rangeEnd;
@@ -108,7 +164,7 @@ const buildFinalSchedule = (scheduleID) => {
  * @returns {{finalTimeline: Array, scheduleID: number|string|null}} Timeline
  *   for the day (empty timeline when there's no school, e.g. weekends/holidays).
  */
-export const getTodaySchedule = (currentEvents, targetDate) => {
+export const getTodaySchedule = (currentEvents, targetDate, calendar = calendarJSON) => {
     const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 1 = Monday, ... 6 = Saturday
 
     // Only process schedules for regular school days (Monday through Friday).
@@ -116,7 +172,7 @@ export const getTodaySchedule = (currentEvents, targetDate) => {
         return EMPTY_SCHEDULE;
     }
 
-    const calendarEntry = findCalendarEntryForDate(targetDate);
+    const calendarEntry = findCalendarEntryForDate(targetDate, calendar);
     if (!calendarEntry) return EMPTY_SCHEDULE;
 
     // Map day to the zero-indexed schedule ID array (Mon = 0, Tue = 1, etc.)
@@ -189,14 +245,14 @@ const buildIdleState = () => ({
  *   schedule; any other value forces that specific schedule ID (dev/testing tool).
  * @returns {Object} Metric payload feeding UI display components.
  */
-export const calculateCurrentPeriod = (now, currentEvents, overrideID) => {
+export const calculateCurrentPeriod = (now, currentEvents, overrideID, calendar = calendarJSON) => {
     // Early exit: upstream event data hasn't resolved yet.
     if (!currentEvents) {
         return { ...buildIdleState(), currentPeriod: 'Loading...' };
     }
 
     const dayOfWeek = now.getDay(); // 0 = Sunday ... 6 = Saturday
-    const calendarEntry = findCalendarEntryForDate(now);
+    const calendarEntry = findCalendarEntryForDate(now, calendar);
     const currentMinutes = ((now.getHours() - 0) * 60) + now.getMinutes();
     const currentSeconds = now.getSeconds();
 
@@ -205,7 +261,7 @@ export const calculateCurrentPeriod = (now, currentEvents, overrideID) => {
     const useOverride = overrideID !== '' && overrideID !== '-1';
     const todaySchedule = useOverride
         ? buildFinalSchedule(Number(overrideID))
-        : getTodaySchedule(currentEvents, now);
+        : getTodaySchedule(currentEvents, now, calendar);
 
     const activePeriod = todaySchedule.finalTimeline.find(
         (p) => currentMinutes >= p.start && currentMinutes < p.end

@@ -40,7 +40,7 @@ import { WebView } from "react-native-webview";
 import { Dropdown } from 'react-native-element-dropdown';
 import { GlassView } from 'expo-glass-effect';
 import { loadWebsiteData } from '@/assets/json/eventService';
-import { calculateCurrentPeriod, findCalendarEntryForDate } from '@/assets/json/schedule'
+import { calculateCurrentPeriod, findCalendarEntryForDate, fetchSchoolCalendar } from '@/assets/json/schedule'
 import schoolSchedule from '@/assets/json/school_schedule.json'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -54,6 +54,15 @@ interface SchoolEvent {
 interface ScheduleItem {
   date: Date;
   schedule: (typeof schoolSchedule.schedule)[number];
+}
+interface Calendar {
+  comment: string;
+  calendar: {
+    week: number;
+    start: string;
+    end: string;
+    scheduleID: string;
+  }[];
 }
 
 // Your strict alphanumeric mapping array
@@ -92,10 +101,31 @@ interface CalendarEntry {
   scheduleID: string;
 }
 
+// Function to SAVE your calendar
+const saveCalendar = async (calendarObj: Calendar) => {
+  try {
+    const jsonValue = JSON.stringify(calendarObj);
+    await AsyncStorage.setItem('@school_calendar', jsonValue);
+  } catch (error) {
+    console.error('Failed to save calendar:', error);
+  }
+};
+
+// Function to READ your calendar
+const getCalendar = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@school_calendar');
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (error) {
+    console.error('Failed to fetch calendar:', error);
+    return null;
+  }
+};
+
 const Bell = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
 
   // "Current period" bell-schedule state (progress bar, period name, times left, etc.)
   const [currentPeriod, setCurrentPeriod] = useState<string>('');
@@ -110,12 +140,14 @@ const Bell = () => {
   // Events pulled from the school website (used to look up the period schedule).
   const [events, setEvents] = useState<SchoolEvent[]>([]);
   const [eventsError, setEventsError] = useState<string | null>(null);
+  const [calendar, setCalendar] = useState<Calendar | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  // Kept in sync with `events` via the effect below so the 1s interval callback
-  // (which is only created once per focus, see the `useFocusEffect` further
-  // down) can always read the latest events without needing `events` itself
-  // in its dependency array.
+  // Kept in sync with `events` (and `calendar`) via the effects below so the
+  // 1s interval callback (which is only created once per focus, see the
+  // `useFocusEffect` further down) can always read the latest values without
+  // needing them in its dependency array.
   const eventsRef = useRef(events);
+  const calendarRef = useRef(calendar);
 
   // Tracks the day/scheduleID we last built `weekdaySchedule` for, so the
   // 1s interval doesn't rebuild 5 Date objects + look up 5 schedules on
@@ -127,6 +159,7 @@ const Bell = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isWeekReady, setIsWeekReady] = useState(false);
+
   // Reload the bell-schedule PDF WebView every time the screen regains focus,
   // so it doesn't sit on a stale/blank load if the user navigated away mid-load.
   useFocusEffect(
@@ -165,6 +198,11 @@ const Bell = () => {
         setAppIsReady,
       });
 
+      fetchSchoolCalendar(controller.signal).then((fetchedCalendar) => {
+        setCalendar(fetchedCalendar as Calendar);
+        saveCalendar(fetchedCalendar as Calendar);
+      });
+
       return () => {
         controller.abort();
       };
@@ -182,13 +220,22 @@ const Bell = () => {
       setAppIsReady,
     });
 
+    fetchSchoolCalendar(controller.signal).then((fetchedCalendar) => {
+      setCalendar(fetchedCalendar as Calendar);
+      saveCalendar(fetchedCalendar as Calendar);
+    });
+
     setRefreshing(false);
   };
 
-  // Always keep the ref updated so the interval callback below can see fresh events.
+  // Always keep the refs updated so the interval callback below can see fresh values.
   useEffect(() => {
     eventsRef.current = events;
   }, [events]);
+
+  useEffect(() => {
+    calendarRef.current = calendar;
+  }, [calendar]);
 
   // Run this lifecycle hook immediately when the component mounts to the screen
   useEffect(() => {
@@ -197,9 +244,16 @@ const Bell = () => {
       try {
         // Await the asynchronous retrieval of the saved schedule string from disk
         const savedValue = await AsyncStorage.getItem('setting.schedule');
-        
+
         // If the key exists, update our state. If it returns null, fall back to our default empty string.
         setSelectedSchedule(savedValue ?? '');
+
+        // Also seed `calendar` from the cached copy so the very first interval
+        // tick (before `fetchSchoolCalendar` resolves) already has a value to
+        // pass into `calculateCurrentPeriod`.
+        if (calendar == null) {
+          setCalendar(await getCalendar());
+        }
       } catch (error) {
         // Catch any filesystem errors to prevent the application from crashing
         console.error("Failed to load local schedule settings data:", error);
@@ -322,7 +376,8 @@ const Bell = () => {
         // loaded (currentEventsList would otherwise be empty, making
         // currentEventsList[0] undefined).
         if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
-          const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule)) as PeriodData;
+          const currentCalendar = calendarRef.current;
+          const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule), currentCalendar ?? undefined) as PeriodData;
           setCurrentSchedule(periodData.schedule)
           setCurrentPeriod(periodData.currentPeriod);
           setCurrentPeriodStart(periodData.currentPeriodStart);
