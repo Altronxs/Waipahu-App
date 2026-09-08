@@ -1,5 +1,6 @@
 {   
-    "comment": "0 = monday | 1 = tuesday... | 5 = a_asem | 6 = bb_asem | 7 = c_asem | 8 = no school",
+    "comment": "THIS IS LIVE DATA 0 = monday | 1 = tuesday... | 5 = a_asem | 6 = bb_asem | 7 = c_asem | 8 = no school",
+    
     "calendar": [
         {
             "week": 1,
