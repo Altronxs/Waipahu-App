@@ -22,7 +22,7 @@ import {
 } from "@expo-google-fonts/source-serif-pro";
 import { GlassView } from "expo-glass-effect";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -34,9 +34,20 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
+import { fetchSchoolMenu } from "@/assets/json/liveServices";
  
 
 const { width, height } = Dimensions.get("window");
+
+// Used if fetchSchoolMenu fails or hasn't returned a URL yet, so the WebView
+// always has something to load.
+const FALLBACK_MENU_URL = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%202026.pdf`;
+
+// Shape returned by `fetchSchoolMenu`. Adjust this if the actual JSON your
+// GitHub source serves doesn't have a top-level `url` field.
+interface MenuData {
+  url: string;
+}
 
 const Cafe = () => {
   const [menuUrl, setMenuUrl] = useState<string>("");
@@ -51,6 +62,7 @@ const Cafe = () => {
       }
     }, []),
   );
+
 
 
   const [fontsLoaded] = useFonts({
@@ -69,29 +81,30 @@ const Cafe = () => {
     SourceSerifPro_600SemiBold,
   });
 
-  useEffect(() => {
-    // const date = new Date();  Can't do this because the naming scheme for the PDF files is not consistent with the current month and year. The PDF files are named with a specific month and year, so we need to hardcode the URL for now.
-    // const month = date.getMonth();
-    // const year = date.getFullYear();
-    // const monthNames = [
-    //   "JANUARY",
-    //   "FEBRUARY",
-    //   "MARCH",
-    //   "APRIL",
-    //   "MAY",
-    //   "JUNE",
-    //   "JULY",
-    //   "AUGUST",
-    //   "SEPTEMBER",
-    //   "OCTOBER",
-    //   "NOVEMBER",
-    //   "DECEMBER",
-    // ];
-    // const formattedMonth = monthNames[month];
-    const pdfUrl = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%202026.pdf`;
-    setMenuUrl(pdfUrl);
-    console.log(pdfUrl);
-  }, []);
+  // Re-fetch the menu link every time this screen comes into focus, not just
+  // on mount, so an updated menu.json shows up without needing an app restart.
+  useFocusEffect(
+    React.useCallback(() => {
+      const controller = new AbortController();
+
+      fetchSchoolMenu(controller.signal)
+        .then((data) => {
+          const url = (data as MenuData)?.url;
+          setMenuUrl(url || FALLBACK_MENU_URL);
+        })
+        .catch((error) => {
+          // AbortError is expected on unmount/refocus — nothing to log there.
+          if (error?.name !== "AbortError") {
+            console.error("Failed to fetch school menu, using fallback:", error);
+          }
+          setMenuUrl(FALLBACK_MENU_URL);
+        });
+
+      return () => {
+        controller.abort();
+      };
+    }, [])
+  );
 
   if (!fontsLoaded || !menuUrl) {
     return (
