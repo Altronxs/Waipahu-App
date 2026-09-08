@@ -4,7 +4,7 @@ import { Tabs } from "expo-router";
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { Image } from "react-native";
 
-const ACTIVE_COLOR = "#ae8c52";
+const ACTIVE_COLOR = "#b28d3e";
 const INACTIVE_COLOR = "#ffffff";
 const BAR_BACKGROUND = "#17273d";
 
