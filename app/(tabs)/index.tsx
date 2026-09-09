@@ -42,6 +42,7 @@ import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod, fetchSchoolCalendar } from '@/assets/json/schedule'
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import calendarJSON from '@/assets/json/calendar.json';
 
 
 interface SchoolEvent {
@@ -158,7 +159,6 @@ export default function Index() {
     try {
       const jsonValue = JSON.stringify(calendarObj);
       await AsyncStorage.setItem('@school_calendar', jsonValue);
-      console.log('Calendar saved successfully!');
     } catch (error) {
       console.error('Failed to save calendar:', error);
     }
@@ -170,8 +170,7 @@ export default function Index() {
       const jsonValue = await AsyncStorage.getItem('@school_calendar');
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (error) {
-      console.error('Failed to fetch calendar:', error);
-      return null;
+      return calendarJSON;
     }
   };
 
@@ -204,9 +203,9 @@ export default function Index() {
         setAppIsReady,
       });
 
-      fetchSchoolCalendar(controller.signal).then((calendar) => {
+      fetchSchoolCalendar(controller.signal).then(async (calendar) => {
         setCalendar(calendar as Calendar)
-        saveCalendar(calendar as Calendar)
+        await saveCalendar(calendar as Calendar)
       });
       
       return () => {
@@ -228,9 +227,10 @@ export default function Index() {
       setAppIsReady,
     });
 
-    fetchSchoolCalendar(controller.signal).then((calendar) =>
+    fetchSchoolCalendar(controller.signal).then(async (calendar) => {
       setCalendar(calendar as Calendar)
-    );
+      await saveCalendar(calendar as Calendar)
+    });
     setRefreshing(false);
   };
 
@@ -341,10 +341,6 @@ export default function Index() {
     loadSavedSchedule();
   }, []); // Empty dependency array ensures this effect runs exactly once on mount
 
-
-  const openSheetFor = () => {
-    setIsSheetVisible(true);
-  };
 
   // Displays "0:00" as "12:00am". Uses an exact match rather than a naive
   // substring replace, since e.g. "10:00".replace('0:00', '12:00am') would
