@@ -86,23 +86,19 @@ export const parseEventsXML = (xmlString) => {
  */
 export const fetchSchoolEvents = async (externalSignal) => {
     const timeoutController = new AbortController();
-    
-    // Set a hard 10-second limit for network fallbacks
     const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
-
-    // Link the internal timeout controller with the external cancellation stream
     const handleExternalAbort = () => timeoutController.abort();
-    
+
     if (externalSignal) {
         externalSignal.addEventListener("abort", handleExternalAbort);
     }
 
     try {
         const response = await fetch(
-            'https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0', 
+            'https://www.waipahuhigh.org/apps/events/events_rss.jsp?id=0',
             { signal: timeoutController.signal }
         );
-        
+
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
         }
@@ -110,8 +106,17 @@ export const fetchSchoolEvents = async (externalSignal) => {
         const htmlString = await response.text();
         return parseEventsXML(htmlString);
 
+    } catch (err) {
+        // Was this a real network/parse failure, or just an intentional cancel
+        // (screen navigated away, or our own 10s timeout)?
+        const wasAborted = err?.name === 'AbortError' || externalSignal?.aborted;
+
+        if (wasAborted) {
+            // Expected — don't treat this as an error, just bail quietly.
+            return null;
+        }
+        throw err; // genuine failure — let the caller handle/report it
     } finally {
-        // Clear timeout and remove event listener to eliminate memory leaks
         clearTimeout(timeoutId);
         if (externalSignal) {
             externalSignal.removeEventListener("abort", handleExternalAbort);

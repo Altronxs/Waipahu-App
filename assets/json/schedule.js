@@ -34,7 +34,7 @@ export const fetchSchoolCalendar = async (externalSignal) => {
 
     // Verify the HTTP request was successful (status code 200-299)
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      return calendarJSON;
     }
 
     // Parse the raw response body into a usable JavaScript object/array
@@ -43,13 +43,13 @@ export const fetchSchoolCalendar = async (externalSignal) => {
     return data;
 
   } catch (error) {
-    // Handle or rethrow errors so the calling component knows the fetch failed
     if (error.name === 'AbortError') {
       console.warn("Fetch school calendar request was aborted (either timeout or component unmount).");
-    } else {
-      console.error("Failed to fetch school calendar:", error);
+      return null; // real cancellation — caller already has data or will retry on next focus
     }
-    throw error;
+
+    console.error("Failed to fetch school calendar, using fallback:", error);
+    return calendarJSON;
 
   } finally {
     // Clear timeout and remove event listener to eliminate memory leaks

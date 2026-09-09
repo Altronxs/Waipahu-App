@@ -31,19 +31,19 @@ export const fetchSchoolMenu = async (externalSignal) => {
       throw new Error(`Request failed with status ${response.status}`);
     }
 
-    // Parse the raw response body into a usable JavaScript object/array
     const data = await response.json();
+    if (!data?.website?.[0]?.menu) {
+      throw new Error('Unexpected response shape: missing website[0].menu');
+    }
     return data.website[0].menu;
 
   } catch (error) {
-    // Handle or rethrow errors so the calling component knows the fetch failed
     if (error.name === 'AbortError') {
       console.warn("Fetch school menu request was aborted (either timeout or component unmount).");
-    } else {
-      console.error("Failed to fetch school menu:", error);
+      return null; // expected cancellation — don't propagate as an error
     }
-    throw error;
-
+    console.error("Failed to fetch school menu:", error);
+    throw error; // genuine failure — let the caller handle/report it
   } finally {
     // Clear timeout and remove event listener to eliminate memory leaks
     clearTimeout(timeoutId);

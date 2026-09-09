@@ -43,7 +43,7 @@ import { loadWebsiteData } from '@/assets/json/eventService';
 import { calculateCurrentPeriod, findCalendarEntryForDate, fetchSchoolCalendar } from '@/assets/json/schedule'
 import schoolSchedule from '@/assets/json/school_schedule.json'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import calendarJSON from '@/assets/json/calendar.json';
 
 interface SchoolEvent {
   name: string;
@@ -117,8 +117,7 @@ const getCalendar = async () => {
     const jsonValue = await AsyncStorage.getItem('@school_calendar');
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
-    console.error('Failed to fetch calendar:', error);
-    return null;
+    return calendarJSON;
   }
 };
 
@@ -198,9 +197,9 @@ const Bell = () => {
         setAppIsReady,
       });
 
-      fetchSchoolCalendar(controller.signal).then((fetchedCalendar) => {
-        setCalendar(fetchedCalendar as Calendar);
-        saveCalendar(fetchedCalendar as Calendar);
+      fetchSchoolCalendar(controller.signal).then(async (calendar) => {
+        setCalendar(calendar as Calendar)
+        await saveCalendar(calendar as Calendar)
       });
 
       return () => {
