@@ -170,6 +170,7 @@ export default function Index() {
       const jsonValue = await AsyncStorage.getItem('@school_calendar');
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (error) {
+      // if fail return hardcoded but not updated calendar
       return calendarJSON;
     }
   };
@@ -483,7 +484,7 @@ export default function Index() {
                         accessibilityRole="button"
                         accessibilityLabel={item.label}
                       >
-                        <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[4.25rem] self-center" />
+                        <Image source={item.image} style={{tintColor: '#17273d'}}className="size-[4.25rem] self-center" />
                         <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
                           {item.label}
                         </Text>
