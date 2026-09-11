@@ -76,25 +76,21 @@ const Students = () => {
       ],
     },
     {
-      title: "Records & Admin",
-      items: [
-        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
-        {
-          label: "Infinite Campus",
-          image: require("@/assets/images/if.png"),
-          onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp"),
-        },
-      ],
-    },
-    {
       title: "Early College",
       items: [
         { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
         {
-          label: "Infinite Campus",
-          image: require("@/assets/images/if.png"),
-          onPress: () => Linking.openURL("https://hawaii.infinitecampus.org/campus/hawaii.jsp"),
+          label: "Official Early College Website",
+          image: require("@/assets/images/globe.png"),
+          onPress: () => Linking.openURL("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555404&type=d&termREC_ID=&pREC_ID=1064039"),
         },
+      ],
+    },
+    {
+      title: "Records & Admin",
+      items: [
+        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
+        
       ],
     }
   ];
