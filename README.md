@@ -29,6 +29,20 @@ A mobile app built for Waipahu High School students, staff, and families. Origin
 - 🎯 **Vision** — school vision/mission info
 - 🏛️ **Legacy** — social media links for classes, sports teams, and student groups
 - 👤 **Author** — credits/about page
+
+## 📚 Wiki
+
+For deeper docs — data file schemas, project structure, and why this app is built the way it is — see the [Wiki](https://github.com/Altronxs/Waipahu-App/wiki):
+
+- [Getting Started](https://github.com/Altronxs/Waipahu-App/wiki/Getting-Started)
+- [Features](https://github.com/Altronxs/Waipahu-App/wiki/Features)
+- [Project Structure](https://github.com/Altronxs/Waipahu-App/wiki/Project-Structure)
+- [Data Files](https://github.com/Altronxs/Waipahu-App/wiki/Data-Files)
+- [Tech Stack](https://github.com/Altronxs/Waipahu-App/wiki/Tech-Stack)
+- [Why React Native + Expo](https://github.com/Altronxs/Waipahu-App/wiki/Why-React-Native-Expo)
+- [Contributing](https://github.com/Altronxs/Waipahu-App/wiki/Contributing)
+- [FAQ](https://github.com/Altronxs/Waipahu-App/wiki/FAQ)
+
 ## 🛠️ Tech Stack
  
 - **[Expo](https://expo.dev/)** (SDK 57) — build, run, and deploy tooling
@@ -43,6 +57,9 @@ A mobile app built for Waipahu High School students, staff, and families. Origin
 - **Expo Google Fonts** — Barlow Semi Condensed, Noto Serif, Roboto, Source Serif Pro
 - **EAS** — build/deployment configuration (`eas.json`)
 - **ESLint** (`eslint-config-expo` via flat config, `eslint.config.js`)
+
+> **Why Expo instead of native Swift?** This project is developed on Windows with no Mac and no paid Apple Developer account, so Expo (and specifically Expo Go) was the only practical path to shipping on iOS. See [Why React Native + Expo](https://github.com/Altronxs/Waipahu-App/wiki/Why-React-Native-Expo) for the full reasoning and trade-offs.
+
 ## 🚀 Getting Started
  
 ### Prerequisites
