@@ -1,14 +1,14 @@
 Readme · MD
 # Waipahu High School App
  
-A mobile app built for Waipahu High School students, staff, and families. Originally prototyped in HTML/CSS by past seniors, and rebuilt from the ground up in **React Native + Expo** with a modernized UI, native navigation, and expanded functionality.
+A mobile app built for Waipahu High School students, staff, and families. It started as an HTML/CSS prototype from past seniors, and has since been rebuilt from the ground up in **React Native + Expo** with a modernized UI, native navigation, and a lot more functionality.
  
 <!-- Optional: add a screenshot or banner here -->
 <!-- ![App Screenshot](./assets/images/whs-home.png) -->
  
 ## 📱 About
  
-**WaipahuHighSchoolApp** is a student hub that brings together the information students and staff need most — schedules, campus navigation, news, clubs, and more — in one native mobile app. It builds on the vision of the original web prototype created by previous senior classes, reimagined with a polished UI and a more maintainable codebase.
+**WaipahuHighSchoolApp** is a student hub that brings together the information students and staff need most, schedules, campus navigation, news, clubs, and more, all in 1 native mobile app. It builds on the vision of the original web prototype that previous senior classes put together, just reimagined with a polished UI and a codebase that's actually maintainable.
  
 ## ✨ Features
  
@@ -32,7 +32,7 @@ A mobile app built for Waipahu High School students, staff, and families. Origin
 
 ## 📚 Wiki
 
-For deeper docs — data file schemas, project structure, and why this app is built the way it is — see the [Wiki](https://github.com/Altronxs/Waipahu-App/wiki):
+For deeper docs, data file schemas, project structure, and why this app is built the way it is, check out the [Wiki](https://github.com/Altronxs/Waipahu-App/wiki):
 
 - [Getting Started](https://github.com/Altronxs/Waipahu-App/wiki/Getting-Started)
 - [Features](https://github.com/Altronxs/Waipahu-App/wiki/Features)
@@ -58,7 +58,7 @@ For deeper docs — data file schemas, project structure, and why this app is bu
 - **EAS** — build/deployment configuration (`eas.json`)
 - **ESLint** (`eslint-config-expo` via flat config, `eslint.config.js`)
 
-> **Why Expo instead of native Swift?** This project is developed on Windows with no Mac and no paid Apple Developer account, so Expo (and specifically Expo Go) was the only practical path to shipping on iOS. See [Why React Native + Expo](https://github.com/Altronxs/Waipahu-App/wiki/Why-React-Native-Expo) for the full reasoning and trade-offs.
+> **Why Expo instead of native Swift?** I'm developing this on Windows with no Mac and no paid Apple Developer account, so Expo, and Expo Go specifically, was really the only practical path to shipping on iOS. See [Why React Native + Expo](https://github.com/Altronxs/Waipahu-App/wiki/Why-React-Native-Expo) for the full reasoning and what it cost me.
 
 ## 🚀 Getting Started
  
@@ -66,7 +66,7 @@ For deeper docs — data file schemas, project structure, and why this app is bu
  
 - [Node.js](https://nodejs.org/) (LTS recommended)
 - [Expo Go](https://expo.dev/go) app on your phone, or an iOS/Android simulator
-- Since this project uses `expo-dev-client` and native modules (e.g. `react-native-maps`), a [development build](https://docs.expo.dev/develop/development-builds/introduction/) is recommended over plain Expo Go for full functionality
+- This project uses `expo-dev-client` and native modules like `react-native-maps`, so a [development build](https://docs.expo.dev/develop/development-builds/introduction/) is recommended over plain Expo Go for full functionality
 ### Installation
  
 1. Clone the repository
@@ -147,12 +147,12 @@ This project welcomes contributions from Waipahu High School students, alumni, a
 5. Open a Pull Request
 ## 🙏 Credits
  
-- **Original prototype**: Designed and built in HTML/CSS by previous Waipahu High School seniors
+- **Original prototype**: designed and built in HTML/CSS by previous Waipahu High School seniors
 - **React Native/Expo rebuild, navigation, and UI redesign**: [Kyle Baldovi] ([@Altronxs](https://github.com/Altronxs))
 
 ## 📄 License
  
-This project is maintained for Waipahu High School. License TBD.
+This project is licensed under the Apache License 2.0. See the `LICENSE` file for the full terms.
  
 ## 📬 Contact
  
