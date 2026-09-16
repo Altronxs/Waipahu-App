@@ -381,12 +381,13 @@ export default function Index() {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
+          source={require("@/assets/images/gif/marauder-script-loop.gif")} 
+          className="self-center object-contain " 
+          style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
+        >
+        </Image>
+        <Text className="text-white mt-4 mb-4 font-barlow-italic text-center self-center">
+          LOADING...
         </Text>
       </View>
     );
@@ -438,7 +439,7 @@ export default function Index() {
                     WELCOME
                   </Text>
                   <Image
-                    source={require("@/assets/images/marauder-script.png")} 
+                    source={require("@/assets/images/gif/marauder_signature.gif")} 
                     className="self-center object-contain " 
                     style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
                   >
