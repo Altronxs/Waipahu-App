@@ -17,17 +17,12 @@ module.exports = {
     android: {
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
-        // foregroundImage: "./assets/images/android-icon-foreground.png",
-        // backgroundImage: "./assets/images/android-icon-background.png",
-        // monochromeImage: "#assets/images/android-icon-monochrome.png"
       },
       predictiveBackGestureEnabled: false,
       package: "com.altronx.WaipahuHighSchoolApp",
-      // REMOVE "config.googleMaps" from here completely to prevent conflicts
     },
     plugins: [
       "expo-router",
-      // MOVE the Google Maps configuration here into the plugin configuration block 👇
       [
         "react-native-maps",
         {
@@ -54,10 +49,19 @@ module.exports = {
           isAndroidBackgroundLocationEnabled: false
         }
       ],
+      // 👇 ADDED THIS BLOCK TO ENABLE GIFS FOR REACT-NATIVE IMAGE COMPONENT ON ANDROID
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "frescoVersion": "2.5.0"
+          }
+        }
+      ],
       "expo-font",
       "expo-web-browser",
       "expo-asset",
-      "expo-image",
+      "expo-image", // Note: This library renders GIFs natively without needing fresco!
       "expo-status-bar"
     ],
     experiments: {
