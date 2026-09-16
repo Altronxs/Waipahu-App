@@ -409,7 +409,7 @@ const Map = () => {
 
           <GlassView 
             className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" 
-            style={{width: width - 32, padding: 16, borderRadius: 32, flexShrink: 1, margin: 16 }} 
+            style={{width: width - 32, padding: 16, borderRadius: 45, flexShrink: 1, margin: 16 }} 
             glassEffectStyle='regular' 
             tintColor={'#17273d'}
             
@@ -423,7 +423,7 @@ const Map = () => {
                     <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
                       {selectedFeature.name}
                     </Text>
-                    <View className="self-center items-center w-[80vw] rounded-2xl overflow-hidden">
+                    <View className="self-center items-center w-[80vw] overflow-hidden">
                       {selectedFeature.thirdFloor && (
                         <FloorRow rooms={selectedFeature.thirdFloor} variant="third" />
                       )}
@@ -442,7 +442,7 @@ const Map = () => {
                   <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
                     {selectedFeature.name}
                   </Text>
-                  <View className="self-center items-center aspect-[2/1.25] w-full rounded-2xl overflow-hidden">
+                  <View className="self-center items-center aspect-[2/1.25] w-full rounded-[2.25rem] overflow-hidden">
                     {pdfUri && (
                       <WebView
                         ref={webViewRef}

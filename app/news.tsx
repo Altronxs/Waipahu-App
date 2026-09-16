@@ -172,7 +172,7 @@ const News = () => {
       )}
 
       <View className="grow justify-center items-center bg-white">
-        <View className="w-[100vw] h-[65vh] z-10 ">
+        <View className="w-[100vw] flex-1 z-10 ">
           <WebView
             className="h-[5vh]"
             ref={webViewRef}
