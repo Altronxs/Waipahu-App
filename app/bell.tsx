@@ -126,6 +126,9 @@ const Bell = () => {
   const router = useRouter();
   const { height } = useWindowDimensions();
 
+  // 24 hours in milliseconds (24 * 60 * 60 * 1000)
+  const ONE_DAY_MS = 86400000; 
+
   // "Current period" bell-schedule state (progress bar, period name, times left, etc.)
   const [currentPeriod, setCurrentPeriod] = useState<string>('');
   const [currentPeriodStart, setCurrentPeriodStart] = useState<string>('')
@@ -197,10 +200,10 @@ const Bell = () => {
         setAppIsReady,
       });
 
-      fetchSchoolCalendar(controller.signal).then(async (calendar) => {
-        setCalendar(calendar as Calendar)
-        await saveCalendar(calendar as Calendar)
-      });
+      // fetchSchoolCalendar(controller.signal).then(async (calendar) => {
+      //   setCalendar(calendar as Calendar)
+      //   await saveCalendar(calendar as Calendar)
+      // });
 
       return () => {
         controller.abort();
@@ -219,10 +222,10 @@ const Bell = () => {
       setAppIsReady,
     });
 
-    fetchSchoolCalendar(controller.signal).then((fetchedCalendar) => {
-      setCalendar(fetchedCalendar as Calendar);
-      saveCalendar(fetchedCalendar as Calendar);
-    });
+    // fetchSchoolCalendar(controller.signal).then((fetchedCalendar) => {
+    //   setCalendar(fetchedCalendar as Calendar);
+    //   saveCalendar(fetchedCalendar as Calendar);
+    // });
 
     setRefreshing(false);
   };
@@ -238,29 +241,50 @@ const Bell = () => {
 
   // Run this lifecycle hook immediately when the component mounts to the screen
   useEffect(() => {
-    // Define an internal asynchronous function since useEffect callbacks cannot be async
-    const loadSavedSchedule = async () => {
+    const initalizedData = async () => {
       try {
-        // Await the asynchronous retrieval of the saved schedule string from disk
         const savedValue = await AsyncStorage.getItem('setting.schedule');
 
-        // If the key exists, update our state. If it returns null, fall back to our default empty string.
-        setSelectedSchedule(savedValue ?? '');
+        const now = Date.now()
+        const calenderData = await getCalendar();
+        const lastFetchTime = await AsyncStorage.getItem('@last_fetch_time');
 
-        // Also seed `calendar` from the cached copy so the very first interval
-        // tick (before `fetchSchoolCalendar` resolves) already has a value to
-        // pass into `calculateCurrentPeriod`.
-        if (calendar == null) {
-          setCalendar(await getCalendar());
+        const isCacheEmpty = !calenderData || !lastFetchTime;
+        const isOlderThanOneDay = now - parseInt(lastFetchTime || '0', 10) > ONE_DAY_MS;
+        
+        if (isCacheEmpty || isOlderThanOneDay) {
+          console.log("Local calendar cache stale/empty. Pulling from CDN...");
+          const response = await fetch('https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json');
+
+          if (!response.ok) throw new Error('CDN response error');
+
+          // Parse the raw response body into a usable JavaScript object/array
+          const data = await response.json();
+          
+          await saveCalendar(data);
+          await AsyncStorage.setItem('@last_fetch_time', now.toString());
+
+          setCalendar(data);
+        } else {
+          setCalendar(calenderData);
         }
+
+        setSelectedSchedule(savedValue ?? '');
       } catch (error) {
-        // Catch any filesystem errors to prevent the application from crashing
         console.error("Failed to load local schedule settings data:", error);
+
+        // Fallback: If network fails, pull the stale local calendar rather than crashing
+        try {
+          const fallbackData = await getCalendar();
+          if (fallbackData) setCalendar(fallbackData);
+        } catch (innerError) {
+          console.error("Critical fallback storage failure:", innerError);
+        }
       }
     };
 
     // Execute the retrieval routine
-    loadSavedSchedule();
+    initalizedData();
   }, []); // Empty dependency array ensures this effect runs exactly once on mount
 
   /**
