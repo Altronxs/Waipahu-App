@@ -29,6 +29,8 @@ A mobile app built for Waipahu High School students, staff, and families. It sta
 - 🎯 **Vision** — school vision/mission info
 - 🏛️ **Legacy** — social media links for classes, sports teams, and student groups
 - 👤 **Author** — credits/about page
+- ⚙️ **Settings** — schedule override and other app preferences
+- 📄 **License** — in-app license viewer
 
 ## 📚 Wiki
 
@@ -50,8 +52,10 @@ For deeper docs, data file schemas, project structure, and why this app is built
 - **[Expo Router](https://docs.expo.dev/router/introduction/)** — file-based routing
 - **NativeTabs** (`expo-router/unstable-native-tabs`) — native bottom tab bar
 - **[NativeWind](https://www.nativewind.dev/)** + Tailwind CSS — utility-first styling
-- **[react-native-maps](https://github.com/react-native-maps/react-native-maps)** — interactive campus map
+- **[react-native-maps](https://github.com/react-native-maps/react-native-maps)** + **expo-location** — interactive campus map with live position
 - **react-native-webview** — embedded web content (e.g. Staff directory)
+- **expo-image** — optimized image rendering (used for GIF loading badges, among other things)
+- **@react-native-async-storage/async-storage** — local persistent storage (e.g. Settings preferences)
 - **@react-navigation** (bottom-tabs, native, elements)
 - **TypeScript**
 - **Expo Google Fonts** — Barlow Semi Condensed, Noto Serif, Roboto, Source Serif Pro
@@ -99,34 +103,51 @@ npm run lint
  
 ```
 Waipahu-App/
-├── app/                      # Expo Router screens (file-based routing)
-│   ├── (tabs)/                 # Bottom tab screens
-│   │   ├── index.tsx            # Home
-│   │   ├── student.tsx          # Students
-│   │   ├── map.tsx              # Campus Map
-│   │   └── _layout.tsx          # NativeTabs navigation config
-│   ├── _layout.tsx             # Root layout
-│   ├── academy.tsx             # Career academies info
-│   ├── athletics.tsx
-│   ├── author.tsx
-│   ├── bell.tsx                 # Bell schedule
-│   ├── cafe.tsx
-│   ├── calendar.tsx
-│   ├── clubs.tsx
-│   ├── contacts.tsx
-│   ├── events.tsx               # Upcoming events feed
-│   ├── globals.css              # Tailwind/NativeWind global styles
-│   ├── legacy.tsx               # Legacy classes/teams social links
-│   ├── news.tsx
-│   ├── registrar.tsx
-│   ├── staff.tsx                # Embedded staff directory (WebView)
-│   └── vision.tsx
+├── app/                       # Expo Router screens (file-based routing)
+│   ├── (tabs)/                  # Bottom tab screens
+│   │   ├── index.tsx              # Home
+│   │   ├── student.tsx            # Students
+│   │   ├── map.tsx                # Campus Map
+│   │   └── _layout.tsx            # NativeTabs navigation config
+│   ├── (features)/               # Screens pushed from the tabs (not tabs themselves)
+│   │   ├── academy.tsx             # Career academies info
+│   │   ├── athletics.tsx
+│   │   ├── bell.tsx                # Bell schedule
+│   │   ├── cafe.tsx
+│   │   ├── calendar.tsx
+│   │   ├── clubs.tsx
+│   │   ├── contacts.tsx
+│   │   ├── events.tsx              # Upcoming events feed
+│   │   ├── legacy.tsx              # Legacy classes/teams social links
+│   │   ├── news.tsx
+│   │   ├── registrar.tsx
+│   │   ├── staff.tsx               # Embedded staff directory (WebView)
+│   │   ├── vision.tsx
+│   │   └── _layout.tsx             # Per-screen titles + stack transitions
+│   ├── (settings)/               # Settings-adjacent screens
+│   │   ├── author.tsx              # Credits/about page
+│   │   ├── settings.tsx            # Schedule override + app preferences
+│   │   ├── license.tsx             # In-app license viewer
+│   │   └── _layout.tsx
+│   ├── _layout.tsx               # Root layout, stacks (tabs)/(features)/(settings) together
+│   └── globals.css               # Tailwind/NativeWind global styles
+├── components/                  # Shared UI components
+│   ├── FocusGate.tsx              # Delays unmount until a screen loses focus
+│   └── MarauderLoadingBadge.tsx   # Shared loading indicator
+├── src/
+│   └── utils/                    # Data-fetching/parsing services, not UI
+│       ├── eventServices.js        # RSS/XML parsing + event feed loading
+│       ├── liveServices.js         # Cafe menu link fetching
+│       └── scheduleServices.js     # Bell schedule + calendar lookups
 ├── assets/
-│   ├── images/                  # Icons, backgrounds, campus/map assets
-│   ├── json/                    # clubData, mapdata, calendar, school_schedule, eventService, schedule
-│   └── pdf/                     # Campus map PDF
-├── app.json                    # Expo app configuration
-├── eas.json                    # EAS build configuration
+│   ├── images/                   # Icons, backgrounds, campus/map assets
+│   ├── json/                     # clubData, mapdata, calendar, school_schedule
+│   └── pdf/                      # Campus map PDF
+├── live-data/                   # Data refreshed independently of app releases
+│   ├── calendar.json
+│   └── website.json
+├── app.config.js                # Expo app configuration (JS, env-var driven)
+├── eas.json                     # EAS build configuration
 ├── tailwind.config.js
 ├── babel.config.js
 ├── metro.config.js
