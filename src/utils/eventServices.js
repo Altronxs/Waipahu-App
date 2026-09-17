@@ -124,19 +124,77 @@ export const fetchSchoolEvents = async (externalSignal) => {
     }
 };
 
+// ==========================================
+// SHARED CACHE / IN-FLIGHT REQUEST DEDUP
+// ==========================================
+// Both the Home screen and the Events screen call into this file every time
+// they gain focus. Without coordination, rapid navigation between them
+// (e.g. home -> events -> home in under a second) can fire several
+// overlapping, then-aborted requests to the SAME host in quick succession.
+// Aborted native requests aren't always torn down instantly, so a burst of
+// these can pin/exhaust the connection pool for that host and make
+// unrelated requests stall right after. This module-level cache + in-flight
+// promise ensures at most one request to the RSS feed is ever outstanding
+// app-wide, and repeated focus events within the TTL just reuse the cache.
+let cachedEvents = null;
+let cachedAt = 0;
+let inFlightRequest = null;
+const CACHE_TTL_MS = 30000; // don't hit the network more than once per 30s
+
+/**
+ * Returns the latest school events, either from cache, from an
+ * already-in-flight request, or by kicking off a new fetch. Never allows
+ * more than one concurrent request to the underlying endpoint.
+ *
+ * @param {Object} [options]
+ * @param {boolean} [options.forceRefresh] - Bypass the cache (e.g. pull-to-refresh).
+ * @returns {Promise<Array|null>}
+ */
+export const getSchoolEvents = async ({ forceRefresh = false } = {}) => {
+    const isFresh = cachedEvents && (Date.now() - cachedAt < CACHE_TTL_MS);
+
+    if (isFresh && !forceRefresh) {
+        return cachedEvents;
+    }
+
+    // Someone else already kicked off a fetch (e.g. Home and Events both
+    // focused within the same moment) — piggyback on it instead of
+    // starting a second request to the same host.
+    if (inFlightRequest) {
+        return inFlightRequest;
+    }
+
+    inFlightRequest = fetchSchoolEvents()
+        .then((parsedEvents) => {
+            if (parsedEvents && parsedEvents.length > 0) {
+                cachedEvents = parsedEvents;
+                cachedAt = Date.now();
+            }
+            return cachedEvents;
+        })
+        .finally(() => {
+            inFlightRequest = null;
+        });
+
+    return inFlightRequest;
+};
+
 /**
  * Higher-level execution wrapper designed to pipe network operations 
- * smoothly into UI state management hooks.
+ * smoothly into UI state management hooks. Backed by the shared cache
+ * above, so calling this from multiple screens on every focus is safe
+ * and cheap — it will not spam the network.
  * 
  * @param {Object} params
- * @param {AbortSignal} [params.signal] - Cancellation token.
  * @param {Function} params.setEvents - State variable updater for raw event payloads.
  * @param {Function} params.setEventsError - Error state dispatcher.
  * @param {Function} params.setAppIsReady - Application life-cycle validation hook.
+ * @param {boolean} [params.forceRefresh] - Bypass the cache (e.g. pull-to-refresh).
  */
-export const loadWebsiteData = async ({ signal, setEvents, setEventsError, setAppIsReady }) => {
+export const loadWebsiteData = async ({ setEvents, setEventsError, setAppIsReady, forceRefresh = false }) => {
+    setEventsError(null); // clear stale error before starting
     try {
-        const parsedEvents = await fetchSchoolEvents(signal);
+        const parsedEvents = await getSchoolEvents({ forceRefresh });
 
         // Safeguard state from getting overridden by incomplete requests
         if (!parsedEvents || parsedEvents.length === 0) return;
@@ -145,11 +203,6 @@ export const loadWebsiteData = async ({ signal, setEvents, setEventsError, setAp
         setEventsError(null);
 
     } catch (error) {
-        // If the request was intentionally cancelled, swallow the exception silently
-        if (error?.name === "AbortError") {
-            return; 
-        }
-        
         console.error("Network request failed: ", error);
         setEventsError("Unable to load events right now.");
 

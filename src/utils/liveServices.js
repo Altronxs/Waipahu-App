@@ -6,17 +6,11 @@
  * @returns {Promise<Object|Array>} The parsed JSON data representing the current menu link.
  */
 export const fetchSchoolMenu = async (externalSignal) => {
-  // Create an internal controller to handle our network timeout
   const timeoutController = new AbortController();
-
-  // Set a hard 10-second limit for network fallbacks before aborting
   const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
-
-  // Link the internal timeout controller with the external cancellation stream
   const handleExternalAbort = () => timeoutController.abort();
 
   if (externalSignal) {
-    // If the component unmounts or cancels, immediately abort our fetch request
     externalSignal.addEventListener("abort", handleExternalAbort);
   }
 
@@ -26,7 +20,6 @@ export const fetchSchoolMenu = async (externalSignal) => {
       { signal: timeoutController.signal }
     );
 
-    // Verify the HTTP request was successful (status code 200-299)
     if (!response.ok) {
       throw new Error(`Request failed with status ${response.status}`);
     }
@@ -40,15 +33,60 @@ export const fetchSchoolMenu = async (externalSignal) => {
   } catch (error) {
     if (error.name === 'AbortError') {
       console.warn("Fetch school menu request was aborted (either timeout or component unmount).");
-      return null; // expected cancellation — don't propagate as an error
+      return null;
     }
     console.error("Failed to fetch school menu:", error);
-    throw error; // genuine failure — let the caller handle/report it
+    throw error;
   } finally {
-    // Clear timeout and remove event listener to eliminate memory leaks
     clearTimeout(timeoutId);
     if (externalSignal) {
       externalSignal.removeEventListener("abort", handleExternalAbort);
     }
   }
+};
+
+// ==========================================
+// SHARED CACHE / IN-FLIGHT REQUEST DEDUP
+// ==========================================
+// Cafe's useFocusEffect calls this on every focus. Same reasoning as
+// eventService.js: without this, rapid focus/blur cycling on the Cafe
+// screen fires overlapping, then-aborted requests. Kept as a separate
+// cache from events (different endpoint, different data), same pattern.
+let cachedMenu = null;
+let cachedMenuAt = 0;
+let inFlightMenuRequest = null;
+const MENU_CACHE_TTL_MS = 30000;
+
+/**
+ * Returns the cached menu link, an in-flight request already underway, or
+ * kicks off a new fetch — never more than one request outstanding at once.
+ *
+ * @param {Object} [options]
+ * @param {boolean} [options.forceRefresh] - Bypass the cache.
+ * @returns {Promise<Object|Array|null>}
+ */
+export const getSchoolMenu = async ({ forceRefresh = false } = {}) => {
+  const isFresh = cachedMenu && (Date.now() - cachedMenuAt < MENU_CACHE_TTL_MS);
+
+  if (isFresh && !forceRefresh) {
+    return cachedMenu;
+  }
+
+  if (inFlightMenuRequest) {
+    return inFlightMenuRequest;
+  }
+
+  inFlightMenuRequest = fetchSchoolMenu()
+    .then((data) => {
+      if (data) {
+        cachedMenu = data;
+        cachedMenuAt = Date.now();
+      }
+      return cachedMenu;
+    })
+    .finally(() => {
+      inFlightMenuRequest = null;
+    });
+
+  return inFlightMenuRequest;
 };
