@@ -43,7 +43,7 @@ import { calculateCurrentPeriod, fetchSchoolCalendar } from '@/assets/json/sched
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import calendarJSON from '@/assets/json/calendar.json';
-
+import { Image as ExpoImage } from 'expo-image'; // Alias the Expo version
 
 interface SchoolEvent {
   name: string;
@@ -129,29 +129,30 @@ export default function Index() {
   };
   
   // Static nav/menu configuration grouped into sections for the home grid.
-  const sections: { title: string; items: IconItem[] }[] = [
+  // This reuses the screen instance instead of pushing infinite duplicates onto the memory stack.
+  const sections = [
     {
       title: "",
       items: [
-        { label: "Mission & Vision", image: require("@/assets/images/school.png"), onPress: () => router.push("/vision") },
-        { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.push("/calendar") },
-        { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.push("/bell") },
-        { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.push("/news") },
-        { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.push("/map") },
-        { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.push("/cafe") },
-        { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/athletics") },
-        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
-        { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.push("/events") },
-        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.push("/academy") },
-        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/legacy") },
-        { label: "Student", image: require("@/assets/images/user.png"), onPress: () => router.push("/student") },
-        { label: "Staff", image: require("@/assets/images/staff.png"), onPress: () => router.push("/staff") },
-        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
-        { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.push("/contacts") },
-        { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://hawaii.infinitecampus.org/campus/hawaii.jsp") },
-        { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://www.waipahuhigh.org/") },
-        { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.push("/settings") },
-        { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/author") },
+        { label: "Mission & Vision", image: require("@/assets/images/school.png"), onPress: () => router.navigate("/vision") },
+        { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.navigate("/calendar") },
+        { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.navigate("/bell") },
+        { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.navigate("/news") },
+        { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.navigate("/map") },
+        { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.navigate("/cafe") },
+        { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.navigate("/athletics") },
+        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.navigate("/clubs") },
+        { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.navigate("/events") },
+        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.navigate("/academy") },
+        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.navigate("/legacy") },
+        { label: "Student", image: require("@/assets/images/user.png"), onPress: () => router.navigate("/student") },
+        { label: "Staff", image: require("@/assets/images/staff.png"), onPress: () => router.navigate("/staff") },
+        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.navigate("/registrar") },
+        { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.navigate("/contacts") },
+        { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://infinitecampus.org") },
+        { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://waipahuhigh.org") },
+        { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.navigate("/settings") },
+        { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.navigate("/author") },
       ],
     }
   ];
@@ -377,15 +378,27 @@ export default function Index() {
 
   // Splash/loading screen: shown until fonts are loaded AND the first
   // interval tick has fired (see setAppIsReady(true) in the focus effect above).
-  if ((appIsReady == false) || !fontsLoaded) {
+  if ((appIsReady == false) || !fontsLoaded ) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/gif/marauder-script-loop.gif")} 
-          className="self-center object-contain " 
-          style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
-        >
-        </Image>
+        <View>
+          {/* Kept as standard React Native Image */}
+          <Image
+            source={require("@/assets/images/marauder-script.png")} 
+            className="self-center object-contain " 
+            style={{ height: 50, width: 'auto', aspectRatio: 198 / 50, position: 'absolute', opacity: 0.5 }} 
+          >
+          </Image>
+          
+          {/* Swapped to Expo Image using the alias */}
+          <ExpoImage
+            source={require("@/assets/images/gif/marauder-script-loop.gif")} 
+            style={{ height: 52, width: 'auto', aspectRatio: 202 / 52}} 
+            contentFit="contain" // Needed for expo-image instead of object-contain
+            priority="high"
+          />
+        </View>
+        
         <Text className="text-white mt-4 mb-4 font-barlow-italic text-center self-center">
           LOADING...
         </Text>
@@ -438,12 +451,13 @@ export default function Index() {
                   <Text className="z-20 font-barlow-italic text-5xl text-whs-blue text-center self-center">
                     WELCOME
                   </Text>
-                  <Image
-                    source={require("@/assets/images/gif/marauder_signature.gif")} 
-                    className="self-center object-contain " 
-                    style={{ height: 50, width: 'auto', aspectRatio: 198 / 50 }} 
-                  >
-                  </Image>
+                    {/* Swapped to Expo Image using the alias */}
+                    <ExpoImage
+                      source={require("@/assets/images/gif/marauder_signature.gif")} 
+                      style={{ height: 52, width: 'auto', aspectRatio: 202 / 52}} 
+                      contentFit="contain" // Needed for expo-image instead of object-contain
+                      priority="high"
+                    />
                 </View>
               </View>
             
@@ -461,7 +475,7 @@ export default function Index() {
                         style={{
                           width: 30, height: 50
                         }}
-                        onPress={() => router.push("/settings")}
+                        onPress={() => router.navigate("/settings")}
                       >
                         <Image
                           source={require("@/assets/images/question.png")}

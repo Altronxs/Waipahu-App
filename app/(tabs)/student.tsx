@@ -153,11 +153,11 @@ const Students = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.push("/")}
+            onTouchEnd={() => router.navigate('/')}
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.push("/")}
+                onPress={() => router.navigate('/')}
             >
                 <Image
                 source={require("@/assets/images/back.png")}

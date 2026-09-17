@@ -284,7 +284,7 @@ export default function Settings() {
                 >
                     <TouchableOpacity
                         className="items-center"
-                        onPress={() => router.push("/")}
+                        onPress={() => router.back()}
                     >
                         <Image
                         source={require("@/assets/images/back.png")}

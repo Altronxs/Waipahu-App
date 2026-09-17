@@ -245,7 +245,7 @@ const Bell = () => {
       try {
         const savedValue = await AsyncStorage.getItem('setting.schedule');
 
-        const now = Date.now()
+        const now = Date.now();
         const calenderData = await getCalendar();
         const lastFetchTime = await AsyncStorage.getItem('@last_fetch_time');
 
@@ -475,11 +475,11 @@ const Bell = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.push("/")}
+            onTouchEnd={() => router.back()}
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.push("/")}
+                onPress={() => router.back()}
             >
                 <Image
                 source={require("@/assets/images/back.png")}
@@ -528,7 +528,7 @@ const Bell = () => {
                       style={{
                         width: 30, height: 50
                       }}
-                      onPress={() => router.push("/settings")}
+                      onPress={() => router.navigate("/settings")}
                     >
                       <Image
                         source={require("@/assets/images/question.png")}
