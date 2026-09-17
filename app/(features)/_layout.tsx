@@ -5,20 +5,6 @@ import { Image } from "expo-image"; // Optimized image component
 export default function FeaturesLayout() {
   const router = useRouter();
 
-  // Helper to generate a universal, memory-safe back arrow
-  const renderBackButton = () => (
-    <TouchableOpacity 
-      onPress={() => router.navigate("/(tabs)")} // Always cleanly returns to the Home tabs hub
-      className="flex-row items-center gap-1 p-2 -ml-2"
-      accessibilityRole="button"
-      accessibilityLabel="Go back to Home"
-    >
-      {/* Universal thin back arrow using system font styling */}
-      <Text className="text-white text-2xl font-light">‹</Text>
-      <Text className="text-white text-base font-barlow-semibold">Home</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <Stack
       screenOptions={{

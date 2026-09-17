@@ -468,7 +468,7 @@ export default function Settings() {
                       className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
                       style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
                       onPress={() => {
-                        router.push("/author")
+                        router.push("/(settings)/author")
                       }}
                     >
                       <View
@@ -495,7 +495,34 @@ export default function Settings() {
                           />
                       </View>
                     </TouchableOpacity>
-                    
+                    <TouchableOpacity
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
+                      onPress={() => {
+                        router.push("/(settings)/license")
+                      }}
+                    >
+                      <View
+                          className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
+                      >
+                  
+                          <Image
+                              source={require("@/assets/images/info.png")}
+                              className="self-center"
+                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                          />
+                          <Text
+                              className="z-20 font-barlow-semibold text-black text-xl p-3"
+                          >
+                              License
+                          </Text>
+                          <Image
+                              source={require("@/assets/images/forward.png")}
+                              className="self-center"
+                              
+                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                          />
+                      </View>
+                    </TouchableOpacity>
                     <View
                         className="w-[90%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
                         
