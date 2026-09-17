@@ -34,35 +34,31 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
-import { fetchSchoolMenu } from "@/assets/json/liveServices";
- 
-
+import { getSchoolMenu } from "@/src/utils/liveServices";
+import { useIsFocused } from "expo-router/react-navigation";
+import { FocusGate } from "@/components/FocusGate";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 const { width, height } = Dimensions.get("window");
 
-// Used if fetchSchoolMenu fails or hasn't returned a URL yet, so the WebView
-// always has something to load.
 const FALLBACK_MENU_URL = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%202026.pdf`;
 
-// Shape returned by `fetchSchoolMenu`. Adjust this if the actual JSON your
-// GitHub source serves doesn't have a top-level `url` field.
 interface MenuData {
   url: string;
 }
 
+// Minimum time between forced WebView reloads, independent of the data
+// fetch's own cache TTL. Prevents rapid focus/blur cycling from also
+// hammering waipahuhigh.org via the WebView's native request on top of
+// the JS-level fetch above.
+const RELOAD_THROTTLE_MS = 30000;
+
 const Cafe = () => {
+  const isFocused = useIsFocused();
   const [menuUrl, setMenuUrl] = useState<string>("");
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      if (webViewRef.current) {
-        webViewRef.current.reload();
-      }
-    }, []),
-  );
-
+  const lastReloadAt = useRef<number>(0);
 
 
   const [fontsLoaded] = useFonts({
@@ -81,42 +77,37 @@ const Cafe = () => {
     SourceSerifPro_600SemiBold,
   });
 
-  // Re-fetch the menu link every time this screen comes into focus, not just
-  // on mount, so an updated menu.json shows up without needing an app restart.
+  // Single focus effect: pulls the menu URL (via the shared cache, so
+  // rapid refocus reuses cached data instead of re-fetching) and only
+  // forces the WebView to reload from network when it's actually due
+  // for one — not on every single focus.
   useFocusEffect(
     React.useCallback(() => {
-      const controller = new AbortController();
-
-      fetchSchoolMenu(controller.signal)
+      getSchoolMenu()
         .then((data) => {
-          const url = (data as MenuData)?.url;
-          setMenuUrl(url || FALLBACK_MENU_URL);
+          const url = (data as MenuData)?.url || FALLBACK_MENU_URL;
+          setMenuUrl(url);
+
+          const now = Date.now();
+          const dueForReload = now - lastReloadAt.current > RELOAD_THROTTLE_MS;
+
+          if (webViewRef.current && dueForReload) {
+            lastReloadAt.current = now;
+            setIsLoading(true); // show the overlay again for the forced reload
+            webViewRef.current.reload();
+          }
         })
         .catch((error) => {
-          // AbortError is expected on unmount/refocus — nothing to log there.
-          if (error?.name !== "AbortError") {
-            console.error("Failed to fetch school menu, using fallback:", error);
-          }
+          console.error("Failed to fetch school menu, using fallback:", error);
           setMenuUrl(FALLBACK_MENU_URL);
         });
-
-      return () => {
-        controller.abort();
-      };
     }, [])
   );
 
   if (!fontsLoaded || !menuUrl) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -126,14 +117,7 @@ const Cafe = () => {
       {isLoading == true && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
-            <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="size-32 mb-6 self-center"
-            />
-            <ActivityIndicator size="large" color="#ffffff" />
-            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-              Loading...
-            </Text>
+            <MarauderLoadingBadge></MarauderLoadingBadge>
           </View>
         </View>
       )}
@@ -153,56 +137,54 @@ const Cafe = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.back()}
+            
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.back()}
+                onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
             >
                 <Image
                 source={require("@/assets/images/back.png")}
-                style={{
-                    tintColor: "#ffffff",
-                }}
+                style={{ tintColor: "#ffffff" }}
                 className="size-10 self-center block m-auto pr-1"
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
-        >
+        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute">
           School Cafe Menu
         </Text>
       </View>
 
       <View className="grow justify-center items-center bg-white">
-        <View className="self-center items-center flex-row w-full flex-1 z-10">
-          <WebView
-            className="relative"
-            style={{ width: width, flex: 1 }}
-            ref={webViewRef}
-            source={{
-              uri: menuUrl,
-            }}
-            injectedJavaScript={`
-                setTimeout(() => {
-                  window.ReactNativeWebView.postMessage("styles_injected");
-                }, 100);
-                true;
-            `}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            onMessage={(event) => {
-              if (event.nativeEvent.data === "styles_injected") {
-                
-                setIsLoading(false);
-              } else {
-                console.log("WebView message:", event.nativeEvent.data);
-              }
-            }}
-            sharedCookiesEnabled={true}
-            thirdPartyCookiesEnabled={true}
-          />
-        </View>
+        <FocusGate>
+          <View className="self-center items-center flex-row w-full flex-1 z-10">
+            {isFocused ? (
+              <WebView
+                className="relative"
+                style={{ width: width, flex: 1 }}
+                ref={webViewRef}
+                source={{ uri: menuUrl }}
+                injectedJavaScript={`
+                    setTimeout(() => {
+                      window.ReactNativeWebView.postMessage("styles_injected");
+                    }, 100);
+                    true;
+                `}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                onMessage={(event) => {
+                  if (event.nativeEvent.data === "styles_injected") {
+                    setIsLoading(false);
+                  } else {
+                    console.log("WebView message:", event.nativeEvent.data);
+                  }
+                }}
+                sharedCookiesEnabled={true}
+                thirdPartyCookiesEnabled={true}
+              />
+            ) : null}
+          </View>
+        </FocusGate>
       </View>
     </SafeAreaProvider>
   );

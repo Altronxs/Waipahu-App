@@ -38,12 +38,12 @@ import {
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
 import "../globals.css";
-import { loadWebsiteData } from '@/assets/json/eventService';
-import { calculateCurrentPeriod, fetchSchoolCalendar } from '@/assets/json/schedule'
-import { Dropdown } from 'react-native-element-dropdown';
+import { loadWebsiteData } from '@/src/utils/eventServices';
+import { calculateCurrentPeriod, fetchSchoolCalendar } from '@/src/utils/scheduleServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import calendarJSON from '@/assets/json/calendar.json';
 import { Image as ExpoImage } from 'expo-image'; // Alias the Expo version
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
 interface SchoolEvent {
   name: string;
@@ -134,25 +134,25 @@ export default function Index() {
     {
       title: "",
       items: [
-        { label: "Mission & Vision", image: require("@/assets/images/school.png"), onPress: () => router.navigate("/vision") },
-        { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.navigate("/calendar") },
-        { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.navigate("/bell") },
-        { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.navigate("/news") },
-        { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.navigate("/map") },
-        { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.navigate("/cafe") },
-        { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.navigate("/athletics") },
-        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.navigate("/clubs") },
-        { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.navigate("/events") },
-        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.navigate("/academy") },
-        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.navigate("/legacy") },
-        { label: "Student", image: require("@/assets/images/user.png"), onPress: () => router.navigate("/student") },
-        { label: "Staff", image: require("@/assets/images/staff.png"), onPress: () => router.navigate("/staff") },
-        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.navigate("/registrar") },
-        { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.navigate("/contacts") },
+        { label: "Mission & Vision", image: require("@/assets/images/school.png"), onPress: () => router.push("/(features)/vision") },
+        { label: "Calendar", image: require("@/assets/images/calendar.png"), onPress: () => router.push("/(features)/calendar") },
+        { label: "Bell Schedule", image: require("@/assets/images/bell.png"), onPress: () => router.push("/(features)/bell") },
+        { label: "News", image: require("@/assets/images/news.png"), onPress: () => router.push("/(features)/news") },
+        { label: "Campus Map", image: require("@/assets/images/map-icon.png"), onPress: () => router.push("/(tabs)/map") },
+        { label: "Menu", image: require("@/assets/images/cafe.png"), onPress: () => router.push("/(features)/cafe") },
+        { label: "Athletics", image: require("@/assets/images/ball.png"), onPress: () => router.push("/(features)/athletics") },
+        { label: "Clubs", image: require("@/assets/images/clubs.png"), onPress: () => router.push("/clubs") },
+        { label: "Events & Activities", image: require("@/assets/images/activity.png"), onPress: () => router.push("/(features)/events") },
+        { label: "Academies", image: require("@/assets/images/book.png"), onPress: () => router.push("/(features)/academy") },
+        { label: "Socials", image: require("@/assets/images/socials.png"), onPress: () => router.push("/(features)/legacy") },
+        { label: "Student", image: require("@/assets/images/user.png"), onPress: () => router.push("/(tabs)/student") },
+        { label: "Staff", image: require("@/assets/images/staff.png"), onPress: () => router.push("/(features)/staff") },
+        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/(features)/registrar") },
+        { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.push("/(features)/contacts") },
         { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://infinitecampus.org") },
         { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://waipahuhigh.org") },
-        { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.navigate("/settings") },
-        { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.navigate("/author") },
+        { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.push("/(settings)/settings") },
+        { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/(settings)/author") },
       ],
     }
   ];
@@ -195,46 +195,15 @@ export default function Index() {
     SourceSerifPro_600SemiBold,
   });
 
-
   useFocusEffect(
     useCallback(() => {
-      const controller = new AbortController();
-
-      loadWebsiteData({
-        signal: controller.signal,
-        setEvents,
-        setEventsError,
-        setAppIsReady,
-      });
-
-      // fetchSchoolCalendar(controller.signal).then(async (calendar) => {
-      //   setCalendar(calendar as Calendar)
-      //   await saveCalendar(calendar as Calendar)
-      // });
-      
-      return () => {
-        controller.abort();
-      };
+      loadWebsiteData({ setEvents, setEventsError, setAppIsReady });
     }, [])
   );
 
-
-  // Manual refresh trigger, wired to the ScrollView's RefreshControl below.
   const handleRefresh = async () => {
     setRefreshing(true);
-    const controller = new AbortController();
-
-    await loadWebsiteData({
-      signal: controller.signal,
-      setEvents,
-      setEventsError,
-      setAppIsReady,
-    });
-
-    // fetchSchoolCalendar(controller.signal).then(async (calendar) => {
-    //   setCalendar(calendar as Calendar)
-    //   await saveCalendar(calendar as Calendar)
-    // });
+    await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
     setRefreshing(false);
   };
 
@@ -323,52 +292,90 @@ export default function Index() {
     }, [selectedSchedule])
   );
 
-  // Run this lifecycle hook immediately when the component mounts to the screen
   useEffect(() => {
+    // Guards every setState call below so we never update state after
+    // this component has unmounted (defensive — Home is long-lived, but
+    // this keeps the pattern consistent with the rest of the app).
+    let isMounted = true;
+
     const initalizedData = async () => {
       try {
+        // User's manually-selected schedule override (e.g. "Assembly Day"),
+        // persisted separately from the calendar data itself.
         const savedValue = await AsyncStorage.getItem('setting.schedule');
 
-        const now = Date.now()
+        const now = Date.now();
+
+        // Locally cached calendar (AsyncStorage), or the bundled fallback
+        // JSON if AsyncStorage read fails — see getCalendar()'s own catch.
         const calenderData = await getCalendar();
         const lastFetchTime = await AsyncStorage.getItem('@last_fetch_time');
 
+        // Refresh from the CDN if we've never fetched, or if it's been
+        // more than a day since the last successful fetch.
         const isCacheEmpty = !calenderData || !lastFetchTime;
         const isOlderThanOneDay = now - parseInt(lastFetchTime || '0', 10) > ONE_DAY_MS;
-        
+
         if (isCacheEmpty || isOlderThanOneDay) {
           console.log("Local calendar cache stale/empty. Pulling from CDN...");
-          const response = await fetch('https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json');
 
-          if (!response.ok) throw new Error('CDN response error');
+          // Bound the CDN fetch with a 10s timeout so a slow/dead network
+          // can't leave this promise chain hanging indefinitely.
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-          // Parse the raw response body into a usable JavaScript object/array
-          const data = await response.json();
-          
-          await saveCalendar(data);
-          await AsyncStorage.setItem('@last_fetch_time', now.toString());
+          try {
+            const response = await fetch(
+              'https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json',
+              { signal: controller.signal }
+            );
 
-          setCalendar(data);
+            if (!response.ok) throw new Error('CDN response error');
+
+            // Parse the raw response body into a usable JavaScript object/array
+            const data = await response.json();
+
+            // Persist the fresh data + timestamp so we don't re-fetch
+            // again until ONE_DAY_MS has passed.
+            await saveCalendar(data);
+            await AsyncStorage.setItem('@last_fetch_time', now.toString());
+
+            if (isMounted) setCalendar(data);
+          } finally {
+            // Always clear the timeout — whether the fetch succeeded,
+            // failed, or was aborted by the timeout itself — so it never
+            // fires late against an already-settled request.
+            clearTimeout(timeoutId);
+          }
         } else {
-          setCalendar(calenderData);
+          // Cache is fresh — use what's already on disk, no network hit.
+          if (isMounted) setCalendar(calenderData);
         }
 
-        setSelectedSchedule(savedValue ?? '');
+        if (isMounted) setSelectedSchedule(savedValue ?? '');
       } catch (error) {
         console.error("Failed to load local schedule settings data:", error);
 
-        // Fallback: If network fails, pull the stale local calendar rather than crashing
+        // Fallback: if the CDN fetch failed (offline, bad response, etc.),
+        // fall back to whatever local/bundled calendar we have rather than
+        // leaving `calendar` null and breaking the bell-schedule widget.
         try {
           const fallbackData = await getCalendar();
-          if (fallbackData) setCalendar(fallbackData);
+          if (fallbackData && isMounted) setCalendar(fallbackData);
         } catch (innerError) {
           console.error("Critical fallback storage failure:", innerError);
         }
       }
     };
-    
+
     initalizedData();
-  }, []); // Empty dependency array ensures this effect runs exactly once on mount
+
+    // Cleanup: mark unmounted so any in-flight setState calls above are
+    // skipped if this effect's cleanup runs before they resolve.
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Empty dependency array — runs exactly once on mount, not on focus
 
 
   // Displays "0:00" as "12:00am". Uses an exact match rather than a naive
@@ -381,27 +388,7 @@ export default function Index() {
   if ((appIsReady == false) || !fontsLoaded ) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <View>
-          {/* Kept as standard React Native Image */}
-          <Image
-            source={require("@/assets/images/marauder-script.png")} 
-            className="self-center object-contain " 
-            style={{ height: 50, width: 'auto', aspectRatio: 198 / 50, position: 'absolute', opacity: 0.5 }} 
-          >
-          </Image>
-          
-          {/* Swapped to Expo Image using the alias */}
-          <ExpoImage
-            source={require("@/assets/images/gif/marauder-script-loop.gif")} 
-            style={{ height: 52, width: 'auto', aspectRatio: 202 / 52}} 
-            contentFit="contain" // Needed for expo-image instead of object-contain
-            priority="high"
-          />
-        </View>
-        
-        <Text className="text-white mt-4 mb-4 font-barlow-italic text-center self-center">
-          LOADING...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   } else {
@@ -475,7 +462,7 @@ export default function Index() {
                         style={{
                           width: 30, height: 50
                         }}
-                        onPress={() => router.navigate("/settings")}
+                        onPress={() => router.push("/(settings)/settings")}
                       >
                         <Image
                           source={require("@/assets/images/question.png")}

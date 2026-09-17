@@ -1,35 +1,27 @@
+// app/_layout.tsx
 import { Stack } from "expo-router";
-import './globals.css';
-
-const HIDDEN_ROUTE_TITLES: Record<string, string> = {
-  academy: "Academy",
-  cafe: "Cafe",
-  staff: "Staff",
-  bell: "Bell",
-  calendar: "Calendar",
-  contacts: "Contacts",
-  events: "Events",
-  vision: "Vision",
-  news: "News",
-  athletics: "Athletics",
-  clubs: "Clubs",
-  registrar: "Registrar",
-  author: "Author",
-  legacy: "Legacy",
-  settings: "Settings"
-};
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      {Object.entries(HIDDEN_ROUTE_TITLES).map(([name, title]) => (
-        <Stack.Screen
-          key={name}
-          name={name}
-          options={{ title, headerShown: false }}
-        />
-      ))}
+    <Stack screenOptions={{ headerShown: false }}>
+      {/* Baseline tabs interface */}
+      <Stack.Screen name="(tabs)" /> 
+      <Stack.Screen 
+        name="(features)" 
+        options={{ 
+          animation: "slide_from_right",
+          gestureEnabled: true,
+
+        }} 
+      />
+      <Stack.Screen 
+        name="(settings)" 
+        options={{ 
+          animation: "slide_from_right",
+          gestureEnabled: true,
+
+        }} 
+      />
     </Stack>
   );
 }

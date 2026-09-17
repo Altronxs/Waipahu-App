@@ -39,11 +39,13 @@ import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { Dropdown } from 'react-native-element-dropdown';
 import { GlassView } from 'expo-glass-effect';
-import { loadWebsiteData } from '@/assets/json/eventService';
-import { calculateCurrentPeriod, findCalendarEntryForDate, fetchSchoolCalendar } from '@/assets/json/schedule'
+import { loadWebsiteData } from '@/src/utils/eventServices';
+import { calculateCurrentPeriod, findCalendarEntryForDate, fetchSchoolCalendar } from '@/src/utils/scheduleServices'
 import schoolSchedule from '@/assets/json/school_schedule.json'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import calendarJSON from '@/assets/json/calendar.json';
+import { FocusGate } from "@/components/FocusGate";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
 interface SchoolEvent {
   name: string;
@@ -188,45 +190,16 @@ const Bell = () => {
     SourceSerifPro_600SemiBold,
   });
 
-  // Re-fetch events every time this screen comes into focus, not just on mount.
+
   useFocusEffect(
     useCallback(() => {
-      const controller = new AbortController();
-
-      loadWebsiteData({
-        signal: controller.signal,
-        setEvents,
-        setEventsError,
-        setAppIsReady,
-      });
-
-      // fetchSchoolCalendar(controller.signal).then(async (calendar) => {
-      //   setCalendar(calendar as Calendar)
-      //   await saveCalendar(calendar as Calendar)
-      // });
-
-      return () => {
-        controller.abort();
-      };
+      loadWebsiteData({ setEvents, setEventsError, setAppIsReady });
     }, [])
   );
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    const controller = new AbortController();
-
-    await loadWebsiteData({
-      signal: controller.signal,
-      setEvents,
-      setEventsError,
-      setAppIsReady,
-    });
-
-    // fetchSchoolCalendar(controller.signal).then((fetchedCalendar) => {
-    //   setCalendar(fetchedCalendar as Calendar);
-    //   saveCalendar(fetchedCalendar as Calendar);
-    // });
-
+    await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
     setRefreshing(false);
   };
 
@@ -239,53 +212,90 @@ const Bell = () => {
     calendarRef.current = calendar;
   }, [calendar]);
 
-  // Run this lifecycle hook immediately when the component mounts to the screen
   useEffect(() => {
+    // Guards every setState call below so we never update state after
+    // this component has unmounted (defensive — Home is long-lived, but
+    // this keeps the pattern consistent with the rest of the app).
+    let isMounted = true;
+
     const initalizedData = async () => {
       try {
+        // User's manually-selected schedule override (e.g. "Assembly Day"),
+        // persisted separately from the calendar data itself.
         const savedValue = await AsyncStorage.getItem('setting.schedule');
 
         const now = Date.now();
+
+        // Locally cached calendar (AsyncStorage), or the bundled fallback
+        // JSON if AsyncStorage read fails — see getCalendar()'s own catch.
         const calenderData = await getCalendar();
         const lastFetchTime = await AsyncStorage.getItem('@last_fetch_time');
 
+        // Refresh from the CDN if we've never fetched, or if it's been
+        // more than a day since the last successful fetch.
         const isCacheEmpty = !calenderData || !lastFetchTime;
         const isOlderThanOneDay = now - parseInt(lastFetchTime || '0', 10) > ONE_DAY_MS;
-        
+
         if (isCacheEmpty || isOlderThanOneDay) {
           console.log("Local calendar cache stale/empty. Pulling from CDN...");
-          const response = await fetch('https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json');
 
-          if (!response.ok) throw new Error('CDN response error');
+          // Bound the CDN fetch with a 10s timeout so a slow/dead network
+          // can't leave this promise chain hanging indefinitely.
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-          // Parse the raw response body into a usable JavaScript object/array
-          const data = await response.json();
-          
-          await saveCalendar(data);
-          await AsyncStorage.setItem('@last_fetch_time', now.toString());
+          try {
+            const response = await fetch(
+              'https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json',
+              { signal: controller.signal }
+            );
 
-          setCalendar(data);
+            if (!response.ok) throw new Error('CDN response error');
+
+            // Parse the raw response body into a usable JavaScript object/array
+            const data = await response.json();
+
+            // Persist the fresh data + timestamp so we don't re-fetch
+            // again until ONE_DAY_MS has passed.
+            await saveCalendar(data);
+            await AsyncStorage.setItem('@last_fetch_time', now.toString());
+
+            if (isMounted) setCalendar(data);
+          } finally {
+            // Always clear the timeout — whether the fetch succeeded,
+            // failed, or was aborted by the timeout itself — so it never
+            // fires late against an already-settled request.
+            clearTimeout(timeoutId);
+          }
         } else {
-          setCalendar(calenderData);
+          // Cache is fresh — use what's already on disk, no network hit.
+          if (isMounted) setCalendar(calenderData);
         }
 
-        setSelectedSchedule(savedValue ?? '');
+        if (isMounted) setSelectedSchedule(savedValue ?? '');
       } catch (error) {
         console.error("Failed to load local schedule settings data:", error);
 
-        // Fallback: If network fails, pull the stale local calendar rather than crashing
+        // Fallback: if the CDN fetch failed (offline, bad response, etc.),
+        // fall back to whatever local/bundled calendar we have rather than
+        // leaving `calendar` null and breaking the bell-schedule widget.
         try {
           const fallbackData = await getCalendar();
-          if (fallbackData) setCalendar(fallbackData);
+          if (fallbackData && isMounted) setCalendar(fallbackData);
         } catch (innerError) {
           console.error("Critical fallback storage failure:", innerError);
         }
       }
     };
 
-    // Execute the retrieval routine
     initalizedData();
-  }, []); // Empty dependency array ensures this effect runs exactly once on mount
+
+    // Cleanup: mark unmounted so any in-flight setState calls above are
+    // skipped if this effect's cleanup runs before they resolve.
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Empty dependency array — runs exactly once on mount, not on focus
 
   /**
    * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
@@ -430,14 +440,7 @@ const Bell = () => {
   if (appIsReady === false || !fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -447,14 +450,7 @@ const Bell = () => {
       {isLoading || !isWeekReady && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
-            <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="size-32 mb-6 self-center"
-            />
-            <ActivityIndicator size="large" color="#ffffff" />
-            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-              Loading...
-            </Text>
+            <MarauderLoadingBadge></MarauderLoadingBadge>
           </View>
         </View>
       )}
@@ -475,11 +471,11 @@ const Bell = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.back()}
+            
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.back()}
+                onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
             >
                 <Image
                 source={require("@/assets/images/back.png")}
@@ -497,142 +493,145 @@ const Bell = () => {
       </View>
 
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
-        <ScrollView
-          // NOTE: `className="h-96"` here is immediately overridden by the
-          // inline `style={{ height: height * 2.5 }}` below — the class has
-          // no effect. Left as-is to avoid changing layout, but consider
-          // dropping the dead className.
-          className="w-[100vw] h-96 bg-white flex-1 flex-col"
-          bounces={false}
-          overScrollMode="never"
-          scrollEventThrottle={16}
-          decelerationRate="normal"
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-        >
-          <View 
-            className="self-center items-center flex flex-column w-[100vw] z-10 flex-1 pb-20"
-            style={{ height: height * 1.75 }}
+        <FocusGate>
+          <ScrollView
+            // NOTE: `className="h-96"` here is immediately overridden by the
+            // inline `style={{ height: height * 2.5 }}` below — the class has
+            // no effect. Left as-is to avoid changing layout, but consider
+            // dropping the dead className.
+            className="w-[100vw] h-96 bg-white flex-1 flex-col"
+            bounces={false}
+            overScrollMode="never"
+            scrollEventThrottle={16}
+            decelerationRate="normal"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
           >
-            {/* Bell-schedule widget: current period name, time range, and
-                a progress bar showing how far through the period we are.
-                Only renders once currentPeriod has been computed
-                (i.e. on a weekday, after the first interval tick). */}
-            {currentPeriod !== '' ? (
-              <View className="pt-10 px-5 w-[90%] "> 
-                <View className="flex flex-column">
-                  <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
-                    <TouchableOpacity
-                      className="justify-center items-center z-30  aspect-square"
-                      style={{
-                        width: 30, height: 50
-                      }}
-                      onPress={() => router.navigate("/settings")}
-                    >
-                      <Image
-                        source={require("@/assets/images/question.png")}
+            <View 
+              className="self-center items-center flex flex-column w-[100vw] z-10 flex-1 pb-20"
+              style={{ height: height * 1.75 }}
+            >
+              {/* Bell-schedule widget: current period name, time range, and
+                  a progress bar showing how far through the period we are.
+                  Only renders once currentPeriod has been computed
+                  (i.e. on a weekday, after the first interval tick). */}
+              {currentPeriod !== '' ? (
+                <View className="pt-10 px-5 w-[90%] "> 
+                  <View className="flex flex-column">
+                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
+                      <TouchableOpacity
+                        className="justify-center items-center z-30  aspect-square"
                         style={{
-                          tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
+                          width: 30, height: 50
                         }}
-                        className="self-center object-contain"
-                      />
-                    </TouchableOpacity>
-                  </Text>
+                        onPress={() => router.navigate("/settings")}
+                      >
+                        <Image
+                          source={require("@/assets/images/question.png")}
+                          style={{
+                            tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
+                          }}
+                          className="self-center object-contain"
+                        />
+                      </TouchableOpacity>
+                    </Text>
+                    {timeLeft ? (
+                      <View>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <View>
+                          {/* Track (background) */}
+                          <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
+                          {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
+                          <View className=" bg-whs-gold h-4 rounded-full" style={{ width: `${loadingBarFactor || "0%"}` as any }}></View>
+                        </View>
+                      </View>
+                    ) : null}
+                  </View>
+                  
+                  
                   {timeLeft ? (
                     <View>
-                      <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
-                      <View>
-                        {/* Track (background) */}
-                        <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
-                        {/* Fill — width driven by loadingBarFactor (e.g. "42%") */}
-                        <View className=" bg-whs-gold h-4 rounded-full" style={{ width: `${loadingBarFactor || "0%"}` as any }}></View>
-                      </View>
+                      <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
                     </View>
                   ) : null}
-                </View>
-                
-                
-                {timeLeft ? (
-                  <View>
-                    <Text className="font-bold font-barlow-regular text-whs-blue text-sm">{timeLeft}</Text>
+                </View> 
+              ) : (
+                // Placeholder spacer on weekends / before period data is ready,
+                // so layout doesn't jump when the widget above appears.
+                <View className="h-[10px] w-full"></View>
+              )}
+
+              <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+                THIS WEEKS SCHEDULE
+              </Text>
+              <View className="flex-row flex-wrap justify-center w-full">
+                {weekdaySchedule.map((day, index) => {
+                  // Convert the Date into locale-formatted day-of-week text.
+                  const dayString = day.date.toLocaleString('en-US', { weekday: 'short' });
+
+                  return (
+                    <React.Fragment key={index}>
+                      <View className="flex flex-row flex-nowrap self-center w-[90%] mx-[5%] p-5 mb-3 bg-whs-blue">
+                        <View className="justify-center items-start border-r-2 border-white pr-5">
+                          <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">
+                            {day.date.getDate()}
+                          </Text>
+                          <Text className="text-white text-center font-roboto-bold">{dayString}</Text>
+                        </View>
+                        <View className="flex-1 justify-center items-start pl-5">
+                          <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold font-source-serif-bold">
+                            {day.schedule.day}
+                          </Text>
+                          <Text className="text-white text-center text-xs font-light font-source-serif-regular"> 
+                            {day.schedule.timeSchedule
+                              .filter((schedule) => schedule.name.includes('Period'))
+                              .map((schedule, i) => (
+                                <React.Fragment key={i}>
+                                  <Text> {schedule.name.replace('Period ', '')}</Text>
+                                </React.Fragment>
+                              ))}</Text>
+                        </View>
+                      </View>
+                    </React.Fragment>
+                  );
+                })}
+              </View>
+              <View className="w-[90%] h-3 border-b-2 border-whs-blue"></View>
+              <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
+                BELL SCHEDULE
+              </Text>
+              
+                <View className="justify-center self-center h-[450px] z-0 p-[10]">
+                    <WebView
+                      className="relative self-center m-auto"
+                      style={{ aspectRatio: 8.5/11}}
+                      ref={webViewRef}
+                      source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+                      injectedJavaScript={`
+                          setTimeout(() => {
+                            window.ReactNativeWebView.postMessage("styles_injected");
+                          }, 100);
+                          true;
+                      `}
+                      javaScriptEnabled={true}
+                      domStorageEnabled={true}
+                      onMessage={(event) => {
+                        if (event.nativeEvent.data === "styles_injected") {
+                          
+                          setIsLoading(false);
+                        } else {
+                          console.log("WebView message:", event.nativeEvent.data);
+                        }
+                      }}
+                      sharedCookiesEnabled={true}
+                      thirdPartyCookiesEnabled={true}
+                    />
                   </View>
-                ) : null}
-              </View> 
-            ) : (
-              // Placeholder spacer on weekends / before period data is ready,
-              // so layout doesn't jump when the widget above appears.
-              <View className="h-[10px] w-full"></View>
-            )}
-
-            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
-              THIS WEEKS SCHEDULE
-            </Text>
-            <View className="flex-row flex-wrap justify-center w-full">
-              {weekdaySchedule.map((day, index) => {
-                // Convert the Date into locale-formatted day-of-week text.
-                const dayString = day.date.toLocaleString('en-US', { weekday: 'short' });
-
-                return (
-                  <React.Fragment key={index}>
-                    <View className="flex flex-row flex-nowrap self-center w-[90%] mx-[5%] p-5 mb-3 bg-whs-blue">
-                      <View className="justify-center items-start border-r-2 border-white pr-5">
-                        <Text className="text-whs-gold text-center font-source-serif-bold font-black text-3xl">
-                          {day.date.getDate()}
-                        </Text>
-                        <Text className="text-white text-center font-roboto-bold">{dayString}</Text>
-                      </View>
-                      <View className="flex-1 justify-center items-start pl-5">
-                        <Text className="text-white text-sm text-wrap w-[50vw] pb-2 font-semibold font-source-serif-bold">
-                          {day.schedule.day}
-                        </Text>
-                        <Text className="text-white text-center text-xs font-light font-source-serif-regular"> 
-                          {day.schedule.timeSchedule
-                            .filter((schedule) => schedule.name.includes('Period'))
-                            .map((schedule, i) => (
-                              <React.Fragment key={i}>
-                                <Text> {schedule.name.replace('Period ', '')}</Text>
-                              </React.Fragment>
-                            ))}</Text>
-                      </View>
-                    </View>
-                  </React.Fragment>
-                );
-              })}
+              
             </View>
-            <View className="w-[90%] h-3 border-b-2 border-whs-blue"></View>
-            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
-              BELL SCHEDULE
-            </Text>
-            <View className="justify-center self-center h-[450px] z-0 p-[10]">
-              <WebView
-                className="relative self-center m-auto"
-                style={{ aspectRatio: 8.5/11}}
-                ref={webViewRef}
-                source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
-                injectedJavaScript={`
-                    setTimeout(() => {
-                      window.ReactNativeWebView.postMessage("styles_injected");
-                    }, 100);
-                    true;
-                `}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-                onMessage={(event) => {
-                  if (event.nativeEvent.data === "styles_injected") {
-                    
-                    setIsLoading(false);
-                  } else {
-                    console.log("WebView message:", event.nativeEvent.data);
-                  }
-                }}
-                sharedCookiesEnabled={true}
-                thirdPartyCookiesEnabled={true}
-              />
-            </View>
-            
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </FocusGate>
       </View>
     </SafeAreaProvider>
   );

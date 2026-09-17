@@ -1,3 +1,4 @@
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import {
     BarlowSemiCondensed_400Regular,
     BarlowSemiCondensed_400Regular_Italic,
@@ -21,7 +22,8 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { GlassView } from "expo-glass-effect";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { useIsFocused } from "expo-router/react-navigation"; // SDK 56+ path
 import React, { useRef } from "react";
 import {
   ActivityIndicator,
@@ -41,15 +43,7 @@ const { width, height } = Dimensions.get("window");
 const Calendar = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
-
-  useFocusEffect(
-    React.useCallback(() => {
-      if (webViewRef.current) {
-        webViewRef.current.reload();
-      }
-    }, []),
-  );
-
+  const isFocused = useIsFocused();
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -70,14 +64,7 @@ const Calendar = () => {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -101,11 +88,11 @@ const Calendar = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.back()}
+            
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.back()}
+                onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
             >
                 <Image
                 source={require("@/assets/images/back.png")}
@@ -125,14 +112,16 @@ const Calendar = () => {
       <View className="grow justify-center items-center bg-whs-gold">
         
         <View className="self-center items-center flex-row w-full flex-1 z-10">
-          <WebView
-            className="relative"
-            style={{ width: width, flex: 1 }}
-            ref={webViewRef}
-            source={{
-              uri: "https://www.waipahuhigh.org/apps/events/view_calendar.jsp",
-            }}
-          />
+          {isFocused ? (
+            <WebView
+              className="relative"
+              style={{ width: width, flex: 1 }}
+              ref={webViewRef}
+              source={{
+                uri: "https://www.waipahuhigh.org/apps/events/view_calendar.jsp",
+              }}
+            />
+          ) : null}
         </View>
       </View>
     </SafeAreaProvider>

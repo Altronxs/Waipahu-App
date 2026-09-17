@@ -78,7 +78,6 @@ const Students = () => {
     {
       title: "Early College",
       items: [
-        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
         {
           label: "Official Early College Website",
           image: require("@/assets/images/globe.png"),
@@ -153,11 +152,11 @@ const Students = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.navigate('/')}
+            onTouchEnd={() => router.navigate('/(tabs)')}
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.navigate('/')}
+                onPress={() => router.navigate('/(tabs)')}
             >
                 <Image
                 source={require("@/assets/images/back.png")}

@@ -1,3 +1,5 @@
+import { FocusGate } from "@/components/FocusGate";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import {
     BarlowSemiCondensed_400Regular,
     BarlowSemiCondensed_400Regular_Italic,
@@ -214,14 +216,7 @@ const Legacy = () => {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -245,11 +240,11 @@ const Legacy = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.back()}
+            
         >
           <TouchableOpacity
               className="items-center"
-              onPress={() => router.back()}
+              onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
           >
             <Image
             source={require("@/assets/images/back.png")}
@@ -266,47 +261,49 @@ const Legacy = () => {
         </Text>
       </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
-        <ScrollView
-          className="w-[100vw] h-96 bg-white flex-1 flex-col "
-          style={{ height: height * 0.5 }}
-        >
-          <ImageBackground
-            source={require("@/assets/images/bg-home.png")}
-            className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
-            style={{ height: height * 1.5 }}
+        <FocusGate>
+          <ScrollView
+            className="w-[100vw] h-96 bg-white flex-1 flex-col "
+            style={{ height: height * 0.5 }}
           >
-            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
-              Social Media
-            </Text>
-            <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full text-center p-8 pt-3">
-              Welcome to the Social Media page where students can connect with their respective classes and stay updated on the latest news and events.
-            </Text>
-            {socialSections.map((section) => (
-              <View key={section.title} className="w-full mt-2 px-4">
-                <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
-                  {section.title}
-                </Text>
-                <View className="flex-row flex-wrap justify-center gap-2">
-                  {section.items.map((item) => (
-                    <TouchableOpacity
-                      key={item.label}
-                      className="w-1/4 h-min justify-center items-center"
-                      onPress={() => Linking.openURL(item.url)}
-                    >
-                      <Image
-                        source={item.image}
-                        className="size-14 self-center rounded-full"
-                      />
-                      <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
-                        {item.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+            <ImageBackground
+              source={require("@/assets/images/bg-home.png")}
+              className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
+              style={{ height: height * 1.5 }}
+            >
+              <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
+                Social Media
+              </Text>
+              <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full text-center p-8 pt-3">
+                Welcome to the Social Media page where students can connect with their respective classes and stay updated on the latest news and events.
+              </Text>
+              {socialSections.map((section) => (
+                <View key={section.title} className="w-full mt-2 px-4">
+                  <Text className="font-barlow-semibold text-whs-blue text-base mb-2 text-center">
+                    {section.title}
+                  </Text>
+                  <View className="flex-row flex-wrap justify-center gap-2">
+                    {section.items.map((item) => (
+                      <TouchableOpacity
+                        key={item.label}
+                        className="w-1/4 h-min justify-center items-center"
+                        onPress={() => Linking.openURL(item.url)}
+                      >
+                        <Image
+                          source={item.image}
+                          className="size-14 self-center rounded-full"
+                        />
+                        <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                          {item.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
-              </View>
-            ))}
-          </ImageBackground>
-        </ScrollView>
+              ))}
+            </ImageBackground>
+          </ScrollView>
+        </FocusGate>
       </View>
     </SafeAreaProvider>
   );

@@ -101,11 +101,10 @@ const Author = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.back()}
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.back()}
+                onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
             >
                 <Image
                 source={require("@/assets/images/back.png")}
@@ -118,7 +117,7 @@ const Author = () => {
         </GlassView>
         <Text className="z-20 font-roboto-bold text-white text-lg w-full bg-whs-gold text-center absolute"
         >
-          Authors
+          App Creators & Credits
         </Text>
       </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">

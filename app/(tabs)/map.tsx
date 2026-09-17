@@ -40,6 +40,7 @@ import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from 'expo-glass-effect'
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FocusGate } from "@/components/FocusGate";
 
 const { width, height } = Dimensions.get("window");
 
@@ -271,11 +272,11 @@ const Map = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.navigate('/')}
+            onTouchEnd={() => router.navigate('/(tabs)')}
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.navigate('/')}
+                onPress={() => router.navigate('/(tabs)')}
             >
                 <Image
                 source={require("@/assets/images/back.png")}
@@ -291,182 +292,183 @@ const Map = () => {
           Campus Map SY26-27
         </Text>
       </View>
-
-      <View className="bg-white w-[100vw] flex-1 justify-center items-center">
-        <MapView
-          ref={mapRef}
-          style={{ width: "100%", height: "100%", zIndex: 20 }}
-          region={region}
-          onRegionChangeComplete={setRegion}
-          initialCamera={INITIAL_CAMERA}
-          cameraZoomRange={CAMERA_ZOOM_RANGE}
-          mapType="standard"
-          userInterfaceStyle="dark"
-          showsUserLocation={AllowMapLocation}
-          showsPointsOfInterests={false}
-          appleLogoInsets={{ top: 10, left: 20, bottom: 600, right: 300 }}
-          
-        >
-          {mapData.mapData.map((feature, index) => (
-            <React.Fragment key={index}>
-              <Polygon
-                fillColor="#00008050"
-                strokeColor="#ae8c52"
-                strokeWidth={1}
-                coordinates={feature.polygon.map(([latitude, longitude]) => ({
-                  latitude,
-                  longitude,
-                }))}
-              />
-              <Marker
-                coordinate={{
-                  latitude: feature.marker[0],
-                  longitude: feature.marker[1],
-                }}
-                title={feature.name}
-                description=""
-                tracksViewChanges={false}
-                onPress={() => {
-                  if (feature.layoutNeed && feature.name !== WAIPAHU_CAMPUS_MAP_NAME) {
-                    openSheetFor(feature.name);
-                  }
-                }}
-              >
-                <View
-                  className="items-center justify-center"
-                  style={{ minWidth: 18, minHeight: 18 }}
-                >
-                  {feature.iconNeed ? (
-                    <>
-                      {feature.textNeed && (
-                        <Text
-                          className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base"
-                          style={{ minWidth: 12 }}
-                        >
-                          {feature.markerText}
-                        </Text>
-                      )}
-                      <Image
-                        source={icons[feature.iconName as keyof typeof icons]}
-                        style={{ width: 15, height: 15, tintColor: "#ffffff" }}
-                        resizeMode="contain"
-                      />
-                    </>
-                  ) : (
-                    <Text
-                      className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base"
-                      style={{ minWidth: 12 }}
-                    >
-                      {feature.markerText}
-                    </Text>
-                  )}
-                </View>
-
-                <Callout tooltip>
-                  <GlassView className="items-center bg-white" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"regular"} tintColor={'#17273d'}>
-                    <Text className="font-barlow-semibold text-xs mb-1 text-white w-30 text-center self-center items-center">
-                      {feature.name}
-                    </Text>
-                  </GlassView>
-                </Callout>
-              </Marker>
-            </React.Fragment>
-          ))}
-        </MapView>
-        <GlassView
-          style={{alignSelf: 'center', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 70}}
-          glassEffectStyle="regular"
-          isInteractive
-          onTouchEnd={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
-          tintColor={'#17273d'}
-        >
-          <TouchableOpacity
-            className="w-10 h-10"
-            onPress={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
-          >
-            <Image
-              source={require("@/assets/images/whs-icon.png")}
-              style={{ tintColor: "#ffffff" }}
-              className="size-10 self-center"
-            />
-          </TouchableOpacity>
-        </GlassView>
-        
-
-        <Modal
-          animationType="slide"
-          transparent
-          visible={isSheetVisible}
-          onRequestClose={() => setIsSheetVisible(false)}
-        
-        >
-          {/* Dimmed background area that closes the sheet when tapped */}
-          <TouchableOpacity
-            className="flex-1 justify-end items-center bg-black/1"
-            activeOpacity={1}
-            onPressOut={() => setIsSheetVisible(false)}
-          />
-
-          <GlassView 
-            className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" 
-            style={{width: width - 32, padding: 16, borderRadius: 45, flexShrink: 1, margin: 16 }} 
-            glassEffectStyle='regular' 
-            tintColor={'#17273d'}
+      <FocusGate>
+        <View className="bg-white w-[100vw] flex-1 justify-center items-center">
+          <MapView
+            ref={mapRef}
+            style={{ width: "100%", height: "100%", zIndex: 20 }}
+            region={region}
+            onRegionChangeComplete={setRegion}
+            initialCamera={INITIAL_CAMERA}
+            cameraZoomRange={CAMERA_ZOOM_RANGE}
+            mapType="standard"
+            userInterfaceStyle="dark"
+            showsUserLocation={AllowMapLocation}
+            showsPointsOfInterests={false}
+            appleLogoInsets={{ top: 10, left: 20, bottom: 600, right: 300 }}
             
           >
-            <ScrollView
-              className="w-full h-min flex-shrink"
+            {mapData.mapData.map((feature, index) => (
+              <React.Fragment key={index}>
+                <Polygon
+                  fillColor="#00008050"
+                  strokeColor="#ae8c52"
+                  strokeWidth={1}
+                  coordinates={feature.polygon.map(([latitude, longitude]) => ({
+                    latitude,
+                    longitude,
+                  }))}
+                />
+                <Marker
+                  coordinate={{
+                    latitude: feature.marker[0],
+                    longitude: feature.marker[1],
+                  }}
+                  title={feature.name}
+                  description=""
+                  tracksViewChanges={false}
+                  onPress={() => {
+                    if (feature.layoutNeed && feature.name !== WAIPAHU_CAMPUS_MAP_NAME) {
+                      openSheetFor(feature.name);
+                    }
+                  }}
+                >
+                  <View
+                    className="items-center justify-center"
+                    style={{ minWidth: 18, minHeight: 18 }}
+                  >
+                    {feature.iconNeed ? (
+                      <>
+                        {feature.textNeed && (
+                          <Text
+                            className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base"
+                            style={{ minWidth: 12 }}
+                          >
+                            {feature.markerText}
+                          </Text>
+                        )}
+                        <Image
+                          source={icons[feature.iconName as keyof typeof icons]}
+                          style={{ width: 15, height: 15, tintColor: "#ffffff" }}
+                          resizeMode="contain"
+                        />
+                      </>
+                    ) : (
+                      <Text
+                        className="text-center justify-center self-center text-[#ffffff] drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-barlow-semibold text-base"
+                        style={{ minWidth: 12 }}
+                      >
+                        {feature.markerText}
+                      </Text>
+                    )}
+                  </View>
+
+                  <Callout tooltip>
+                    <GlassView className="items-center bg-white" style={{width: 96, padding: 2, borderRadius: 8, flexShrink: 1 }} glassEffectStyle={"regular"} tintColor={'#17273d'}>
+                      <Text className="font-barlow-semibold text-xs mb-1 text-white w-30 text-center self-center items-center">
+                        {feature.name}
+                      </Text>
+                    </GlassView>
+                  </Callout>
+                </Marker>
+              </React.Fragment>
+            ))}
+          </MapView>
+          <GlassView
+            style={{alignSelf: 'center', zIndex: 50, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 15, position: 'absolute', bottom: 70}}
+            glassEffectStyle="regular"
+            isInteractive
+            onTouchEnd={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
+            tintColor={'#17273d'}
+          >
+            <TouchableOpacity
+              className="w-10 h-10"
+              onPress={() => openSheetFor(WAIPAHU_CAMPUS_MAP_NAME)}
             >
-              {selectedFeature?.layoutNeed &&
-                selectedFeature.name !== WAIPAHU_CAMPUS_MAP_NAME && (
-                  <View className="mb-4">
+              <Image
+                source={require("@/assets/images/whs-icon.png")}
+                style={{ tintColor: "#ffffff" }}
+                className="size-10 self-center"
+              />
+            </TouchableOpacity>
+          </GlassView>
+          
+
+          <Modal
+            animationType="slide"
+            transparent
+            visible={isSheetVisible}
+            onRequestClose={() => setIsSheetVisible(false)}
+          
+          >
+            {/* Dimmed background area that closes the sheet when tapped */}
+            <TouchableOpacity
+              className="flex-1 justify-end items-center bg-black/1"
+              activeOpacity={1}
+              onPressOut={() => setIsSheetVisible(false)}
+            />
+
+            <GlassView 
+              className="w-full bg-white rounded-t-2xl p-4 shadow-2xl" 
+              style={{width: width - 32, padding: 16, borderRadius: 45, flexShrink: 1, margin: 16 }} 
+              glassEffectStyle='regular' 
+              tintColor={'#17273d'}
+              
+            >
+              <ScrollView
+                className="w-full h-min flex-shrink"
+              >
+                {selectedFeature?.layoutNeed &&
+                  selectedFeature.name !== WAIPAHU_CAMPUS_MAP_NAME && (
+                    <View className="mb-4">
+                      <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
+                        {selectedFeature.name}
+                      </Text>
+                      <View className="self-center items-center w-[80vw] overflow-hidden">
+                        {selectedFeature.thirdFloor && (
+                          <FloorRow rooms={selectedFeature.thirdFloor} variant="third" />
+                        )}
+                        {selectedFeature.secondFloor && (
+                          <FloorRow rooms={selectedFeature.secondFloor} variant="second" />
+                        )}
+                        {selectedFeature.firstFloor && (
+                          <FloorRow rooms={selectedFeature.firstFloor} variant="first" />
+                        )}
+                      </View>
+                    </View>
+                  )}
+
+                {selectedFeature?.name === WAIPAHU_CAMPUS_MAP_NAME && (
+                  <View>
                     <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
                       {selectedFeature.name}
                     </Text>
-                    <View className="self-center items-center w-[80vw] overflow-hidden">
-                      {selectedFeature.thirdFloor && (
-                        <FloorRow rooms={selectedFeature.thirdFloor} variant="third" />
-                      )}
-                      {selectedFeature.secondFloor && (
-                        <FloorRow rooms={selectedFeature.secondFloor} variant="second" />
-                      )}
-                      {selectedFeature.firstFloor && (
-                        <FloorRow rooms={selectedFeature.firstFloor} variant="first" />
+                    <View className="self-center items-center aspect-[2/1.25] w-full rounded-[2.25rem] overflow-hidden">
+                      {pdfUri && (
+                        <WebView
+                          ref={webViewRef}
+                          source={{ uri: pdfUri }}
+                          style={{ aspectRatio: 2/1.1 }}
+                          className="self-center w-full h-full"
+                          // Critical security and file flags needed for local URIs
+                          originWhitelist={["*"]}
+                          allowFileAccess
+                          allowFileAccessFromFileURLs
+                          allowUniversalAccessFromFileURLs
+                          // Enables standard pinch-to-zoom controls inside the viewer
+                          scalesPageToFit
+                        />
                       )}
                     </View>
+                    
                   </View>
                 )}
+              </ScrollView>
+            </GlassView>
 
-              {selectedFeature?.name === WAIPAHU_CAMPUS_MAP_NAME && (
-                <View>
-                  <Text className="mb-4 text-xl font-bold text-white text-center font-source-serif-italic">
-                    {selectedFeature.name}
-                  </Text>
-                  <View className="self-center items-center aspect-[2/1.25] w-full rounded-[2.25rem] overflow-hidden">
-                    {pdfUri && (
-                      <WebView
-                        ref={webViewRef}
-                        source={{ uri: pdfUri }}
-                        style={{ aspectRatio: 2/1.1 }}
-                        className="self-center w-full h-full"
-                        // Critical security and file flags needed for local URIs
-                        originWhitelist={["*"]}
-                        allowFileAccess
-                        allowFileAccessFromFileURLs
-                        allowUniversalAccessFromFileURLs
-                        // Enables standard pinch-to-zoom controls inside the viewer
-                        scalesPageToFit
-                      />
-                    )}
-                  </View>
-                  
-                </View>
-              )}
-            </ScrollView>
-          </GlassView>
-
-        </Modal>
-      </View>
+          </Modal>
+        </View>
+      </FocusGate>
     </SafeAreaProvider>
   );
 };

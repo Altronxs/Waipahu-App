@@ -35,6 +35,7 @@ import { GlassView } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import type { WebView as WebViewType } from "react-native-webview";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
 const { width, height } = Dimensions.get("window");
 interface clubFeature {
@@ -81,14 +82,7 @@ const Clubs = () => {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -112,11 +106,11 @@ const Clubs = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            onTouchEnd={() => router.back()}
+            
         >
             <TouchableOpacity
                 className="items-center"
-                onPress={() => router.back()}
+                onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
             >
                 <Image
                 source={require("@/assets/images/back.png")}

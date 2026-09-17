@@ -20,25 +20,25 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { GlassView } from "expo-glass-effect";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Image,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
- 
+import { GlassView } from 'expo-glass-effect';
+import { FocusGate } from "@/components/FocusGate";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
-const Staff = () => {
+const Athletics = () => {
   const router = useRouter();
   const webViewRef = useRef<WebViewType>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -57,7 +57,6 @@ const Staff = () => {
       }
     }, []),
   );
-
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -78,34 +77,13 @@ const Staff = () => {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
 
   return (
     <SafeAreaProvider className="flex-col">
-      {isLoading == true && (
-        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
-          <View className="flex-1 justify-center items-center bg-[#17273d]">
-            <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="size-32 mb-6 self-center"
-            />
-            <ActivityIndicator size="large" color="#ffffff" />
-            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-              Loading...
-            </Text>
-          </View>
-        </View>
-      )}
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
@@ -139,9 +117,9 @@ const Staff = () => {
                   />
               </TouchableOpacity>
           </GlassView>
-          <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+          <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
           >
-            Staff Directory
+            Athletics Homepage
           </Text>
         </View>
       ) : (
@@ -150,11 +128,11 @@ const Staff = () => {
               style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
               glassEffectStyle="clear"
               isInteractive
-              onTouchEnd={() => router.back()}
+              
           >
               <TouchableOpacity
                   className="items-center"
-                  onPress={() => router.back()}
+                  onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
               >
                   <Image
                   source={require("@/assets/images/back.png")}
@@ -165,52 +143,50 @@ const Staff = () => {
                   />
               </TouchableOpacity>
           </GlassView>
-          <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+          <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
           >
-            Staff Directory
+            Athletics
           </Text>
         </View>
       )}
 
       <View className="grow justify-center items-center bg-white">
-        <View className="self-center items-center flex-row w-[100vw] h-[100vh] z-10">
-          <WebView
-            className="h-[50vh]"
-            ref={webViewRef}
-            source={{ uri: "https://www.waipahuhigh.org/apps/staff/" }}
-            injectedJavaScript={`
-                setTimeout(() => {
-                    const style = document.createElement('style');
-                    style.innerHTML = \`
-                        #enheader5, #enfooter1 {
-                        display: none !important;
-                        }
-                    \`;
+        <FocusGate>
+          <View className="w-[100vw] h-[65vh] z-10">
+            <WebView
+              className="h-[5vh]"
+              ref={webViewRef}
+              source={{
+                uri: "https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555405&type=d",
+              }}
+              injectedJavaScript={`
+                  setTimeout(() => {
+                  const style = document.createElement('style');
+                  style.innerHTML = \`
+                      #enheader5, #enfooter1 {
+                      display: none !important;
+                      }
+                  \`;
                   document.head.appendChild(style);
-                  window.ReactNativeWebView.postMessage("styles_injected");
-                }, 250);
-                true;
-            `}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            onMessage={(event) => {
-              if (event.nativeEvent.data === "styles_injected") {
-                console.log("Styles injected successfully.");
-                setIsLoading(false);
-              } else {
+                  }, 250);
+                  true;
+              `}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              onMessage={(event) => {
                 console.log("WebView message:", event.nativeEvent.data);
-              }
-            }}
-            onNavigationStateChange={(navState) => {
-              setCanGoBack(navState.canGoBack);
-            }}
-            sharedCookiesEnabled={true}
-            thirdPartyCookiesEnabled={true}
-          />
-        </View>
+              }}
+              onNavigationStateChange={(navState) => {
+                setCanGoBack(navState.canGoBack);
+              }}
+              sharedCookiesEnabled={true}
+              thirdPartyCookiesEnabled={true}
+            />
+          </View>
+        </FocusGate>
       </View>
     </SafeAreaProvider>
   );
 };
-
-export default Staff;
+//https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555403&type=d
+export default Athletics;

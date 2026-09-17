@@ -39,8 +39,8 @@ import {
 } from "react-native";
 import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
-import { loadWebsiteData } from '@/assets/json/eventService';
-import { calculateCurrentPeriod } from '@/assets/json/schedule'
+import { loadWebsiteData } from '@/src/utils/eventServices';
+import { calculateCurrentPeriod } from '@/src/utils/scheduleServices'
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -284,7 +284,7 @@ export default function Settings() {
                 >
                     <TouchableOpacity
                         className="items-center"
-                        onPress={() => router.back()}
+                        onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
                     >
                         <Image
                         source={require("@/assets/images/back.png")}
@@ -429,7 +429,7 @@ export default function Settings() {
                         <Image
                             source={require("@/assets/images/whs-map.png")}
                             className="self-center"
-                            style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                            style={{width: 25, height: 25, marginLeft: 20, marginRight: 8}}
                         />
                         <Text
                             className="z-20 font-barlow-semibold text-black text-xl p-3"

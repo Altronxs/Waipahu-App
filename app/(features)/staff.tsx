@@ -1,3 +1,5 @@
+import { FocusGate } from "@/components/FocusGate";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import {
     BarlowSemiCondensed_400Regular,
     BarlowSemiCondensed_400Regular_Italic,
@@ -24,29 +26,21 @@ import { GlassView } from "expo-glass-effect";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
  
 
-const Registrar = () => {
+const Staff = () => {
   const router = useRouter();
   const webViewRef = useRef<WebViewType>(null);
   const [isLoading, setIsLoading] = useState(true);
-  useFocusEffect(
-    React.useCallback(() => {
-      if (webViewRef.current) {
-        webViewRef.current.reload();
-      }
-    }, []),
-  );
-
   const [canGoBack, setCanGoBack] = useState(false);
 
   useFocusEffect(
@@ -77,14 +71,7 @@ const Registrar = () => {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -94,14 +81,7 @@ const Registrar = () => {
       {isLoading == true && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
-            <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="size-32 mb-6 self-center"
-            />
-            <ActivityIndicator size="large" color="#ffffff" />
-            <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-              Loading...
-            </Text>
+            <MarauderLoadingBadge></MarauderLoadingBadge>
           </View>
         </View>
       )}
@@ -123,7 +103,6 @@ const Registrar = () => {
               style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
               glassEffectStyle="clear"
               isInteractive
-              onTouchEnd={() => webViewRef.current?.goBack()}
           >
               <TouchableOpacity
                   className="items-center"
@@ -140,7 +119,7 @@ const Registrar = () => {
           </GlassView>
           <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
           >
-            Registrar
+            Staff Directory
           </Text>
         </View>
       ) : (
@@ -149,11 +128,11 @@ const Registrar = () => {
               style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
               glassEffectStyle="clear"
               isInteractive
-              onTouchEnd={() => router.back()}
+              
           >
               <TouchableOpacity
                   className="items-center"
-                  onPress={() => router.back()}
+                  onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)")}
               >
                   <Image
                   source={require("@/assets/images/back.png")}
@@ -166,52 +145,52 @@ const Registrar = () => {
           </GlassView>
           <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
           >
-            Registrar
+            Staff Directory
           </Text>
         </View>
       )}
 
       <View className="grow justify-center items-center bg-white">
-        <View className="w-[100vw] h-full z-10">
-          <WebView
-            className="h-[5vh]"
-            ref={webViewRef}
-            source={{
-              uri: "https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555403&type=d",
-            }}
-            injectedJavaScript={`
-                setTimeout(() => {
-                const style = document.createElement('style');
-                style.innerHTML = \`
-                    #enheader5, #enfooter1 {
-                    display: none !important;
-                    }
-                \`;
-                document.head.appendChild(style);
-                window.ReactNativeWebView.postMessage("styles_injected");
-                }, 250);
-                true;
-            `}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            onMessage={(event) => {
-              if (event.nativeEvent.data === "styles_injected") {
-                console.log("Styles injected successfully.");
-                setIsLoading(false);
-              } else {
-                console.log("WebView message:", event.nativeEvent.data);
-              }
-            }}
-            onNavigationStateChange={(navState) => {
-              setCanGoBack(navState.canGoBack);
-            }}
-            sharedCookiesEnabled={true}
-            thirdPartyCookiesEnabled={true}
-          />
-        </View>
+        <FocusGate>
+          <View className="self-center items-center flex-row w-[100vw] h-[100vh] z-10">
+            <WebView
+              className="h-[50vh]"
+              ref={webViewRef}
+              source={{ uri: "https://www.waipahuhigh.org/apps/staff/" }}
+              injectedJavaScript={`
+                  setTimeout(() => {
+                      const style = document.createElement('style');
+                      style.innerHTML = \`
+                          #enheader5, #enfooter1 {
+                          display: none !important;
+                          }
+                      \`;
+                    document.head.appendChild(style);
+                    window.ReactNativeWebView.postMessage("styles_injected");
+                  }, 250);
+                  true;
+              `}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              onMessage={(event) => {
+                if (event.nativeEvent.data === "styles_injected") {
+                  console.log("Styles injected successfully.");
+                  setIsLoading(false);
+                } else {
+                  console.log("WebView message:", event.nativeEvent.data);
+                }
+              }}
+              onNavigationStateChange={(navState) => {
+                setCanGoBack(navState.canGoBack);
+              }}
+              sharedCookiesEnabled={true}
+              thirdPartyCookiesEnabled={true}
+            />
+          </View>
+        </FocusGate>
       </View>
     </SafeAreaProvider>
   );
 };
-//https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555403&type=d
-export default Registrar;
+
+export default Staff;
