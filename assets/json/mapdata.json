@@ -510,7 +510,7 @@
       "iconName": "gym"
     },
     {
-      "name": "T-Building",
+      "name": "L-Building",
       "polygon": [
         [21.39025665748396, -157.9923749893538],
         [21.3903609168003, -157.9922998741328],
@@ -522,7 +522,7 @@
       "iconNeed": false,
       "markerText": "T",
       "layoutNeed": true,
-      "firstFloor": ["T1", "T2", "T3", "T4"]
+      "firstFloor": ["L1", "L2", "L3", "L4"]
     },
     {
       "name": "Student Government",
