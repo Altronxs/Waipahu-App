@@ -76,6 +76,36 @@ const Students = () => {
       ],
     },
     {
+      title: "Google Suite",
+      items: [
+        {
+          label: "Gmail",
+          image: require("@/assets/images/mail.png"),
+          onPress: () => Linking.openURL("https://www.google.com/gmail"),
+        },
+        {
+          label: "Drive",
+          image: require("@/assets/images/drive.png"),
+          onPress: () => Linking.openURL("https://drive.google.com/?authuser=0"),
+        },
+        {
+          label: "Docs",
+          image: require("@/assets/images/docs.png"),
+          onPress: () => Linking.openURL("https://docs.google.com/document/u/0/"),
+        },
+        {
+          label: "Slides",
+          image: require("@/assets/images/slides.png"),
+          onPress: () => Linking.openURL("https://docs.google.com/presentation/u/0/"),
+        },
+        {
+          label: "Sheets",
+          image: require("@/assets/images/sheets.png"),
+          onPress: () => Linking.openURL("https://docs.google.com/spreadsheets/u/0/"),
+        },
+      ],
+    },
+    {
       title: "Early College",
       items: [
         {
@@ -83,13 +113,21 @@ const Students = () => {
           image: require("@/assets/images/globe.png"),
           onPress: () => Linking.openURL("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555404&type=d&termREC_ID=&pREC_ID=1064039"),
         },
-      ],
-    },
-    {
-      title: "Records & Admin",
-      items: [
-        { label: "Registrar", image: require("@/assets/images/registrar.png"), onPress: () => router.push("/registrar") },
-        
+        {
+          label: "Old Official Early College Website",
+          image: require("@/assets/images/globe.png"),
+          onPress: () => Linking.openURL("https://www.waipahuhs-earlycollege.org/"),
+        },
+        {
+          label: "Lamakū",
+          image: require("@/assets/images/torch.png"),
+          onPress: () => Linking.openURL("https://lamaku.hawaii.edu/d2l/login"),
+        },
+        {
+          label: "UH STAR",
+          image: require("@/assets/images/star.png"),
+          onPress: () => Linking.openURL("https://www.star.hawaii.edu/studentinterface/"),
+        },
       ],
     }
   ];
@@ -213,7 +251,7 @@ const Students = () => {
                       accessibilityLabel={item.label}
                     >
                       <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[4.25rem] self-center" />
-                      <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                      <Text className="text-center font-barlow-semibold text-[#17273d] text-xs w-[80%]">
                         {item.label}
                       </Text>
                     </TouchableOpacity>
