@@ -1,12 +1,6 @@
 {
     "clubData": [
         {
-            "name": "AHS Board of Directors",
-            "location": "",
-            "supervisor": "S. Haanio",
-            "description": "The student board of directors serves as a leadership body that represents the student body, facilitates communication between students and administration, and helps organize school-wide initiatives and events."
-        },
-        {
             "name": "Academy of Engineering",
             "location": "V-203",
             "supervisor": "C. Burdick",
@@ -14,7 +8,7 @@
         },
         {
             "name": "Art Club",
-            "location": "",
+            "location": "E-6",
             "supervisor": "N. Sasumana",
             "description": "Art Club provides a creative space for students to explore various artistic mediums, techniques, and styles. Members collaborate on projects, share their work, and participate in art shows and community events while developing their artistic skills."
         },
@@ -32,39 +26,39 @@
         },
         {
             "name": "Black Cultural Club",
-            "location": "",
+            "location": "P-32",
             "supervisor": "K. Sledge",
             "description": "Black Cultural Club celebrates and promotes awareness of Black history, culture, and achievements. The club provides a supportive community for students to explore their identity, discuss important issues, and organize cultural events and educational programs."
         },
         {
-            "name": "Chess Club",
-            "location": "H-5",
-            "supervisor": "J. Kahalewai",
-            "description": "Chess Club brings together students who enjoy the strategic challenge of chess. Members improve their skills through practice, compete in tournaments, and learn critical thinking, patience, and strategic planning through the game."
-        },
-        {
             "name": "Chinese Club",
-            "location": "",
-            "supervisor": "C. Lee",
+            "location": "P-29",
+            "supervisor": "C. Chao",
             "description": "Chinese Club promotes Chinese language, culture, and traditions. Members participate in cultural activities, celebrate Chinese holidays, practice language skills, and explore the rich heritage of Chinese civilization."
         },
-        {
-            "name": "Class of 2027 Council",
-            "location": "P-32",
-            "supervisor": "K. Sledge",
-            "description": "The Class of 2027 Council represents the sophomore class, planning events and activities that promote class unity and school spirit. Members develop leadership skills while organizing fundraisers and social events for their class."
+        { 
+            "name" : "Class of 2027 Council", 
+            "location" : "P-32", 
+            "supervisor" : "K. Sledge", 
+            "description" : "The Class of 2027 Council leads senior traditions, organizes graduation celebrations, and sets the standard for school spirit. Members mentor peers and anchor final-year activities." 
         },
-        {
-            "name": "Class of 2028 Council",
-            "location": "F-4",
-            "supervisor": "S. Mizuuchi",
-            "description": "The Class of 2028 Council represents the freshman class, helping new students transition to high school while organizing class activities and building community. Members work to create a positive experience for their classmates."
+        { 
+            "name" : "Class of 2028 Council", 
+            "location" : "F-4", 
+            "supervisor" : "S. Mizuuchi", 
+            "description" : "The Class of 2028 Council coordinates junior events, spearheads major class fundraisers, and keeps upperclassmen connected. Members strengthen peer bonds before the final senior push." 
         },
-        {
-            "name": "Class of 2029 Council",
-            "location": "H-8",
-            "supervisor": "J. Titoki",
-            "description": "The Class of 2029 Council will represent the incoming freshman class, planning orientation activities, class events, and fundraisers. Council members help establish class identity and create a welcoming environment for new students."
+        { 
+            "name" : "Class of 2029 Council", 
+            "location" : "H-8", 
+            "supervisor" : "J. Titoki", 
+            "description" : "The Class of 2029 Council supports sophomore growth and active engagement. Members plan mid-level social events to help classmates stay involved and connected." 
+        },
+        { 
+            "name" : "Class of 2030 Council", 
+            "location" : "G-8", 
+            "supervisor" : "R. Cambra", 
+            "description" : "The Class of 2030 Council welcomes new ninth-graders to the school. Members run orientation icebreakers and build early class spirit and unity." 
         },
         {
             "name": "FCCLA",
@@ -73,45 +67,21 @@
             "description": "Family, Career and Community Leaders of America (FCCLA) focuses on family and consumer sciences education. Members develop leadership skills, explore career pathways, and participate in competitive events while addressing real-world issues affecting families and communities."
         },
         {
-            "name": "FCCLA - Culinary",
-            "location": "I-1",
-            "supervisor": "J. Bajet",
-            "description": "FCCLA Culinary focuses specifically on culinary arts within the FCCLA framework. Students develop cooking skills, food safety knowledge, and hospitality industry expertise while competing in culinary competitions and events."
-        },
-        {
-            "name": "Fit Club",
-            "location": "",
-            "supervisor": "R. Funfanilla",
-            "description": "Fit Club promotes physical fitness, healthy lifestyles, and wellness among students. Members participate in various exercise activities, learn about nutrition, and support each other in achieving personal fitness goals."
-        },
-        {
-            "name": "Future Farmers of America",
-            "location": "",
-            "supervisor": "J. Garvey",
-            "description": "Future Farmers of America (FFA) develops students' potential for premier leadership, personal growth, and career success through agricultural education. Members participate in hands-on projects, competitions, and community service while exploring careers in agriculture."
-        },
-        {
             "name": "GEAR Up",
             "location": "",
             "supervisor": "A. Lee / J. Lowe",
             "description": "GEAR Up (Gaining Early Awareness and Readiness for Undergraduate Programs) helps students prepare for college through academic support, college visits, and financial aid preparation. The program provides resources and guidance to increase college enrollment and success."
         },
         {
-            "name": "Getting Green",
-            "location": "",
-            "supervisor": "T. Osayo",
-            "description": "Getting Green focuses on environmental awareness and sustainability. Members organize recycling programs, promote eco-friendly practices, and engage in projects that help protect the environment and create a more sustainable campus."
-        },
-        {
             "name": "Glee PAK",
             "location": "P-32",
             "supervisor": "K. Sledge",
-            "description": "Glee PAK is a performing arts club that brings together students who love singing and performance. Members rehearse songs, perform at school events, and develop vocal skills while building confidence and stage presence."
+            "description": "Glee PAK is a theatrical performing arts club combining acting, stagecraft, and musical performance. Members rehearse dramatic routines, put on school-wide theatrical productions, and develop strong stage presence and confidence."        
         },
         {
             "name": "HOSA",
-            "location": "",
-            "supervisor": "T. Cobbin",
+            "location": "U-202",
+            "supervisor": "B. Lum",
             "description": "HOSA-Future Health Professionals provides students interested in healthcare careers with opportunities to develop skills and knowledge. Members participate in competitions, volunteer in healthcare settings, and explore various medical and health science pathways."
         },
         {
@@ -128,14 +98,14 @@
         },
         {
             "name": "Key Club",
-            "location": "",
+            "location": "L-2",
             "supervisor": "H. Banga",
             "description": "Key Club is an international student-led service organization that empowers students to make a positive impact through community service. Members participate in service projects, develop leadership skills, and build character while helping their community."
         },
         {
             "name": "Lei Hall's Aloha",
-            "location": "",
-            "supervisor": "B. Au / J. Toi",
+            "location": "P-33",
+            "supervisor": "B. Aiu / I. Toi",
             "description": "Lei Hall's Aloha celebrates and perpetuates Hawaiian culture and values. Members learn hula, Hawaiian language, traditional crafts, and cultural practices while sharing the spirit of aloha with the school community."
         },
         {
@@ -145,8 +115,8 @@
             "description": "Leo Club, sponsored by Lions Clubs International, empowers young people to serve their community and develop leadership skills. Members organize service projects, fundraisers, and community events while building friendships and making a difference."
         },
         {
-            "name": "L.I.F.E Club",
-            "location": "",
+            "name": "LIFE Club",
+            "location": "J-7",
             "supervisor": "K. Fujihui",
             "description": "L.I.F.E Club (Living in Faith Everyday) provides a supportive community for students to explore and express their faith. Members participate in discussions, service projects, and fellowship activities while growing spiritually together."
         },
@@ -164,7 +134,7 @@
         },
         {
             "name": "Marauder Media Club",
-            "location": "J-7",
+            "location": "J-6",
             "supervisor": "Bryant Murakami",
             "description": "Marauder Media Club focuses on journalism, broadcasting, and multimedia production. Members create content for school news, develop media skills, and cover school events while learning about digital media and storytelling."
         },
@@ -176,26 +146,26 @@
         },
         {
             "name": "Mock Trial",
-            "location": "",
-            "supervisor": "S. Barnard",
+            "location": "U-205",
+            "supervisor": "S. Bautista",
             "description": "Mock Trial provides students with hands-on experience in the legal system. Members assume roles as attorneys and witnesses, participate in simulated trials, and develop skills in public speaking, critical thinking, and legal reasoning through competition."
         },
         {
             "name": "Model UN",
-            "location": "E-7",
+            "location": "E-5",
             "supervisor": "J. Fitzpatrick",
             "description": "Model United Nations simulates UN proceedings where students represent different countries and debate global issues. Members develop diplomacy, public speaking, and research skills while gaining understanding of international relations and world affairs."
         },
         {
             "name": "Multicultural Marauders",
             "location": "",
-            "supervisor": "J. Roan",
+            "supervisor": "J. Ruan / L. Murakami",
             "description": "Multicultural Marauders celebrates diversity and promotes cultural awareness across the school. Members organize multicultural events, share their heritage, and create an inclusive environment that honors the diverse backgrounds of all students."
         },
         {
-            "name": "Nami Club",
-            "location": "",
-            "supervisor": "P. Muramoto",
+            "name": "NAMI Club",
+            "location": "P-34",
+            "supervisor": "B. Gonzales",
             "description": "Nami Club (National Alliance on Mental Illness) focuses on mental health awareness and support. Members work to reduce stigma, provide peer support, and promote mental wellness through education and advocacy."
         },
         {
@@ -211,7 +181,7 @@
             "description": "Unveiled over a century ago, the National Honor Society enshrines four pillars at its heart: Scholarship, Service, Leadership, and Character. More than mere badges of honor for NHS members, these principles are transformative keys that unlock potential, enhancing every student's educational journey, and ultimately empowering them to make profound, enduring contributions to our world."
         },
         {
-            "name": "National Japanese Honor Society",
+            "name": "National Japanese Language Honor Society",
             "location": "",
             "supervisor": "W. Smith",
             "description": "The National Japanese Honor Society honors high school students who have achieved excellence in the study of Japanese language and demonstrated understanding of Japanese culture. Members promote Japanese language education and cultural exchange."
@@ -220,13 +190,7 @@
             "name": "PAPI Club",
             "location": "I-2",
             "supervisor": "Mrs. Daproza",
-            "description": "PAPI Club (Pacific Asian Pacific Islander) celebrates and promotes awareness of Pacific Islander and Asian cultures. Members share their heritage, organize cultural events, and create community among students of Pacific Islander and Asian descent."
-        },
-        {
-            "name": "Phi Theta Kappa - Beta Chi Omega",
-            "location": "V-EC",
-            "supervisor": "E. Fukunaga",
-            "description": "Phi Theta Kappa is the international honor society for two-year colleges, recognizing and encouraging academic achievement. Beta Chi Omega chapter members engage in leadership development, service projects, and scholarly pursuits while maintaining high academic standards."
+            "description": "PAPI Club (Pathways for the Advancement of Pacific Islanders) champions the academic and leadership growth of Pacific Islander students. Members explore diverse college and career pathways, build foundational community resources, and receive active guidance to succeed in higher education."  
         },
         {
             "name": "Robotics",
@@ -241,8 +205,8 @@
             "description": "Science Olympiad is a national STEM competition where teams compete in various science disciplines. Members prepare for events covering topics from biology to engineering, developing deep knowledge and competitive skills in their chosen areas."
         },
         {
-            "name": "Skills USA",
-            "location": "C1",
+            "name": "SkillsUSA",
+            "location": "C-1",
             "supervisor": "C. Talioaga",
             "description": "SkillsUSA is a partnership of students, teachers, and industry working together to ensure America has a skilled workforce. Members compete in career and technical skills competitions, develop professional skills, and connect education with career opportunities."
         },
@@ -253,14 +217,8 @@
             "description": "SOAR Book Club brings together students who love reading. Members discuss books, share recommendations, and explore literature together while developing critical thinking and appreciation for diverse stories and perspectives."
         },
         {
-            "name": "Sociedad",
-            "location": "P-18",
-            "supervisor": "J. Brumble",
-            "description": "Sociedad promotes Spanish language and Hispanic cultures. Members practice Spanish, learn about traditions from Spanish-speaking countries, and celebrate Hispanic heritage through cultural activities and events."
-        },
-        {
             "name": "Spanish Club",
-            "location": "",
+            "location": "P-33",
             "supervisor": "M. Garcia",
             "description": "Spanish Club celebrates Spanish language and Hispanic cultures. Members improve their Spanish language skills, learn about Hispanic traditions and customs, and participate in cultural activities and celebrations."
         },
@@ -271,10 +229,10 @@
             "description": "The Spanish Honor Society (Sociedad Honoraria Hispánica) recognizes high school achievement in Spanish and promotes interest in Hispanic culture and language. Members demonstrate excellence in Spanish studies and serve their school and community."
         },
         {
-            "name": "Spirit Night",
-            "location": "",
-            "supervisor": "A. Sholtz",
-            "description": "Spirit Night organizes school spirit events and activities that bring the student body together. Members plan pep rallies, theme days, and other events that promote school pride and create a positive, energetic school atmosphere."
+            "name": "AHS Student Board of Directors",
+            "location": "E-3",
+            "supervisor": "S. Haanio",
+            "description": "The student board of directors serves as a leadership body that represents the student body, facilitates communication between students and administration, and helps organize school-wide initiatives and events."
         },
         {
             "name": "Student Government",
@@ -284,7 +242,7 @@
         },
         {
             "name": "Tasi Pasifika",
-            "location": "",
+            "location": "Q-104",
             "supervisor": "N. Gibson",
             "description": "Tasi Pasifika celebrates and perpetuates Pacific Islander cultures and traditions. Members learn about various Pacific Island cultures, participate in traditional activities, and create community among Pacific Islander students."
         },
@@ -293,12 +251,7 @@
             "location": "",
             "supervisor": "P. Sawai",
             "description": "Thread Crush focuses on fashion, sewing, and textile arts. Members explore fashion design, learn sewing techniques, create garments and accessories, and may participate in fashion shows and competitions."
-        },
-        {
-            "name": "WHS Computer Science Honor Society",
-            "location": "V-202",
-            "supervisor": "C. Takara",
-            "description": "The Computer Science Honor Society recognizes students who excel in computer science and promotes interest in computing. Members demonstrate outstanding achievement in computer science studies, participate in coding projects, and mentor peers."
         }
+
     ]
 }

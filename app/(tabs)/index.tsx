@@ -514,7 +514,7 @@ export default function Index() {
                         accessibilityLabel={item.label}
                       >
                         <Image source={item.image} style={{tintColor: '#17273d'}}className="size-[4.25rem] self-center" />
-                        <Text className="text-center font-barlow-semibold text-[#17273d] text-xs">
+                        <Text className="text-center font-barlow-semibold text-[#17273d] text-xs w-[80%]">
                           {item.label}
                         </Text>
                       </TouchableOpacity>
