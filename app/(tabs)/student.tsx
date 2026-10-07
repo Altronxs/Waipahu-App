@@ -81,27 +81,27 @@ const Students = () => {
         {
           label: "Gmail",
           image: require("@/assets/images/mail.png"),
-          onPress: () => Linking.openURL("https://www.google.com/gmail"),
+          onPress: () => Linking.openURL("https://mail.google.com/mail"),
         },
         {
           label: "Drive",
           image: require("@/assets/images/drive.png"),
-          onPress: () => Linking.openURL("https://drive.google.com/?authuser=0"),
+          onPress: () => Linking.openURL("https://drive.google.com/drive"),
         },
         {
           label: "Docs",
           image: require("@/assets/images/docs.png"),
-          onPress: () => Linking.openURL("https://docs.google.com/document/u/0/"),
+          onPress: () => Linking.openURL("https://docs.google.com/document/"),
         },
         {
           label: "Slides",
           image: require("@/assets/images/slides.png"),
-          onPress: () => Linking.openURL("https://docs.google.com/presentation/u/0/"),
+          onPress: () => Linking.openURL("https://docs.google.com/presentation/"),
         },
         {
           label: "Sheets",
           image: require("@/assets/images/sheets.png"),
-          onPress: () => Linking.openURL("https://docs.google.com/spreadsheets/u/0/"),
+          onPress: () => Linking.openURL("https://docs.google.com/spreadsheets/"),
         },
       ],
     },
