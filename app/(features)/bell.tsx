@@ -191,17 +191,25 @@ const Bell = () => {
   });
 
 
+  const handleRefresh = async () => {
+    //setRefreshing(true);
+    await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
+    try {
+      // Await the asynchronous retrieval of the saved schedule string from disk
+      const savedValue = await AsyncStorage.getItem('setting.schedule');
+      setSelectedSchedule(savedValue ?? '');
+    } catch (error) {
+      // Catch any filesystem errors to prevent the application from crashing
+      console.error("Failed to load local schedule settings data:", error);
+    }
+    //setRefreshing(false);
+  };
+
   useFocusEffect(
     useCallback(() => {
-      loadWebsiteData({ setEvents, setEventsError, setAppIsReady });
+      handleRefresh();
     }, [])
   );
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
-    setRefreshing(false);
-  };
 
   // Always keep the refs updated so the interval callback below can see fresh values.
   useEffect(() => {
@@ -275,12 +283,11 @@ const Bell = () => {
         if (isMounted) setSelectedSchedule(savedValue ?? '');
       } catch (error) {
         console.error("Failed to load local schedule settings data:", error);
-
         // Fallback: if the CDN fetch failed (offline, bad response, etc.),
         // fall back to whatever local/bundled calendar we have rather than
         // leaving `calendar` null and breaking the bell-schedule widget.
         try {
-          const fallbackData = await getCalendar();
+          const fallbackData = await getCalendar(); 
           if (fallbackData && isMounted) setCalendar(fallbackData);
         } catch (innerError) {
           console.error("Critical fallback storage failure:", innerError);
@@ -504,9 +511,6 @@ const Bell = () => {
             overScrollMode="never"
             scrollEventThrottle={16}
             decelerationRate="normal"
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
           >
             <View 
               className="self-center items-center flex flex-column w-[100vw] z-10 flex-1 pb-20"
