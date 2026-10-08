@@ -519,7 +519,7 @@ const Bell = () => {
               {currentPeriod !== '' && currentPeriod !== 'No School' ? (
                 <View className="pt-10 px-5 w-[90%] "> 
                   <View className="flex flex-column">
-                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
+                    <Text className="font-bold font-barlow text-whs-blue text-lg/none">{currentPeriod}
                       <TouchableOpacity
                         className="justify-center items-center z-30  aspect-square"
                         style={{
@@ -530,7 +530,7 @@ const Bell = () => {
                         <Image
                           source={require("@/assets/images/question.png")}
                           style={{
-                            tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
+                            tintColor: "#17273d", width: 12, height: 20, objectFit: 'contain'
                           }}
                           className="self-center object-contain"
                         />
@@ -538,7 +538,7 @@ const Bell = () => {
                     </Text>
                     {timeLeft ? (
                       <View>
-                        <Text className="font-bold font-barlow-regular text-whs-blue text-sm"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
+                        <Text className="font-bold font-barlow-regular text-whs-blue text-base"><Text className="">{currentSchedule.replace('Schedule', '')}</Text>  |  {currentPeriodStart}-{currentPeriodEnd}</Text>
                         <View>
                           {/* Track (background) */}
                           <View className="w-[100%] bg-whs-gold/50 h-4 rounded-full absolute"></View>
