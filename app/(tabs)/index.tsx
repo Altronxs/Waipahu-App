@@ -454,7 +454,7 @@ export default function Index() {
               {currentPeriod !== '' && currentPeriod !== 'No School' ? (
                 <View className="pt-5 px-5 w-[90%] "> 
                   <View className="flex flex-column">
-                    <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
+                    <Text className="font-bold font-barlow text-whs-blue text-lg/none">{currentPeriod}
                       <TouchableOpacity
                         className="justify-center items-center z-30  aspect-square"
                         style={{
@@ -465,7 +465,7 @@ export default function Index() {
                         <Image
                           source={require("@/assets/images/question.png")}
                           style={{
-                            tintColor: "#17273d", width: 20, height: 18, objectFit: 'contain'
+                            tintColor: "#17273d", width: 12, height: 20, objectFit: 'contain'
                           }}
                           className="self-center object-contain"
                         />
