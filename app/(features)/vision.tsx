@@ -84,9 +84,9 @@ const Vision = () => {
               className="w-32 h-32 relative bottom-28"
           />
           <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
           </View>
       </View>
 
@@ -110,7 +110,7 @@ const Vision = () => {
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+        <Text className="z-20 font-roboto-bold text-white text-xl w-full  bg-whs-gold text-center absolute"
         >
           Mission, Vision, & Beliefs
         </Text>
@@ -121,10 +121,10 @@ const Vision = () => {
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
         >
-          <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center relative p-7 bottom-4 pt-10">
+          <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center relative p-7 bottom-4 pt-10">
             HOME OF THE MARAUDERS
           </Text>
-          <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center relative bottom-16 p-8">
+          <Text className="z-20 font-source-serif-italic text-lg text-gray-700 w-full text-center relative bottom-16 p-8">
             Waipahu High School's vision is to provide student-centered
             educational programs that challenge all students to perform at their
             highest potential.
@@ -133,91 +133,91 @@ const Vision = () => {
             <Text className="z-30 font-barlow-semibold text-whs-blue text-xl w-full text-center relative p-5">
               CLASS OF 2026
             </Text>
-            <View className="flex-wrap flex-row justify-center items-center gap-3">
+            <View className="flex-wrap flex-row justify-center items-center gap-3 pb-5">
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-4xl text-center pl-8 pr-8 self-center">
                   32
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   Early College Olympians (graduating w/ AA)
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-4xl text-center pl-8 pr-8 self-center">
                   256
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   Academic Honors
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-4xl text-center pl-8 pr-8 self-center">
                   321
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   STEM & CTE Honors
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-4xl text-center pl-8 pr-8 self-center">
                   83
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   Achieved Valedictorian Status (4.0 g.p.a)
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-4xl text-center pl-8 pr-8 self-center">
                   461
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   Earned an Industry Certification
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[33vw] text-4xl text-center pl-8 pr-8 self-center">
                   117
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   Seal of Biliteracy Awards - 34 with three languages & two with
                   four languages
                 </Text>
               </View>
               <View className="w-[40vw] items-center justify-center px-4 bg-whs-blue h-[70vw]">
-                <Text className="z-20 font-source-serif-italic text-white w-[40vw] text-3xl text-center pl-8 pr-8 self-center">
+                <Text className="z-20 font-source-serif-italic text-white w-[40vw] text-4xl text-center pl-8 pr-8 self-center">
                   $28M
                 </Text>
-                <Text className="font-barlow-regular text-xs text-white text-center self-center">
+                <Text className="font-barlow-regular text-sm text-white text-center self-center">
                   In Merit-Based Scholarships
                 </Text>
               </View>
             </View>
-            <Text className="z-30 font-source-serif-600 text-whs-blue text-xl w-full text-center relative p-5">
+            <Text className="z-30 font-source-serif-600 text-whs-blue text-2xl w-[80vw] text-center relative pt-5 pb-2 border-t-2 border-black/25 black m-auto">
               School Mission
             </Text>
-            <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center pl-8 pr-8">
+            <Text className="z-20 font-source-serif-italic text-lg text-gray-700 w-full text-center pl-8 pr-8">
               Waipahu High School prepares students for success in the 21st
               century by engaging them in rigorous and relevant learning
               opportunities that promote academic, physical, and emotional
               growth.
             </Text>
-            <Text className="z-30 font-source-serif-600 text-whs-blue text-xl w-full text-center relative p-5">
+            <Text className="z-30 font-source-serif-600 text-whs-blue text-2xl w-full text-center relative p-5">
               Vision of a Hawaii Public Graduate
             </Text>
-            <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center pl-8 pr-8">
+            <Text className="z-20 font-source-serif-italic text-lg text-gray-700 w-full text-center pl-8 pr-8">
               All Hawaii public school graduates will:
             </Text>
-            <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full relative left-5 pl-8 pr-8">
+            <Text className="z-20 font-source-serif-regular text-base text-gray-700 w-full relative left-5 pl-8 pr-8">
               - Realize their individual goals and aspirations
             </Text>
-            <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full relative left-5 pl-8 pr-8">
+            <Text className="z-20 font-source-serif-regular text-base text-gray-700 w-full relative left-5 pl-8 pr-8">
               - Possess the attitudes, knowledge and skills necessary to
               contribute positively and compete in a global society
             </Text>
-            <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full relative left-5 pl-8 pr-8">
+            <Text className="z-20 font-source-serif-regular text-base text-gray-700 w-full relative left-5 pl-8 pr-8">
               - Exercise the rights and responsibilities of citizenship
             </Text>
-            <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full relative left-5 pl-8 pr-8">
+            <Text className="z-20 font-source-serif-regular text-base text-gray-700 w-full relative left-5 pl-8 pr-8">
               - Pursue post-secondary education and/or careers without the need
               for remediation
             </Text>

@@ -102,7 +102,7 @@ export default function License() {
                     </TouchableOpacity>
                 </GlassView>
                 
-                <Text className="z-20 font-roboto-bold text-white text-center text-xl pb-2">
+                <Text className="z-20 font-roboto-bold text-white text-center text-2xl pb-2">
                     License
                 </Text>
                 <Image
