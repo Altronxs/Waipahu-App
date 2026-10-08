@@ -95,9 +95,9 @@ const Clubs = () => {
               className="w-32 h-32 relative bottom-28"
           />
           <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
           </View>
       </View>
 
@@ -121,7 +121,7 @@ const Clubs = () => {
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+        <Text className="z-20 font-roboto-bold text-white text-xl w-full  bg-whs-gold text-center absolute"
         >
           Club Directory
         </Text>
@@ -131,10 +131,10 @@ const Clubs = () => {
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
         >
-          <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center relative p-7 bottom-4 pt-10">
+          <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center relative p-7 bottom-4 pt-10">
             HOME OF THE MARAUDERS
           </Text>
-          <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center relative bottom-16 p-8">
+          <Text className="z-20 font-source-serif-italic text-lg text-gray-700 w-full text-center relative bottom-16 p-8">
             Waipahu High School's vision is to provide student-centered
             educational programs that challenge all students to perform at their
             highest potential.
@@ -143,30 +143,30 @@ const Clubs = () => {
             {clubData.clubData?.map((feature, index) => (
               <React.Fragment key={index}>
                 <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
-                  <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">
+                  <Text className="z-30 font-barlow-semibold text-whs-blue text-2xl w-full relative left-2 p-5 pb-3 underline">
                     {feature.name}
                   </Text>
                   <View className="flex-row relative left-8">
                     <Image
                       source={require("@/assets/images/whs-map.png")}
-                      className="w-7 h-7 object-contain relative"
+                      className="w-[24px] h-[24px] object-contain relative"
                       style={{ tintColor: "gray" }}
                     />
-                    <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4 pr-4">
+                    <Text className="z-20 font-barlow-regular text-base text-gray-700 pl-4 pr-4">
                       {feature.location}
                     </Text>
                     <Image
                       source={require("@/assets/images/registrar.png")}
-                      className="w-14 h-10 object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
+                      className="w-[51px] h-[35px] object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
                       style={{ tintColor: "gray" }}
                     />
-                    <Text className="z-20 font-barlow-regular text-sm text-gray-700 pl-4">
+                    <Text className="z-20 font-barlow-regular text-base text-gray-700 pl-4">
                       {feature.supervisor}
                     </Text>
                   </View>
 
                   {feature.description && (
-                    <Text className="z-20 font-barlow-regular text-xs text-gray-700 w-full p-6 pt-2">
+                    <Text className="z-20 font-barlow-regular text-base text-gray-700 w-full p-6 pt-2">
                       {feature.description}
                     </Text>
                   )}

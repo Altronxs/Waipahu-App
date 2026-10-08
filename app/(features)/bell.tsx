@@ -460,9 +460,9 @@ const Bell = () => {
           className="w-32 h-32 relative bottom-28"
         />
         <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-          <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-          <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-          <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+          <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+          <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+          <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
         </View>
       </View>
 
@@ -486,7 +486,7 @@ const Bell = () => {
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-lg w-full  bg-whs-gold text-center absolute"
+        <Text className="z-20 font-roboto-bold text-white text-xl w-full bg-whs-gold text-center absolute"
         >
           Bell Schedule SY26-27
         </Text>
@@ -516,7 +516,7 @@ const Bell = () => {
                   a progress bar showing how far through the period we are.
                   Only renders once currentPeriod has been computed
                   (i.e. on a weekday, after the first interval tick). */}
-              {currentPeriod !== '' ? (
+              {currentPeriod !== '' && currentPeriod !== 'No School' ? (
                 <View className="pt-10 px-5 w-[90%] "> 
                   <View className="flex flex-column">
                     <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}

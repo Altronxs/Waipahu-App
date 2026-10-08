@@ -90,9 +90,9 @@ const Athletics = () => {
               className="w-32 h-32 relative bottom-28"
           />
           <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
           </View>
       </View>
 
@@ -117,7 +117,7 @@ const Athletics = () => {
                   />
               </TouchableOpacity>
           </GlassView>
-          <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
+          <Text className="z-20 font-roboto-bold text-white text-xl/tight w-full  bg-whs-gold text-center absolute"
           >
             Athletics Homepage
           </Text>
@@ -143,7 +143,7 @@ const Athletics = () => {
                   />
               </TouchableOpacity>
           </GlassView>
-          <Text className="z-20 font-roboto-bold text-white text-base/tight w-full  bg-whs-gold text-center absolute"
+          <Text className="z-20 font-roboto-bold text-white text-xl/tight w-full  bg-whs-gold text-center absolute"
           >
             Athletics
           </Text>

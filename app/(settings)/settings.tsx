@@ -39,8 +39,6 @@ import {
 } from "react-native";
 import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
-import { loadWebsiteData } from '@/src/utils/eventServices';
-import { calculateCurrentPeriod } from '@/src/utils/scheduleServices'
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -84,22 +82,15 @@ export default function Settings() {
   // AND the first tick of the interval effect has run (see effect below).
   const [appIsReady, setAppIsReady] = useState(true); //This page doesn't need to load anything so hard coded true
 
-  const [events, setEvents] = useState<SchoolEvent[]>([]);
-  const [eventsError, setEventsError] = useState<string | null>(null);
-
   // Drives the pull-to-refresh spinner on the ScrollView (see
   // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
 
   const [AllowMapLocation, setAllowMapLocation] = useState<boolean>(false)
   const toggleSwitch = () => setAllowMapLocation(previousState => !previousState);
-  //
+
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
   const [isFocus, setIsFocus] = useState(false);
-
-  // Ref mirror of `events` so the 1s interval callback (which has an empty
-  // dependency array and is created once) can always read the latest
-  // events without needing to be re-created every time events changes.
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -118,121 +109,12 @@ export default function Settings() {
     SourceSerifPro_600SemiBold,
   });
 
-  // Re-fetch events every time this screen comes into focus, not just on mount.
-  // AbortController cancels the in-flight fetch if the screen loses focus
-  // (or unmounts) before it resolves, preventing state updates on an
-  // unfocused/unmounted screen.
-//   useFocusEffect(
-//     useCallback(() => {
-//       const controller = new AbortController();
-
-//       loadWebsiteData({
-//         signal: controller.signal,
-//         setEvents,
-//         setEventsError,
-//         setAppIsReady,
-//       });
-      
-//       return () => {
-//         controller.abort();
-//       };
-//     }, [])
-//   );
-
-
   // Manual refresh trigger, wired to the ScrollView's RefreshControl below.
   const handleRefresh = async () => {
     setRefreshing(true);
-    // const controller = new AbortController();
-
-    // await loadWebsiteData({
-    //   signal: controller.signal,
-    //   setEvents,
-    //   setEventsError,
-    //   setAppIsReady,
-    // });
     
     setRefreshing(false);
   };
-
-  // 1. Always keep ref updated so the interval effect (empty dep array)
-  // can access the latest `events` without staleness.
-//   useEffect(() => {
-//     eventsRef.current = events;
-//   }, [events]);
-
-  /**
-   * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
-   * completely bypassing the user's local system timezone settings.
-   * @returns {Date} A Date object reflecting current Hawaii time.
-   */
-//   const getHawaiiDate = () => {
-//     // Get the current timestamp based on the user's device clock
-//     const localTime = new Date();
-    
-//     // getTimezoneOffset() returns the difference in minutes between local time and UTC.
-//     // Multiplying by 60,000 converts those minutes into milliseconds.
-//     // Adding this to the local timestamp normalizes the time to absolute UTC (Greenwich Mean Time).
-//     const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
-    
-//     // Hawaii is locked to UTC-10 and never changes for Daylight Saving Time.
-//     const hawaiiOffsetHours = -10;
-    
-//     // Multiplying 3,600,000 (milliseconds in 1 hour) by -10 calculates the shift needed.
-//     // Adding this to the UTC time gives us the exact absolute time in Hawaii.
-//     const hawaiiMilliseconds = utcTime + (3600000 * hawaiiOffsetHours);
-    
-//     // Create and return a new Date object initialized to Hawaii's exact current time.
-//     // Methods like .getHours() or .getDate() will now return Hawaii-specific values.
-//     return new Date(hawaiiMilliseconds);
-//   }
-
-
-  // Ticks once per second to recompute the "current period" / bell-schedule
-  // progress bar. Tied to useFocusEffect so the interval is started when
-  // this screen gains focus and cleared when it loses focus/unmounts —
-  // it no longer keeps ticking in the background on other tabs.
-//   useFocusEffect(
-//     useCallback(() => {
-//       const timer = setInterval(() => {
-//         const now = getHawaiiDate();
-//         const dayOfWeek = now.getDay();
-//         const currentEventsList = eventsRef.current;
-//         // Guard against calculateCurrentPeriod being called before events
-//         // have loaded (currentEventsList would otherwise be an empty array
-//         // and currentEventsList[0] would be undefined).
-//         if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentEventsList.length > 0) {
-
-//           const periodData = calculateCurrentPeriod(now, currentEventsList[0], String(selectedSchedule)) as {
-//             currentPeriod: string;
-//             currentPeriodStart: string;
-//             currentPeriodEnd: string;
-//             timeLeft: string;
-//             loadingBarFactor: string;
-//             scheduleID: string;
-//             schedule: string;
-//           };
-//           setCurrentSchedule(periodData.schedule)
-//           setCurrentPeriod(periodData.currentPeriod);
-//           setCurrentPeriodStart(periodData.currentPeriodStart);
-//           setCurrentPeriodEnd(periodData.currentPeriodEnd);
-//           setTimeLeft(periodData.timeLeft);
-//           setLoadingBarFactor(periodData.loadingBarFactor);
-//         }
-
-//         // Flips the splash screen off once fonts are loaded + the first
-//         // tick has run. React bails out of the re-render here once this is
-//         // already true, since setState with an unchanged primitive is a
-//         // no-op, so this is safe to call every tick.
-//         setAppIsReady(true);
-//       }, 1000);
-
-//       return () => clearInterval(timer);
-//       // Re-created each time this screen refocuses; `eventsRef` (kept in
-//       // sync by the effect above) lets the callback always read the
-//       // latest events without needing `events` in this dependency array.
-//     }, [selectedSchedule])
-//   );
 
   // Run this lifecycle hook immediately when the component mounts to the screen
   useEffect(() => {
@@ -296,7 +178,7 @@ export default function Settings() {
                     </TouchableOpacity>
                 </GlassView>
                 
-                <Text className="z-20 font-roboto-bold text-white text-center text-xl pb-2">
+                <Text className="z-20 font-roboto-bold text-white text-center text-2xl pb-2">
                     App Settings
                 </Text>
                 <Image

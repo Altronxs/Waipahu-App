@@ -81,27 +81,27 @@ const Students = () => {
         {
           label: "Gmail",
           image: require("@/assets/images/mail.png"),
-          onPress: () => Linking.openURL("https://www.google.com/gmail"),
+          onPress: () => Linking.openURL("https://mail.google.com/mail"),
         },
         {
           label: "Drive",
           image: require("@/assets/images/drive.png"),
-          onPress: () => Linking.openURL("https://drive.google.com/?authuser=0"),
+          onPress: () => Linking.openURL("https://drive.google.com/drive"),
         },
         {
           label: "Docs",
           image: require("@/assets/images/docs.png"),
-          onPress: () => Linking.openURL("https://docs.google.com/document/u/0/"),
+          onPress: () => Linking.openURL("https://docs.google.com/document/"),
         },
         {
           label: "Slides",
           image: require("@/assets/images/slides.png"),
-          onPress: () => Linking.openURL("https://docs.google.com/presentation/u/0/"),
+          onPress: () => Linking.openURL("https://docs.google.com/presentation/"),
         },
         {
           label: "Sheets",
           image: require("@/assets/images/sheets.png"),
-          onPress: () => Linking.openURL("https://docs.google.com/spreadsheets/u/0/"),
+          onPress: () => Linking.openURL("https://docs.google.com/spreadsheets/"),
         },
       ],
     },
@@ -179,9 +179,9 @@ const Students = () => {
               className="w-32 h-32 relative bottom-28"
           />
           <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
           </View>
       </View>
 
@@ -205,7 +205,7 @@ const Students = () => {
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-lg w-full bg-whs-gold text-center absolute"
+        <Text className="z-20 font-roboto-bold text-white text-xl w-full bg-whs-gold text-center absolute"
         >
           Student Resources
         </Text>
@@ -224,10 +224,10 @@ const Students = () => {
             className="flex-row flex-wrap justify-center items-start w-[100vw] flex-1 pb-40"
 
           >
-            <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-5 pb-0">
+            <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center p-5 pb-0">
               Student Resources
             </Text>
-            <Text className="z-20 font-source-serif-regular text-sm text-gray-700 w-full text-center p-8 pt-3">
+            <Text className="z-20 font-source-serif-regular text-base text-gray-700 w-full text-center p-8 pt-3">
               Welcome to the Student page where students are provided with
               important resources to help navigate through Waipahu High School
               life.
@@ -238,7 +238,7 @@ const Students = () => {
                 tile so 5 fit per row before wrapping. */}
             {sections.map((section) => (
               <View key={section.title} className="w-[90%] px-4">
-                <Text className="font-barlow-semibold text-center">
+                <Text className="font-barlow-semibold text-center text-lg">
                   {section.title}
                 </Text>
                 <View className="flex-row flex-wrap justify-center">
@@ -251,7 +251,7 @@ const Students = () => {
                       accessibilityLabel={item.label}
                     >
                       <Image source={item.image} style={{ tintColor: "#17273d" }} className="size-[4.25rem] self-center" />
-                      <Text className="text-center font-barlow-semibold text-[#17273d] text-xs w-[80%]">
+                      <Text className="text-center font-barlow-semibold text-[#17273d] text-sm w-[80%]">
                         {item.label}
                       </Text>
                     </TouchableOpacity>

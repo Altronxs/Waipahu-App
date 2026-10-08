@@ -405,9 +405,9 @@ export default function Index() {
                 className="w-32 h-32 relative bottom-28"
             />
             <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-                <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-                <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-                <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+                <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+                <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+                <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
             </View>
         </View>
         <View className="bg-white w-[100vw] h-[100vh] justify-center items-center ">
@@ -430,12 +430,10 @@ export default function Index() {
               resizeMode="cover"
             >
               
-              
-              
               {/* Welcome banner: script logo + "WELCOME!" text */}
               <View className="justify-center items-center pt-10 pb-2 w-[90%]">
                 <View className="flex flex-col gap-[0px]">
-                  <Text className="z-20 font-barlow-italic text-5xl text-whs-blue text-center self-center">
+                  <Text className="z-20 font-barlow-italic text-6xl text-whs-blue text-center self-center">
                     WELCOME
                   </Text>
                     {/* Swapped to Expo Image using the alias */}
@@ -453,7 +451,7 @@ export default function Index() {
                   a progress bar showing how far through the period we are.
                   Only renders once currentPeriod has been computed
                   (i.e. on a weekday, after the first interval tick). */}
-              {currentPeriod !== '' ? (
+              {currentPeriod !== '' && currentPeriod !== 'No School' ? (
                 <View className="pt-5 px-5 w-[90%] "> 
                   <View className="flex flex-column">
                     <Text className="font-bold font-barlow text-whs-blue text-base/none">{currentPeriod}
@@ -514,7 +512,7 @@ export default function Index() {
                         accessibilityLabel={item.label}
                       >
                         <Image source={item.image} style={{tintColor: '#17273d'}}className="size-[4.25rem] self-center" />
-                        <Text className="text-center font-barlow-semibold text-[#17273d] text-xs w-[80%]">
+                        <Text className="text-center font-barlow-semibold text-[#17273d] text-sm w-[80%]">
                           {item.label}
                         </Text>
                       </TouchableOpacity>

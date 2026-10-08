@@ -90,9 +90,9 @@ const Author = () => {
               className="w-32 h-32 relative bottom-28"
           />
           <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white ml-12 font-barlow-semibold"> MY FUTURE</Text>
+              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
+              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
+              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
           </View>
       </View>
 
@@ -115,7 +115,7 @@ const Author = () => {
                 />
             </TouchableOpacity>
         </GlassView>
-        <Text className="z-20 font-roboto-bold text-white text-lg w-full bg-whs-gold text-center absolute"
+        <Text className="z-20 font-roboto-bold text-white text-xl w-full bg-whs-gold text-center absolute"
         >
           App Creators & Credits
         </Text>
@@ -129,10 +129,10 @@ const Author = () => {
           scrollEventThrottle={16}       
           decelerationRate="normal"   
         >
-          <Text className="z-20 font-barlow-semibold text-xl text-whs-blue w-full text-center p-3 !pt-5">
+          <Text className="z-20 font-barlow-semibold text-2xl text-whs-blue w-full text-center p-3 !pt-5">
             MADE BY STUDENTS & ALUMNI
           </Text>
-          <Text className="z-20 font-source-serif-italic text-sm text-gray-700 w-full text-center pb-3 px-4 ">
+          <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center pb-3 px-4 ">
             Waipahu High School's vision is to provide student-centered
             educational programs that challenge all students to perform at their
             highest potential.
