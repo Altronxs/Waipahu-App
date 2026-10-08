@@ -195,17 +195,25 @@ export default function Index() {
     SourceSerifPro_600SemiBold,
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      loadWebsiteData({ setEvents, setEventsError, setAppIsReady });
-    }, [])
-  );
-
   const handleRefresh = async () => {
     setRefreshing(true);
     await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
+    try {
+      // Await the asynchronous retrieval of the saved schedule string from disk
+      const savedValue = await AsyncStorage.getItem('setting.schedule');
+      setSelectedSchedule(savedValue ?? '');
+    } catch (error) {
+      // Catch any filesystem errors to prevent the application from crashing
+      console.error("Failed to load local schedule settings data:", error);
+    }
     setRefreshing(false);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      handleRefresh();
+    }, [])
+  );
 
   // 1. Always keep ref updated so the interval effect (empty dep array)
   // can access the latest `events` without staleness.
@@ -418,10 +426,6 @@ export default function Index() {
             overScrollMode="never"          
             scrollEventThrottle={16}       
             decelerationRate="normal"
-            
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
           >
             <ImageBackground
               source={require("@/assets/images/bg-home.png")}
