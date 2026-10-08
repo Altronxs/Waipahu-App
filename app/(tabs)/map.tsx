@@ -77,6 +77,7 @@ const icons = {
   band: require("@/assets/images/band.png"),
   whs: require("@/assets/images/whs-icon.png"),
   campusMap: require("@/assets/images/whs-campus-map.png"),
+  construction: require("@/assets/images/construction.png")
   // add more as needed
 };
 
@@ -96,6 +97,8 @@ interface MapFeature {
   thirdFloor?: Floor;
   layoutNeed?: boolean;
   image?: string;
+  fillColor?: string;
+  strokeColor?: string;  
 }
 
 interface MapDataResponse {
@@ -311,8 +314,8 @@ const Map = () => {
             {mapData.mapData.map((feature, index) => (
               <React.Fragment key={index}>
                 <Polygon
-                  fillColor="#00008050"
-                  strokeColor="#ae8c52"
+                  fillColor={feature.fillColor}
+                  strokeColor={feature.strokeColor}
                   strokeWidth={1}
                   coordinates={feature.polygon.map(([latitude, longitude]) => ({
                     latitude,

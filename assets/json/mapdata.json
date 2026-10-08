@@ -21,7 +21,9 @@
       ],
       "marker": [21.386192009462263, -157.9940489807377],
       "iconNeed": false,
-      "markerText": "A"
+      "markerText": "A",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables 35-37",
@@ -36,7 +38,9 @@
       "iconNeed": false,
       "markerText": "P",
       "layoutNeed": true,
-      "firstFloor": ["P35", "P36", "P37"]
+      "firstFloor": ["P35", "P36", "P37"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "V-Building",
@@ -62,7 +66,9 @@
       "markerText": "V",
       "layoutNeed": true,
       "firstFloor": ["V101", "V102", "V103", "V104", "V105"],
-      "secondFloor": ["V201", "V202", "V203", "V204", "V205"]
+      "secondFloor": ["V201", "V202", "V203", "V204", "V205"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Library",
@@ -79,7 +85,9 @@
       ],
       "marker": [21.387718566164256, -157.99426404730215],
       "iconNeed": true,
-      "iconName": "library"
+      "iconName": "library",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
 
     },
     {
@@ -101,7 +109,9 @@
       ],
       "marker": [21.387951070548894, -157.9936981501478],
       "iconNeed": true,
-      "iconName": "cafe"
+      "iconName": "cafe",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "C-Building",
@@ -116,7 +126,9 @@
       "iconNeed": false,
       "markerText": "C",
       "layoutNeed": true,
-      "firstFloor": ["C1", "C2", "C3"]
+      "firstFloor": ["C1", "C2", "C3"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "B-Building",
@@ -133,7 +145,9 @@
       "iconNeed": false,
       "markerText": "B",
       "layoutNeed": true,
-      "firstFloor": ["B2", "B1"]
+      "firstFloor": ["B2", "B1"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "U-Building",
@@ -153,7 +167,9 @@
       "markerText": "U",
       "layoutNeed": true,
       "firstFloor": ["U101A", "U101B", "U102A", "U102B"],
-      "secondFloor": ["U206", "U205", "U204", "U203", "U202", "U201"]
+      "secondFloor": ["U206", "U205", "U204", "U203", "U202", "U201"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Band & Chorus",
@@ -174,7 +190,9 @@
       ],
       "marker": [21.388235704254342, -157.9942280737119],
       "iconNeed": true,
-      "iconName": "band"
+      "iconName": "band",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables 25 & 26",
@@ -187,7 +205,9 @@
       ],
       "marker": [21.38790612706856, -157.99444050356388],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portable 11",
@@ -200,7 +220,9 @@
       ],
       "marker": [21.388332875409315, -157.99441251745293],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables 9 & 10",
@@ -213,7 +235,9 @@
       ],
       "marker": [21.388561641937095, -157.9942988871495],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Admin & Counselor Building",
@@ -228,7 +252,9 @@
       "iconNeed": true,
       "iconName": "whs",
       "layoutNeed": true,
-      "firstFloor": ["Counselor", "Admin", "Health Room"]
+      "firstFloor": ["Counselor", "Admin", "Health Room"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "E-Building",
@@ -244,7 +270,9 @@
       "markerText": "E",
       "layoutNeed": true,
       "firstFloor": ["E4", "E3", "E2", "E1"],
-      "secondFloor": ["E8", "E7", "E6", "E5"]
+      "secondFloor": ["E8", "E7", "E6", "E5"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "",
@@ -255,7 +283,9 @@
         [21.38888094932379, -157.9938983043932],
         [21.3887724832858, -157.9939716987433]
       ],
-      "marker": [0, 0]
+      "marker": [0, 0],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "F-Building",
@@ -279,7 +309,9 @@
       "markerText": "F",
       "layoutNeed": true,
       "firstFloor": ["F6", "F5", "F4", "F3", "F2", "F1"],
-      "secondFloor": ["F12", "F11", "F10", "F9", "F8", "F7"]
+      "secondFloor": ["F12", "F11", "F10", "F9", "F8", "F7"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "G-Building",
@@ -295,7 +327,9 @@
       "markerText": "G",
       "layoutNeed": true,
       "secondFloor": ["G5", "G6", "G7", "G8", "G9"],
-      "firstFloor": ["G104", "G103", "G102", "G101", "SG"]
+      "firstFloor": ["G104", "G103", "G102", "G101", "SG"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "H-Building",
@@ -315,7 +349,9 @@
       "markerText": "H",
       "layoutNeed": true,
       "secondFloor": ["H6", "H7", "H8", "H9", "H10"],
-      "firstFloor": ["H1", "H2", "H3", "H4", "H5"]
+      "firstFloor": ["H1", "H2", "H3", "H4", "H5"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables 28 & 29",
@@ -329,7 +365,9 @@
       ],
       "marker": [21.38824001769599, -157.9931172679323],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "I-Building",
@@ -361,7 +399,9 @@
       "markerText": "I",
       "layoutNeed": true,
       "firstFloor": ["I6", "I5", "I4", "I3", "I2", "I1"],
-      "secondFloor": ["I7", "I8", "I9", "I10", "I11", "I12"]
+      "secondFloor": ["I7", "I8", "I9", "I10", "I11", "I12"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
 
     },
     {
@@ -382,7 +422,9 @@
       "markerText": "J",
       "layoutNeed": true,
       "firstFloor": ["J4", "J3", "J2", "J1"],
-      "secondFloor": ["J9", "J8", "J7", "J6", "J5"]
+      "secondFloor": ["J9", "J8", "J7", "J6", "J5"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Q-Building",
@@ -402,7 +444,9 @@
       "markerText": "Q",
       "layoutNeed": true,
       "firstFloor": ["Q101", "Q102", "Q103", "Q104", "Q105", "Q106"],
-      "secondFloor": ["Q201", "Q202", "Q203", "Q204", "Q205", "Q206"]
+      "secondFloor": ["Q201", "Q202", "Q203", "Q204", "Q205", "Q206"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "W-Building",
@@ -425,7 +469,9 @@
       "layoutNeed": true,
       "firstFloor": ["W106", "W105", "W104", "W103", "W102", "W101"],
       "secondFloor": ["W204", "W203", "W202", "W201"],
-      "thirdFloor": ["Culinary"]
+      "thirdFloor": ["Culinary"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Gym",
@@ -440,7 +486,9 @@
       "iconNeed": true,
       "iconName": "gym",
       "textNeed": true,
-      "markerText": "N"
+      "markerText": "N",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Locker Room",
@@ -455,7 +503,9 @@
       "iconNeed": true,
       "iconName": "gym",
       "textNeed": true,
-      "markerText": "K"
+      "markerText": "K",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables 32 & 33",
@@ -468,7 +518,9 @@
       ],
       "marker": [21.388955996074813, -157.9930537303951],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables 30 & 31",
@@ -481,7 +533,9 @@
       ],
       "marker": [21.38756426991212, -157.9935260701741],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portable 34",
@@ -494,7 +548,9 @@
       ],
       "marker": [21.38714696914976, -157.9936388337461],
       "iconNeed": false,
-      "markerText": "P"
+      "markerText": "P",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Weight Room",
@@ -507,7 +563,9 @@
       ],
       "marker": [21.390279142298795, -157.9925978295171],
       "iconNeed": true,
-      "iconName": "gym"
+      "iconName": "gym",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "L-Building",
@@ -522,7 +580,9 @@
       "iconNeed": false,
       "markerText": "T",
       "layoutNeed": true,
-      "firstFloor": ["L1", "L2", "L3", "L4"]
+      "firstFloor": ["L1", "L2", "L3", "L4"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Student Government",
@@ -531,7 +591,9 @@
       ],
       "marker": [21.38885552627532, -157.99358958696968],
       "iconNeed": true,
-      "iconName": "whs"
+      "iconName": "whs",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Early College Room",
@@ -540,7 +602,9 @@
       ],
       "marker": [21.387055996551663, -157.99434015173927],
       "iconNeed": true,
-      "iconName": "whs"
+      "iconName": "whs",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Portables",
@@ -561,7 +625,10 @@
       "iconNeed": false,
       "markerText": "P",
       "layoutNeed": true,
-      "firstFloor": ["TB1", "TB2", "P14", "P15", "P16", "P17"]
+      "firstFloor": ["P14", "P15", "P16", "P17"],
+      "secondFloor": ["TB1", "TB2", "TB3", "TB4", "TB5"],
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Baseball Field",
@@ -574,7 +641,9 @@
       ],
       "marker": [21.38981037589046, -157.9911691379058],
       "iconNeed": true,
-      "iconName": "gym"
+      "iconName": "gym",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Tennis Court",
@@ -591,7 +660,9 @@
       ],
       "marker": [21.39072827377734, -157.9915276110424],
       "iconNeed": true,
-      "iconName": "gym"
+      "iconName": "gym",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
     },
     {
       "name": "Football Field",
@@ -613,8 +684,39 @@
       ],
       "marker": [21.39107916258744, -157.9907871179672],
       "iconNeed": true,
-      "iconName": "gym"
+      "iconName": "gym",
+      "fillColor": "#00008050",
+      "strokeColor":"#ae8c52"
+    },
+    {
+      "name": "Construction Area: W-Building Extension",
+      "polygon": [
+        [21.38947664037571, -157.9925230022018],
+        [21.3893246662118, -157.9922608264066],
+        [21.38965555450999, -157.9920467012789],
+        [21.38980958561459, -157.9923137180859],
+        [21.38947664037571, -157.9925230022018]
+      ],
+      "marker": [21.38954937716017, -157.9922917475688],
+      "iconNeed": true,
+      "iconName": "construction",
+      "fillColor": "#EA433550",
+      "strokeColor":"#EA4335"
+    },
+    {
+      "name": "Construction Area",
+      "polygon": [
+        [21.38914098416999, -157.9930037243894],
+        [21.38905973803014, -157.9928625513566],
+        [21.38961702185111, -157.9924985986765],
+        [21.38969701279981, -157.9926422399516],
+        [21.38914098416999, -157.9930037243894]
+      ],
+      "marker": [21.38937868921276, -157.99275177859353],
+      "iconNeed": true,
+      "iconName": "construction",
+      "fillColor": "#EA433550",
+      "strokeColor":"#EA4335"
     }
-    
   ]
 }
