@@ -82,11 +82,19 @@ export const parseEventsXML = (xmlString) => {
  * Uses a combined race timeout alongside external cancellation handles.
  * 
  * @param {AbortSignal} [externalSignal] - Optional signal passed from React/Vue components.
- * @returns {Promise<Array>} Resolves to a structured list of events.
+ * @returns {Promise<Array|null>} Resolves to a structured list of events, or
+ *   null if the request was aborted (timeout or external cancellation).
  */
 export const fetchSchoolEvents = async (externalSignal) => {
     const timeoutController = new AbortController();
     const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
+
+    /**
+     * Forwards an external cancellation to the internal timeout controller
+     * so the in-flight fetch is aborted as well.
+     *
+     * @returns {void}
+     */
     const handleExternalAbort = () => timeoutController.abort();
 
     if (externalSignal) {

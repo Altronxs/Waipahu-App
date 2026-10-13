@@ -9,7 +9,8 @@ import calendarJSON from '@/assets/json/calendar.json';
  * Uses a combined race timeout alongside external cancellation handles.
  * 
  * @param {AbortSignal} [externalSignal] - Optional signal passed from React/Vue components to cancel the request.
- * @returns {Promise<Object|Array>} The parsed JSON data representing the school calendar.
+ * @returns {Promise<Object|Array|null>} The parsed JSON data representing the school
+ *   calendar (bundled fallback on failure), or null if the request was aborted.
  */
 export const fetchSchoolCalendar = async (externalSignal) => {
   // Create an internal controller to handle our network timeout
@@ -18,7 +19,12 @@ export const fetchSchoolCalendar = async (externalSignal) => {
   // Set a hard 10-second limit for network fallbacks before aborting
   const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
 
-  // Link the internal timeout controller with the external cancellation stream
+  /**
+   * Forwards an external cancellation to the internal timeout controller
+   * so the in-flight fetch is aborted as well.
+   *
+   * @returns {void}
+   */
   const handleExternalAbort = () => timeoutController.abort();
   
   if (externalSignal) {
@@ -70,6 +76,7 @@ export const fetchSchoolCalendar = async (externalSignal) => {
  * Maps the target date to an academic week/period definition.
  *
  * @param {Date} inputDate - The date to search for.
+ * @param {Object} [calendar] - Calendar data to search (defaults to the bundled calendar.json).
  * @returns {Object|null} The matching calendar entry object or null.
  */
 export const findCalendarEntryForDate = (inputDate, calendar = calendarJSON) => {
@@ -78,7 +85,10 @@ export const findCalendarEntryForDate = (inputDate, calendar = calendarJSON) => 
 
     /**
      * Converts a "MM-DD-YY" string into a midnight timestamp.
-     */ 
+     *
+     * @param {string} dateStr - Date formatted as "MM-DD-YY".
+     * @returns {number} Timestamp (ms) for midnight of that calendar day.
+     */
     const parseCalendarDateString = (dateStr) => {
         const [month, day, twoDigitYear] = dateStr.split('-').map(Number);
         return new Date(2000 + twoDigitYear, month - 1, day).setHours(0, 0, 0, 0);
@@ -161,6 +171,7 @@ const buildFinalSchedule = (scheduleID) => {
  *
  * @param {Object} currentEvents - The event block retrieved for the current day.
  * @param {Date} targetDate - The live date object instance.
+ * @param {Object} [calendar] - Calendar data to use (defaults to the bundled calendar.json).
  * @returns {{finalTimeline: Array, scheduleID: number|string|null}} Timeline
  *   for the day (empty timeline when there's no school, e.g. weekends/holidays).
  */
@@ -243,6 +254,7 @@ const buildIdleState = () => ({
  * @param {Object} currentEvents - Live scraped calendar event configuration.
  * @param {string} overrideID - '' or '-1' to use the normal calendar-derived
  *   schedule; any other value forces that specific schedule ID (dev/testing tool).
+ * @param {Object} [calendar] - Calendar data to use (defaults to the bundled calendar.json).
  * @returns {Object} Metric payload feeding UI display components.
  */
 export const calculateCurrentPeriod = (now, currentEvents, overrideID, calendar = calendarJSON) => {
