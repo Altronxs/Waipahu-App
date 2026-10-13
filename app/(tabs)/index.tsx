@@ -61,30 +61,28 @@ interface Calendar {
   }[];
 }
 
-// Your strict alphanumeric mapping array
-const SCHEDULE_OPTIONS = [
-  { label: 'No Override', value: '-1' },
-  { label: 'Monday Schedule', value: '0' },
-  { label: 'Tuesday Schedule', value: '1' },
-  { label: 'Wednesday Schedule', value: '2' },
-  { label: 'Thursday Schedule', value: '3' },
-  { label: 'Friday Schedule', value: '4' },
-  { label: 'A Assembly', value: '5' },
-  { label: 'Double B Assembly', value: '6' },
-  { label: 'C Assembly', value: '7' },
-  { label: 'No School / Holiday', value: '8' },
-  { label: 'EXAM A Schedule', value: '9' },
-  { label: 'EXAM B Schedule', value: '10' },
-];
-
-// Shared helper so openURL rejections (app not installed, malformed URL, etc.)
-// don't surface as unhandled promise rejections.
+/**
+ * Shared helper so openURL rejections (app not installed, malformed URL, etc.)
+ * don't surface as unhandled promise rejections.
+ *
+ * @param {string} url - The external URL to open with the device's default handler.
+ * @returns {void}
+ */
 const openLink = (url: string) => {
   Linking.openURL(url).catch((error) => {
     console.error("Failed to open URL:", error);
   });
 };
 
+/**
+ * Home screen: renders the header banner, the live bell-schedule widget
+ * (current period, time range, countdown, progress bar), and the main icon
+ * grid linking to every feature of the app. Also owns the data loading for
+ * events and the cached school calendar.
+ *
+ * @returns {JSX.Element} The splash/loading badge until fonts and the first
+ *   interval tick are ready, then the full home screen.
+ */
 export default function Index() {
   const router = useRouter(); // Get the router instance
   const { height } = useWindowDimensions();
@@ -112,9 +110,7 @@ export default function Index() {
   // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
 
-  const [isSheetVisible, setIsSheetVisible] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
-  const [isFocus, setIsFocus] = useState(false);
 
   // Ref mirror of `events` so the 1s interval callback (which has an empty
   // dependency array and is created once) can always read the latest
@@ -157,20 +153,31 @@ export default function Index() {
     }
   ];
 
-  // Function to SAVE your calendar
+  /**
+   * Saves the school calendar to local storage so it can be reused between
+   * launches without hitting the network.
+   *
+   * @param {Calendar} calendarObj - The calendar data to persist.
+   * @returns {Promise<void>} Resolves once the write finishes (errors are logged, not thrown).
+   */
   const saveCalendar = async (calendarObj : Calendar) => {
     try {
       const jsonValue = JSON.stringify(calendarObj);
-      await AsyncStorage.setItem('@school_calendar', jsonValue);
+      await AsyncStorage.setItem('@WHS:Calendar:Data', jsonValue);
     } catch (error) {
       console.error('Failed to save calendar:', error);
     }
   };
 
-  // Function to READ your calendar
+  /**
+   * Reads the cached school calendar from local storage.
+   *
+   * @returns {Promise<Calendar|null>} The cached calendar, null if nothing is
+   *   saved yet, or the bundled calendar.json if the storage read fails.
+   */
   const getCalendar = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('@school_calendar');
+      const jsonValue = await AsyncStorage.getItem('@WHS:Calendar:Data');
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (error) {
       // if fail return hardcoded but not updated calendar
@@ -195,12 +202,19 @@ export default function Index() {
     SourceSerifPro_600SemiBold,
   });
 
+  /**
+   * Reloads the screen's data: re-fetches school events (bypassing the cache)
+   * and re-reads the user's saved schedule override from local storage.
+   * Drives the pull-to-refresh spinner and also runs every time the screen gains focus.
+   *
+   * @returns {Promise<void>} Resolves once events and the saved schedule have been refreshed.
+   */
   const handleRefresh = async () => {
     setRefreshing(true);
     await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
     try {
       // Await the asynchronous retrieval of the saved schedule string from disk
-      const savedValue = await AsyncStorage.getItem('setting.schedule');
+      const savedValue = await AsyncStorage.getItem('@WHS:Setting:Schedule');
       setSelectedSchedule(savedValue ?? '');
     } catch (error) {
       // Catch any filesystem errors to prevent the application from crashing
@@ -228,6 +242,7 @@ export default function Index() {
   /**
    * Generates a standard JavaScript Date object set to Hawaii Standard Time (HST),
    * completely bypassing the user's local system timezone settings.
+   *
    * @returns {Date} A Date object reflecting current Hawaii time.
    */
   const getHawaiiDate = () => {
@@ -306,18 +321,26 @@ export default function Index() {
     // this keeps the pattern consistent with the rest of the app).
     let isMounted = true;
 
+    /**
+     * Loads the saved schedule override and the school calendar on mount.
+     * Uses the local cache when it's less than a day old, otherwise pulls a
+     * fresh copy from the CDN, and falls back to the local/bundled calendar
+     * if anything fails.
+     *
+     * @returns {Promise<void>} Resolves once state has been set (errors are logged, not thrown).
+     */
     const initalizedData = async () => {
       try {
         // User's manually-selected schedule override (e.g. "Assembly Day"),
         // persisted separately from the calendar data itself.
-        const savedValue = await AsyncStorage.getItem('setting.schedule');
-
+        const savedValue = await AsyncStorage.getItem('@WHS:Setting:Schedule');
+        console.log("test");
         const now = Date.now();
 
         // Locally cached calendar (AsyncStorage), or the bundled fallback
         // JSON if AsyncStorage read fails — see getCalendar()'s own catch.
         const calenderData = await getCalendar();
-        const lastFetchTime = await AsyncStorage.getItem('@last_fetch_time');
+        const lastFetchTime = await AsyncStorage.getItem('@WHS:Calendar:LastFetchTime');
 
         // Refresh from the CDN if we've never fetched, or if it's been
         // more than a day since the last successful fetch.
@@ -346,7 +369,7 @@ export default function Index() {
             // Persist the fresh data + timestamp so we don't re-fetch
             // again until ONE_DAY_MS has passed.
             await saveCalendar(data);
-            await AsyncStorage.setItem('@last_fetch_time', now.toString());
+            await AsyncStorage.setItem('@WHS:Calendar:LastFetchTime', now.toString());
 
             if (isMounted) setCalendar(data);
           } finally {
@@ -386,9 +409,14 @@ export default function Index() {
   }, []); // Empty dependency array — runs exactly once on mount, not on focus
 
 
-  // Displays "0:00" as "12:00am". Uses an exact match rather than a naive
-  // substring replace, since e.g. "10:00".replace('0:00', '12:00am') would
-  // incorrectly produce "112:00am".
+  /**
+   * Displays "0:00" as "12:00am". Uses an exact match rather than a naive
+   * substring replace, since e.g. "10:00".replace('0:00', '12:00am') would
+   * incorrectly produce "112:00am".
+   *
+   * @param {string} start - The period start time as an "H:MM" string.
+   * @returns {string} "12:00am" for midnight, otherwise the input unchanged.
+   */
   const formatPeriodStart = (start: string) => (start === '0:00' ? '12:00am' : start);
 
   // Splash/loading screen: shown until fonts are loaded AND the first
@@ -440,13 +468,13 @@ export default function Index() {
                   <Text className="z-20 font-barlow-italic text-6xl text-whs-blue text-center self-center">
                     WELCOME
                   </Text>
-                    {/* Swapped to Expo Image using the alias */}
-                    <ExpoImage
-                      source={require("@/assets/images/gif/marauder_signature.gif")} 
-                      style={{ height: 52, width: 'auto', aspectRatio: 202 / 52}} 
-                      contentFit="contain" // Needed for expo-image instead of object-contain
-                      priority="high"
-                    />
+                  {/* Swapped to Expo Image using the alias */}
+                  <ExpoImage
+                    source={require("@/assets/images/gif/marauder_signature.gif")} 
+                    style={{ height: 52, width: 'auto', aspectRatio: 202 / 52, margin: 'auto'}} 
+                    contentFit="contain" // Needed for expo-image instead of object-contain
+                    priority="high"
+                  />
                 </View>
               </View>
             

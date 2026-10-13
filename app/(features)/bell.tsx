@@ -107,7 +107,7 @@ interface CalendarEntry {
 const saveCalendar = async (calendarObj: Calendar) => {
   try {
     const jsonValue = JSON.stringify(calendarObj);
-    await AsyncStorage.setItem('@school_calendar', jsonValue);
+    await AsyncStorage.setItem('@WHS:Calendar:Data', jsonValue);
   } catch (error) {
     console.error('Failed to save calendar:', error);
   }
@@ -116,7 +116,7 @@ const saveCalendar = async (calendarObj: Calendar) => {
 // Function to READ your calendar
 const getCalendar = async () => {
   try {
-    const jsonValue = await AsyncStorage.getItem('@school_calendar');
+    const jsonValue = await AsyncStorage.getItem('@WHS:Calendar:Data');
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
     return calendarJSON;
@@ -196,7 +196,7 @@ const Bell = () => {
     await loadWebsiteData({ setEvents, setEventsError, setAppIsReady, forceRefresh: true });
     try {
       // Await the asynchronous retrieval of the saved schedule string from disk
-      const savedValue = await AsyncStorage.getItem('setting.schedule');
+      const savedValue = await AsyncStorage.getItem('@WHS:Setting:Schedule');
       setSelectedSchedule(savedValue ?? '');
     } catch (error) {
       // Catch any filesystem errors to prevent the application from crashing
@@ -230,14 +230,14 @@ const Bell = () => {
       try {
         // User's manually-selected schedule override (e.g. "Assembly Day"),
         // persisted separately from the calendar data itself.
-        const savedValue = await AsyncStorage.getItem('setting.schedule');
+        const savedValue = await AsyncStorage.getItem('@WHS:Setting:Schedule');
 
         const now = Date.now();
 
         // Locally cached calendar (AsyncStorage), or the bundled fallback
         // JSON if AsyncStorage read fails — see getCalendar()'s own catch.
         const calenderData = await getCalendar();
-        const lastFetchTime = await AsyncStorage.getItem('@last_fetch_time');
+        const lastFetchTime = await AsyncStorage.getItem('@WHS:Calendar:LastFetchTime');
 
         // Refresh from the CDN if we've never fetched, or if it's been
         // more than a day since the last successful fetch.
@@ -266,7 +266,7 @@ const Bell = () => {
             // Persist the fresh data + timestamp so we don't re-fetch
             // again until ONE_DAY_MS has passed.
             await saveCalendar(data);
-            await AsyncStorage.setItem('@last_fetch_time', now.toString());
+            await AsyncStorage.setItem('@WHS:Calendar:LastFetchTime', now.toString());
 
             if (isMounted) setCalendar(data);
           } finally {
