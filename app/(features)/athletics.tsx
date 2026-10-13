@@ -39,6 +39,8 @@ import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 const Athletics = () => {
   const router = useRouter();
   const webViewRef = useRef<WebViewType>(null);
+  const [canGoBack, setCanGoBack] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -47,8 +49,6 @@ const Athletics = () => {
       }
     }, []),
   );
-
-  const [canGoBack, setCanGoBack] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -84,6 +84,13 @@ const Athletics = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
+      {isLoading == true && (
+        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
+          <View className="flex-1 justify-center items-center bg-[#17273d]">
+            <MarauderLoadingBadge></MarauderLoadingBadge>
+          </View>
+        </View>
+      )}
       <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
           <Image
               source={require("@/assets/images/whs-logo.png")}
@@ -168,13 +175,19 @@ const Athletics = () => {
                       }
                   \`;
                   document.head.appendChild(style);
+                  window.ReactNativeWebView.postMessage("styles_injected");
                   }, 250);
                   true;
               `}
               javaScriptEnabled={true}
               domStorageEnabled={true}
               onMessage={(event) => {
-                console.log("WebView message:", event.nativeEvent.data);
+                if (event.nativeEvent.data === "styles_injected") {
+                  console.log("Styles injected successfully.");
+                  setIsLoading(false);
+                } else {
+                  console.log(event.nativeEvent.data);
+                }
               }}
               onNavigationStateChange={(navState) => {
                 setCanGoBack(navState.canGoBack);

@@ -214,7 +214,7 @@ export default function Settings() {
                         <Image
                             source={require("@/assets/images/bell-2.png")}
                             className="self-center"
-                            style={{width: 45, height: 45, marginLeft: 20, marginRight: 8}}
+                            style={{width: 35, height: 35, marginLeft: 20, marginRight: 8}}
                         />
                         <Text
                             className="z-20 font-barlow-semibold text-black text-xl p-3"
@@ -405,6 +405,34 @@ export default function Settings() {
                           />
                       </View>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
+                      onPress={() => {
+                        router.push("/(settings)/qanda")
+                      }}
+                    >
+                      <View
+                          className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
+                      >
+                  
+                          <Image
+                              source={require("@/assets/images/question-bold.png")}
+                              className="self-center"
+                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                          />
+                          <Text
+                              className="z-20 font-barlow-semibold text-black text-xl p-3"
+                          >
+                              Q&A
+                          </Text>
+                          <Image
+                              source={require("@/assets/images/forward.png")}
+                              className="self-center"
+                              
+                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                          />
+                      </View>
+                    </TouchableOpacity>
                     <View
                         className="w-[90%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
                         
@@ -461,7 +489,11 @@ export default function Settings() {
                     >
                         MADE BY STUDENTS & ALUMNI
                     </Text>
-
+                    <Text
+                        className="w-[90%] z-20 font-barlow-semibold text-base/tight px-3 self-center"
+                        style={{color: '#8b8b8b'}}
+                    >
+                    </Text>
                 </View>
                 
             </ScrollView>

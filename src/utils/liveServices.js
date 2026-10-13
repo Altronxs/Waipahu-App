@@ -3,11 +3,19 @@
  * Uses a combined race timeout alongside external cancellation handles.
  * 
  * @param {AbortSignal} [externalSignal] - Optional signal passed from React/Vue components to cancel the request.
- * @returns {Promise<Object|Array>} The parsed JSON data representing the current menu link.
+ * @returns {Promise<Object|Array|null>} The parsed JSON data representing the current
+ *   menu link, or null if the request was aborted (timeout or component unmount).
  */
 export const fetchSchoolMenu = async (externalSignal) => {
   const timeoutController = new AbortController();
   const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
+
+  /**
+   * Forwards an external cancellation to the internal timeout controller
+   * so the in-flight fetch is aborted as well.
+   *
+   * @returns {void}
+   */
   const handleExternalAbort = () => timeoutController.abort();
 
   if (externalSignal) {
