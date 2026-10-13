@@ -18,6 +18,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="author" options={{ title: "App Creators & Credits" }} />
       <Stack.Screen name="settings" options={{ title: "Settings" }} />
       <Stack.Screen name="license" options={{ title: "License" }} />
+      <Stack.Screen name="qanda" options={{ title: "Questions & Answers" }} />
     </Stack>
   );
 }

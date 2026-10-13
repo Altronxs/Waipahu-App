@@ -1,0 +1,109 @@
+{
+  "qaData": [
+    {
+      "id": 1,
+      "category": "Schedule",
+      "question": "Where can I see today's bell schedule?",
+      "answer": "On the Bell Schedule screen. The app checks the school calendar to figure out which schedule applies today, so the right period, passing, and recess times show up without picking anything."
+    },
+    {
+      "id": 2,
+      "question": "How does the app know which schedule to show?",
+      "answer": "The school calendar gives every weekday of the year a schedule type, like a regular day, an assembly day, or an exam day. So the app looks up today's date, finds that day's type, and shows the matching bell times."
+    },
+    {
+      "id": 3,
+      "question": "What schedule types does the app support?",
+      "answer": "Monday through Friday schedules, A Assembly, Double-B Assembly, C Assembly, Exam A, Exam B, and No School."
+    },
+    {
+      "id": 4,
+      "question": "The schedule looks wrong for today, what can I do?",
+      "answer": "Go to Settings and use the manual schedule override. It lets a student pick the day type instead of relying on auto-detection. If the automatic schedule is wrong for everyone, report it on the app's GitHub page or contact AOIT (Academy of Information Technology) so the calendar can get fixed. For contact info, see the question \"How do I report a bug or suggest a feature?\""
+    },
+    {
+      "id": 5,
+      "question": "Why does it say \"No School\" on a day I expected school?",
+      "answer": "Because that's what the loaded school calendar says for that date. Check the Calendar screen first, and if it still looks off, report it on GitHub or contact AOIT."
+    },
+    {
+      "id": 6,
+      "question": "Do I need internet for the bell schedule?",
+      "answer": "Not always. The app tries to download the latest calendar, but if the device is offline or the request takes too long, it falls back to the calendar built into the app. The period times are stored in the app, so those always work."
+    },
+    {
+      "id": 7,
+      "category": "Campus Map",
+      "question": "How do I use the campus map?",
+      "answer": "Open the Campus Map tab. Each building is outlined and labeled, and tapping a marker shows its name. Some buildings also have room layouts, so tapping those opens a panel with the rooms on each floor."
+    },
+    {
+      "id": 8,
+      "question": "Can the map show where I am?",
+      "answer": "Yes, if location access is allowed. The app asks first, and the map still works if the answer is no."
+    },
+    {
+      "id": 9,
+      "question": "Is there a printable map?",
+      "answer": "Yes, there's a campus map PDF included in the app that works as a printable reference next to the interactive one."
+    },
+    {
+      "id": 10,
+      "category": "News, Cafe & Campus Life",
+      "question": "Where do the events and news come from?",
+      "answer": "The events come from the school's feed, and the News and Calendar screens cover announcements and important dates. Because of this, new events can show up without an app update."
+    },
+    {
+      "id": 11,
+      "question": "Where can I find the cafeteria menu?",
+      "answer": "On the Cafe screen. The app gets the menu link from the school's website data, so it should be the current one. If it's missing or outdated, report it on GitHub or contact AOIT."
+    },
+    {
+      "id": 12,
+      "question": "How do I find a club to join?",
+      "answer": "Open the Clubs screen. Each club has a name, a staff supervisor, and a description. Some clubs don't meet in a fixed room, so the location might be blank. In that case, the supervisor is the person to ask."
+    },
+    {
+      "id": 13,
+      "question": "What are the career academies?",
+      "answer": "There are 5 at WHS:\n\t- AIET: Industrial Engineering Technology\n\t- AHS: Health & Sciences\n\t- ACC: Arts & Communication\n\t- ANR: Natural Resources\n\t- APPS: Professional Public Services\n\n\tThe Academy screen has more on each one."
+    },
+    {
+      "id": 14,
+      "question": "Where can I find staff and contact info?",
+      "answer": "The Staff screen has the staff directory and the Contacts screen has the school's contact directory. Registrar info is on the Registrar screen."
+    },
+    {
+      "id": 15,
+      "question": "What's the Legacy screen?",
+      "answer": "It collects social media links for classes, sports teams, and student groups in 1 place."
+    },
+    {
+      "id": 16,
+      "category": "AI Use",
+      "question": "Was AI used to build this app?",
+      "answer": "Yes, as a TOOL. AI helped with code cleanup, comments and documentation, and automating the upkeep of data files like map data, clubData, and qaData."
+    },
+    {
+      "id": 17,
+      "question": "What wasn't AI?",
+      "answer": "The design and visuals. The design came from researching how other school apps look and are structured, and applying that so the app looks and follows a similar structure to the Waipahu High School website. Images and icons come from Icons8 (icons8.com), were made with tools like Photoshop, or came straight from the school. If you’re in ACC (Arts & Communication) and want to help out or fix and improve the design, check the Help & Feedback section."
+    },
+    {
+      "id": 18,
+      "question": "Is the AI's work checked?",
+      "answer": "Yes. Code is mostly written by hand, and anything AI helps with, like cleaned-up code, comments, and written content, is reviewed and edited by before it goes in."
+    },
+    {
+      "id": 19,
+      "category": "Help & Feedback",
+      "question": "How do I report a bug or suggest a feature?",
+      "answer": "Open an issue on the project's GitHub page, or reach out to any of these:\n\t- Ms. Takara, in room V202\n\t- AOIT (Academy of Information Technology): aoit.whs@gmail.com or Instagram @aoit.whs\n\t- Kyle Baldovi, the app developer: kyleboy1010@gmail.com or Instagram @kylealtxyz"
+    },
+    {
+      "id": 20,
+      "question": "Can I help work on the app?",
+      "answer": "Yes, collaborators are welcome. If you're interested, contact Kyle directly at kyleboy1010@gmail.com or Instagram @kylealtxyz. What fits best depends on your academy:\n\t- AIET (Industrial Engineering Technology): knowing HTML, JavaScript, and CSS (Tailwind) is a good start. React, React Native, and JS libraries help even more.\n\t- ACC (Arts & Communication): you're welcome to redesign or improve the UI/UX and layout of the app."
+    }
+  ]
+}
