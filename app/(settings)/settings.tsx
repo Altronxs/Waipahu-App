@@ -122,8 +122,8 @@ export default function Settings() {
     const loadSavedSettings = async () => {
       try {
         // Await the asynchronous retrieval of the saved schedule string from disk
-        const savedValue = await AsyncStorage.getItem('setting.schedule');
-        const savedAllowLocatorMark = await AsyncStorage.getItem('setting.mapLocation');
+        const savedValue = await AsyncStorage.getItem('@WHS:Setting:Schedule');
+        const savedAllowLocatorMark = await AsyncStorage.getItem('@WHS:Map:Location:Data');
         
         // If the key exists, update our state. If it returns null, fall back to our default empty string.
         setAllowMapLocation(savedAllowLocatorMark !== null ? JSON.parse(savedAllowLocatorMark) : false)
@@ -280,7 +280,7 @@ export default function Settings() {
                             try {
                               // 3. Persist the string choice to local storage asynchronously
                               // We cast item.value to a String to guarantee it matches AsyncStorage requirements
-                              await AsyncStorage.setItem('setting.schedule', String(item.value));
+                              await AsyncStorage.setItem('@WHS:Setting:Schedule', String(item.value));
                             } catch (error) {
                               console.error("Failed to save schedule selection:", error);
                             }
@@ -332,7 +332,7 @@ export default function Settings() {
                             setAllowMapLocation(nextValue);
                             console.log(nextValue)
                             try {
-                              await AsyncStorage.setItem('setting.mapLocation', String(nextValue));
+                              await AsyncStorage.setItem('@WHS:Map:Location:Data', String(nextValue));
                             } catch (error) {
                               console.error("Failed to save map location setting:", error);
                             }

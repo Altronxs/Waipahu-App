@@ -182,7 +182,7 @@ const Map = () => {
     const loadSavedSettings = async () => {
       try {
         // Await the asynchronous retrieval of the saved schedule string from disk
-        const savedValue = await AsyncStorage.getItem('setting.mapLocation');
+        const savedValue = await AsyncStorage.getItem('@WHS:Map:Location:Data');
       
         
         // If the key exists, update our state. If it returns null, fall back to our default empty string.

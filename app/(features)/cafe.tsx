@@ -22,7 +22,7 @@ import {
 } from "@expo-google-fonts/source-serif-pro";
 import { GlassView } from "expo-glass-effect";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -34,10 +34,11 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { WebView } from "react-native-webview";
-import { getSchoolMenu } from "@/src/utils/liveServices";
 import { useIsFocused } from "expo-router/react-navigation";
 import { FocusGate } from "@/components/FocusGate";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const { width, height } = Dimensions.get("window");
 
 const FALLBACK_MENU_URL = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%202026.pdf`;
@@ -45,7 +46,11 @@ const FALLBACK_MENU_URL = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%20
 interface MenuData {
   url: string;
 }
-
+interface webLinks {
+  website: {
+    url: string;
+  }[];
+}
 // Minimum time between forced WebView reloads, independent of the data
 // fetch's own cache TTL. Prevents rapid focus/blur cycling from also
 // hammering waipahuhigh.org via the WebView's native request on top of
@@ -54,12 +59,13 @@ const RELOAD_THROTTLE_MS = 30000;
 
 const Cafe = () => {
   const isFocused = useIsFocused();
-  const [menuUrl, setMenuUrl] = useState<string>("");
+  const [menuUrl, setMenuUrl] = useState<webLinks>();
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const lastReloadAt = useRef<number>(0);
 
+  // 24 hours in milliseconds (24 * 60 * 60 * 1000)
+  const ONE_DAY_MS = 86400000; 
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -77,34 +83,103 @@ const Cafe = () => {
     SourceSerifPro_600SemiBold,
   });
 
-  // Single focus effect: pulls the menu URL (via the shared cache, so
-  // rapid refocus reuses cached data instead of re-fetching) and only
-  // forces the WebView to reload from network when it's actually due
-  // for one — not on every single focus.
-  useFocusEffect(
-    React.useCallback(() => {
-      getSchoolMenu()
-        .then((data) => {
-          const url = (data as MenuData)?.url || FALLBACK_MENU_URL;
-          setMenuUrl(url);
+  // Function to SAVE your webLinks
+  const savewebLinks = async (webLinks : webLinks) => {
+    try {
+      const jsonValue = JSON.stringify(webLinks);
+      await AsyncStorage.setItem('@WHS:Menu:Data', jsonValue);
+    } catch (error) {
+      console.error('Failed to save webLink:', error);
+    }
+  };
 
-          const now = Date.now();
-          const dueForReload = now - lastReloadAt.current > RELOAD_THROTTLE_MS;
+  // Function to READ your webLinks
+  const getwebLinks = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@WHS:Menu:Data');
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      // if fail return hardcoded but not updated calendar
+      return FALLBACK_MENU_URL;
+    }
+  };
 
-          if (webViewRef.current && dueForReload) {
-            lastReloadAt.current = now;
-            setIsLoading(true); // show the overlay again for the forced reload
-            webViewRef.current.reload();
+  useEffect(() => {
+    // Guards every setState call below so we never update state after
+    // this component has unmounted (defensive — Home is long-lived, but
+    // this keeps the pattern consistent with the rest of the app).
+    let isMounted = true;
+    const initializedData = async () => {
+      try {
+        const now = Date.now();
+        
+        // Locally cached webLinks (AsyncStorage), or the bundled fallback
+        // JSON if AsyncStorage read fails — see getCalendar()'s own catch.
+        const weblinkData = await getwebLinks();
+        const lastFetchTime = await AsyncStorage.getItem('@WHS:Menu:LastFetchTime');
+
+          // Refresh from the CDN if we've never fetched, or if it's been
+        // more than a day since the last successful fetch.
+        const isCacheEmpty = !weblinkData || !lastFetchTime;
+        const isOlderThanOneDay = now - parseInt(lastFetchTime || '0', 10) > ONE_DAY_MS;
+
+        if (isCacheEmpty || isOlderThanOneDay) {
+          console.log("Local Menu cache stale/empty. Pulling from CDN...");
+
+          // Bound the CDN fetch with a 10s timeout so a slow/dead network
+          // can't leave this promise chain hanging indefinitely.
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+          try {
+            const response = await fetch(
+              'https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/website.json',
+              { signal: controller.signal }
+            );
+
+            if (!response.ok) throw new Error('CDN response error');
+
+            // Parse the raw response body into a usable JavaScript object/array
+            const data = await response.json();
+            console.log(data);
+            // Persist the fresh data + timestamp so we don't re-fetch
+            // again until ONE_DAY_MS has passed.
+            await savewebLinks(data);
+            await AsyncStorage.setItem('@WHS:Menu:LastFetchTime', now.toString());
+
+            if (isMounted) setMenuUrl(data);
+          } finally {
+            // Always clear the timeout — whether the fetch succeeded,
+            // failed, or was aborted by the timeout itself — so it never
+            // fires late against an already-settled request.
+            clearTimeout(timeoutId);
           }
-        })
-        .catch((error) => {
-          console.error("Failed to fetch school menu, using fallback:", error);
-          setMenuUrl(FALLBACK_MENU_URL);
-        });
-    }, [])
-  );
+        } else {
+          // Cache is fresh — use what's already on disk, no network hit.
+          if (isMounted) setMenuUrl(weblinkData);
+        }
+      } catch (error) {
+        console.error("Failed to load local schedule settings data:", error);
 
-  if (!fontsLoaded || !menuUrl) {
+        // Fallback: if the CDN fetch failed (offline, bad response, etc.),
+        // fall back to whatever local/bundled webLink we have rather than
+        try {
+          const fallbackData = await getwebLinks();
+          if (fallbackData && isMounted) setMenuUrl(fallbackData);
+        } catch (innerError) {
+          console.error("Critical fallback storage failure:", innerError);
+        }
+      }
+    }
+    initializedData();
+    // Cleanup: mark unmounted so any in-flight setState calls above are
+    // skipped if this effect's cleanup runs before they resolve.
+    return () => {
+      isMounted = false;
+    };
+  }, []); //// Empty dependency array — runs exactly once on mount, not on focus
+
+  if (!fontsLoaded) { //|| !menuUrl
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <MarauderLoadingBadge></MarauderLoadingBadge>
@@ -163,7 +238,7 @@ const Cafe = () => {
                 className="relative"
                 style={{ width: width, flex: 1 }}
                 ref={webViewRef}
-                source={{ uri: menuUrl }}
+                source={{ uri: menuUrl?.website[0]?.url ?? FALLBACK_MENU_URL }}
                 injectedJavaScript={`
                     setTimeout(() => {
                       window.ReactNativeWebView.postMessage("styles_injected");
