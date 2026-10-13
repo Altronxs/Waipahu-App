@@ -444,7 +444,7 @@ const Bell = () => {
     }, [selectedSchedule])
   );
 
-  if (appIsReady === false || !fontsLoaded) {
+  if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <MarauderLoadingBadge></MarauderLoadingBadge>
@@ -454,7 +454,7 @@ const Bell = () => {
 
   return (
     <SafeAreaProvider className="flex flex-col">
-      {isLoading || !isWeekReady && (
+      {!isWeekReady && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
             <MarauderLoadingBadge></MarauderLoadingBadge>
