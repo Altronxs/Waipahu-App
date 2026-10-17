@@ -33,19 +33,22 @@ import {
   useWindowDimensions,
   RefreshControl,
 } from "react-native";
-// NOTE: `ImageBackground` was imported but never used — removed.
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import type { WebView as WebViewType } from "react-native-webview";
+import type {
+  WebView as WebViewType,
+  WebViewMessageEvent
+} from "react-native-webview";
 import { WebView } from "react-native-webview";
-import { Dropdown } from 'react-native-element-dropdown';
 import { GlassView } from 'expo-glass-effect';
 import { loadWebsiteData } from '@/src/utils/eventServices';
-import { calculateCurrentPeriod, findCalendarEntryForDate, fetchSchoolCalendar } from '@/src/utils/scheduleServices'
+import { calculateCurrentPeriod, findCalendarEntryForDate } from '@/src/utils/scheduleServices'
 import schoolSchedule from '@/assets/json/school_schedule.json'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import calendarJSON from '@/assets/json/calendar.json';
 import { FocusGate } from "@/components/FocusGate";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
+import { HeaderPage } from "@/components/HeaderPage";
+import { FooterPage } from "@/components/FooterPage";
 
 interface SchoolEvent {
   name: string;
@@ -461,17 +464,7 @@ const Bell = () => {
           </View>
         </View>
       )}
-      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="w-32 h-32 relative bottom-28"
-        />
-        <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-          <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-          <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-          <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-        </View>
-      </View>
+      <HeaderPage></HeaderPage>
 
       <View className="justify-center items-center flex-nowrap bg-whs-gold">
         <GlassView
@@ -607,32 +600,32 @@ const Bell = () => {
               </Text>
               
                 <View className="justify-center self-center h-[450px] z-0 p-[10]">
-                    <WebView
-                      className="relative self-center m-auto"
-                      style={{ aspectRatio: 8.5/11}}
-                      ref={webViewRef}
-                      source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
-                      injectedJavaScript={`
-                          setTimeout(() => {
-                            window.ReactNativeWebView.postMessage("styles_injected");
-                          }, 100);
-                          true;
-                      `}
-                      javaScriptEnabled={true}
-                      domStorageEnabled={true}
-                      onMessage={(event) => {
-                        if (event.nativeEvent.data === "styles_injected") {
-                          
-                          setIsLoading(false);
-                        } else {
-                          console.log("WebView message:", event.nativeEvent.data);
-                        }
-                      }}
-                      sharedCookiesEnabled={true}
-                      thirdPartyCookiesEnabled={true}
-                    />
-                  </View>
-              
+                  <WebView
+                    className="relative self-center m-auto"
+                    style={{ aspectRatio: 8.5/11}}
+                    ref={webViewRef}
+                    source={{ uri: 'https://www.waipahuhigh.org/full%20bell%2025-26%20revised.pdf' }}
+                    injectedJavaScript={`
+                        setTimeout(() => {
+                          window.ReactNativeWebView.postMessage("styles_injected");
+                        }, 100);
+                        true;
+                    `}
+                    javaScriptEnabled={true}
+                    domStorageEnabled={true}
+                    onMessage={(event: WebViewMessageEvent) => {
+                      if (event.nativeEvent.data === "styles_injected") {
+                        
+                        setIsLoading(false);
+                      } else {
+                        console.log("WebView message:", event.nativeEvent.data);
+                      }
+                    }}
+                    sharedCookiesEnabled={true}
+                    thirdPartyCookiesEnabled={true}
+                  />
+                </View>
+              <FooterPage></FooterPage>
             </View>
           </ScrollView>
         </FocusGate>

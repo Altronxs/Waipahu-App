@@ -4,69 +4,6 @@
 import scheduleJSON from '@/assets/json/school_schedule.json';
 import calendarJSON from '@/assets/json/calendar.json';
 
-/**
- * Fetches school event data from a remote JSON file on GitHub.
- * Uses a combined race timeout alongside external cancellation handles.
- * 
- * @param {AbortSignal} [externalSignal] - Optional signal passed from React/Vue components to cancel the request.
- * @returns {Promise<Object|Array|null>} The parsed JSON data representing the school
- *   calendar (bundled fallback on failure), or null if the request was aborted.
- */
-export const fetchSchoolCalendar = async (externalSignal) => {
-  // Create an internal controller to handle our network timeout
-  const timeoutController = new AbortController();
-  
-  // Set a hard 10-second limit for network fallbacks before aborting
-  const timeoutId = setTimeout(() => timeoutController.abort(), 10000);
-
-  /**
-   * Forwards an external cancellation to the internal timeout controller
-   * so the in-flight fetch is aborted as well.
-   *
-   * @returns {void}
-   */
-  const handleExternalAbort = () => timeoutController.abort();
-  
-  if (externalSignal) {
-    // If the component unmounts or cancels, immediately abort our fetch request
-    externalSignal.addEventListener("abort", handleExternalAbort);
-  }
-
-  try {
-    const response = await fetch(
-      'https://raw.githubusercontent.com/Altronxs/Waipahu-App/refs/heads/main/live-data/calendar.json',
-      { signal: timeoutController.signal }
-    );
-
-    // Verify the HTTP request was successful (status code 200-299)
-    if (!response.ok) {
-      return calendarJSON;
-    }
-
-    // Parse the raw response body into a usable JavaScript object/array
-    const data = await response.json();   
-    
-    return data;
-
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      console.warn("Fetch school calendar request was aborted (either timeout or component unmount).");
-      return null; // real cancellation — caller already has data or will retry on next focus
-    }
-
-    console.error("Failed to fetch school calendar, using fallback:", error);
-    return calendarJSON;
-
-  } finally {
-    // Clear timeout and remove event listener to eliminate memory leaks
-    clearTimeout(timeoutId);
-    if (externalSignal) {
-      externalSignal.removeEventListener("abort", handleExternalAbort);
-    }
-  }
-};
-
-
 // ==========================================
 // HELPER FUNCTIONS
 // ==========================================
