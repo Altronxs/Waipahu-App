@@ -1,4 +1,6 @@
 import { FocusGate } from "@/components/FocusGate";
+import { FooterPage } from "@/components/FooterPage";
+import { HeaderPage } from "@/components/HeaderPage";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import {
     BarlowSemiCondensed_400Regular,
@@ -223,17 +225,7 @@ const Legacy = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-          <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28"
-          />
-          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-          </View>
-      </View>
+      <HeaderPage></HeaderPage>
 
       <View className="justify-center items-center flex-nowrap bg-whs-gold">
         <GlassView
@@ -263,14 +255,16 @@ const Legacy = () => {
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center ">
         <FocusGate>
           <ScrollView
-            className="w-[100vw] h-96 bg-white flex-1 flex-col "
-            style={{ height: height * 0.5 }}
+            className="w-[100vw] bg-white flex-1 flex-col"
           >
-            <ImageBackground
-              source={require("@/assets/images/bg-home.png")}
-              className="flex-row flex-wrap justify-center items-start w-[100vw] h-[100vh]"
-              style={{ height: height * 1.5 }}
+            <View
+              className="flex flex-row justify-center items-center pt-3 pb-[100px] flex-wrap w-full gap-2"
             >
+              <Image
+                source={require("@/assets/images/bg-home.png")}
+                className="absolute object-center"
+                resizeMode="cover"
+              />
               <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center p-5 pb-0">
                 Social Media
               </Text>
@@ -301,7 +295,8 @@ const Legacy = () => {
                   </View>
                 </View>
               ))}
-            </ImageBackground>
+              <FooterPage></FooterPage>
+            </View>
           </ScrollView>
         </FocusGate>
       </View>

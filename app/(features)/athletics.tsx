@@ -30,11 +30,16 @@ import {
     View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import type { WebView as WebViewType } from "react-native-webview";
+import type {
+  WebView as WebViewType,
+  WebViewMessageEvent,
+  WebViewNavigation,
+} from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { GlassView } from 'expo-glass-effect';
 import { FocusGate } from "@/components/FocusGate";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
+import { HeaderPage } from "@/components/HeaderPage";
 
 const Athletics = () => {
   const router = useRouter();
@@ -91,17 +96,7 @@ const Athletics = () => {
           </View>
         </View>
       )}
-      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-          <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28"
-          />
-          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-          </View>
-      </View>
+      <HeaderPage></HeaderPage>
 
       {canGoBack ? (
         <View className="justify-center items-center flex-nowrap bg-whs-gold">
@@ -181,7 +176,7 @@ const Athletics = () => {
               `}
               javaScriptEnabled={true}
               domStorageEnabled={true}
-              onMessage={(event) => {
+              onMessage={(event: WebViewMessageEvent) => {
                 if (event.nativeEvent.data === "styles_injected") {
                   console.log("Styles injected successfully.");
                   setIsLoading(false);
@@ -189,7 +184,7 @@ const Athletics = () => {
                   console.log(event.nativeEvent.data);
                 }
               }}
-              onNavigationStateChange={(navState) => {
+              onNavigationStateChange={(navState: WebViewNavigation) => {
                 setCanGoBack(navState.canGoBack);
               }}
               sharedCookiesEnabled={true}

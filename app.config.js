@@ -54,7 +54,8 @@ module.exports = {
         "expo-build-properties",
         {
           "android": {
-            "frescoVersion": "2.5.0"
+            "frescoVersion": "2.5.0",
+            "compilerArgs": ["-DCMAKE_OBJECT_PATH_MAX=1024"]
           }
         }
       ],

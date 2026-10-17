@@ -39,11 +39,13 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
 import "../globals.css";
 import { loadWebsiteData } from '@/src/utils/eventServices';
-import { calculateCurrentPeriod, fetchSchoolCalendar } from '@/src/utils/scheduleServices';
+import { calculateCurrentPeriod } from '@/src/utils/scheduleServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import calendarJSON from '@/assets/json/calendar.json';
 import { Image as ExpoImage } from 'expo-image'; // Alias the Expo version
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
+import { FooterPage } from '@/components/FooterPage';
+import { HeaderPage } from "@/components/HeaderPage";
 
 interface SchoolEvent {
   name: string;
@@ -334,7 +336,6 @@ export default function Index() {
         // User's manually-selected schedule override (e.g. "Assembly Day"),
         // persisted separately from the calendar data itself.
         const savedValue = await AsyncStorage.getItem('@WHS:Setting:Schedule');
-        console.log("test");
         const now = Date.now();
 
         // Locally cached calendar (AsyncStorage), or the bundled fallback
@@ -430,38 +431,23 @@ export default function Index() {
   } else {
     return (
       <SafeAreaProvider className="flex-col">
-        {/* Header banner with logo + "MY VOICE / MY CHOICE / MY FUTURE" stack.
-            NOTE: uses vh/vw-style units ("h-[13rem]", "w-[100vw]") mixed with
-            rem-based utility classes; vw/vh work via NativeWind's web target
-            but may not behave the same on native depending on setup — worth
-            confirming this renders as expected on iOS/Android, not just web. */}
-        <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-            <Image
-                source={require("@/assets/images/whs-logo.png")}
-                className="w-32 h-32 relative bottom-28"
-            />
-            <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-                <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-                <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-                <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-            </View>
-        </View>
-        <View className="bg-white w-[100vw] h-[100vh] justify-center items-center ">
+        <HeaderPage></HeaderPage>
+        <View className="flex flex-1 bg-white w-[100vw] h-[75%] justify-center items-center ">
           <ScrollView
-            className="w-[100vw] bg-white flex-1 flex-col"
-            // style={{ height: height * 0.5}}
+            className="w-[100vw] h-96 bg-white flex-1 flex-col"
             bounces={true}                
             overScrollMode="never"          
             scrollEventThrottle={16}       
             decelerationRate="normal"
           >
-            <ImageBackground
-              source={require("@/assets/images/bg-home.png")}
-              className="flex-row flex-wrap flex-1 justify-center  w-[100vw]"
-              style={{ flex: 1, height: height * 1.5, width: '100%' }}
-              resizeMode="cover"
+            <View
+              className="flex flex-row justify-center items-center pt-3 pb-[100px] flex-wrap w-full gap-2"
             >
-              
+              <Image
+                source={require("@/assets/images/bg-home.png")}
+                className="absolute object-center"
+                resizeMode="cover"
+              />
               {/* Welcome banner: script logo + "WELCOME!" text */}
               <View className="justify-center items-center pt-10 pb-2 w-[90%]">
                 <View className="flex flex-col gap-[0px]">
@@ -552,8 +538,8 @@ export default function Index() {
                   </View>
                 </View>
               ))}
-              
-            </ImageBackground>
+              <FooterPage></FooterPage>
+            </View>
           </ScrollView>
         </View>
       </SafeAreaProvider>

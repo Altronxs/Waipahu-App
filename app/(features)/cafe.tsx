@@ -32,12 +32,16 @@ import {
   View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import type { WebView as WebViewType } from "react-native-webview";
+import type {
+  WebView as WebViewType,
+  WebViewMessageEvent
+} from "react-native-webview";
 import { WebView } from "react-native-webview";
 import { useIsFocused } from "expo-router/react-navigation";
 import { FocusGate } from "@/components/FocusGate";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { HeaderPage } from "@/components/HeaderPage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -196,17 +200,7 @@ const Cafe = () => {
           </View>
         </View>
       )}
-      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-          <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28"
-          />
-          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-          </View>
-      </View>
+      <HeaderPage></HeaderPage>
       <View className="justify-center items-center flex-nowrap bg-whs-gold">
         <GlassView
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
@@ -247,7 +241,7 @@ const Cafe = () => {
                 `}
                 javaScriptEnabled={true}
                 domStorageEnabled={true}
-                onMessage={(event) => {
+                onMessage={(event: WebViewMessageEvent) => {
                   if (event.nativeEvent.data === "styles_injected") {
                     setIsLoading(false);
                   } else {

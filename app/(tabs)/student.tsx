@@ -26,7 +26,6 @@ import {
     ActivityIndicator,
     Dimensions,
     Image,
-    ImageBackground,
     Linking,
     ScrollView,
     Text,
@@ -36,6 +35,8 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from 'expo-glass-effect'
+import { HeaderPage } from "@/components/HeaderPage";
+import { FooterPage } from "@/components/FooterPage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -173,18 +174,7 @@ const Students = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-          <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28"
-          />
-          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-          </View>
-      </View>
-
+      <HeaderPage></HeaderPage>
       <View className="justify-center items-center flex-nowrap bg-whs-gold">
         <GlassView
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
@@ -219,11 +209,14 @@ const Students = () => {
           scrollEventThrottle={16}       
           decelerationRate="normal"   
         >
-          <ImageBackground
-            source={require("@/assets/images/bg-home.png")}
+          <View
             className="flex-row flex-wrap justify-center items-start w-[100vw] flex-1 pb-40"
-
           >
+            <Image
+              source={require("@/assets/images/bg-home.png")}
+              className="absolute object-center"
+              resizeMode="cover"
+            />
             <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center p-5 pb-0">
               Student Resources
             </Text>
@@ -259,7 +252,8 @@ const Students = () => {
                 </View>
               </View>
             ))}
-          </ImageBackground>
+          </View>
+          <FooterPage></FooterPage>
         </ScrollView>
       </View>
     </SafeAreaProvider>
