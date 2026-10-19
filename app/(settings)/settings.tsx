@@ -21,16 +21,14 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "expo-router";
+import React, { useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Image,
-    ImageBackground,
     Linking,
     RefreshControl,
     ScrollView,
-    Modal,
     Text,
     TouchableOpacity,
     useWindowDimensions,
@@ -187,315 +185,314 @@ export default function Settings() {
                 />
             </View> 
             <ScrollView
-                className="w-[100vw]  flex-1 flex-col bg-black/10"
-                style={{ height: height * 0.5}}
-                bounces={true}                
-                overScrollMode="never"          
-                scrollEventThrottle={16}       
-                decelerationRate="normal"
-                
-                refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-                }
+              className="w-[100vw]  flex-1 flex-col bg-black/10"
+              style={{ height: height * 0.5}}
+              bounces={true}                
+              overScrollMode="never"          
+              scrollEventThrottle={16}       
+              decelerationRate="normal"
+              
+              refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              }
             >
-                <View
-                    className="w-full h-[100vh] flex flex-col justify-start"
-                >   
-                    <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 mt-5 ml-3 self-center"
-                        style={{color: '#5b5b5b'}}
-                    >
-                        Bell Schedule
-                    </Text>
-                    <View
-                        className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
-                        style={{borderRadius: 20}}
-                    >
-                        <Image
-                            source={require("@/assets/images/bell-2.png")}
-                            className="self-center"
-                            style={{width: 35, height: 35, marginLeft: 20, marginRight: 8}}
-                        />
-                        <Text
-                            className="z-20 font-barlow-semibold text-black text-xl p-3"
-                        >
-                            Schedule
-                        </Text>
-                        <Dropdown
+              <View
+                  className="w-full flex-1 flex-col justify-start"
+              >   
+                  <Text
+                      className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 mt-5 ml-3 self-center"
+                      style={{color: '#5b5b5b'}}
+                  >
+                      Bell Schedule
+                  </Text>
+                  <View
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                      style={{borderRadius: 20}}
+                  >
+                      <Image
+                          source={require("@/assets/images/bell-2.png")}
+                          className="self-center"
+                          style={{width: 35, height: 35, marginLeft: 20, marginRight: 8}}
+                      />
+                      <Text
+                          className="z-20 font-barlow-semibold text-black text-xl p-3"
+                      >
+                          Schedule
+                      </Text>
+                      <Dropdown
+                      style={{
+                        width: '50%',
+                        height: 50,
+                        paddingHorizontal: 20,
+                        borderRadius: 16,
+                        marginLeft: 'auto',
+                      }}
+                      containerStyle={{
+                        backgroundColor: '#ffffff',
+                        borderWidth: 0,
+                        borderRadius: 32,
+                        padding: 16
+                      }}
+                      // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
+                      placeholderStyle={{ 
+                        fontSize: 20, 
+                        color: '#8b8b8b',
+                        flex: 1,
+                        fontFamily: 'BarlowSemiCondensed_600SemiBold',
+                        textAlign: 'right'
+                      }} 
+                      // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
+                      selectedTextStyle={{ 
+                        fontSize: 20, 
+                        color: '#8b8b8b',
+                        flex: 1,
+                        fontFamily: 'BarlowSemiCondensed_600SemiBold',
+                        textAlign: 'right'
+                      }} 
+                      // --- SET LINE LIMIT ON MAIN SELECTION TEXT ---
+                      selectedTextProps={{
+                        numberOfLines: 1,
+                      }}
+                      activeColor=""
+                      // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
+                      itemTextStyle={{
+                        fontSize: 20,
+                        color: '#000000',
+                        fontFamily: 'BarlowSemiCondensed_600SemiBold',
+                        textAlign: 'left'
+                      }}
+                      data={SCHEDULE_OPTIONS}
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder={!isFocus ? 'Auto' : '...'}
+                      value={selectedSchedule}
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => setIsFocus(false)}
+                      onChange={async (item) => { 
+                        // 1. Guard check: Ensure item and item.value actually exist
+                        if (item?.value) {
+                          // 2. Instantly update the React state to make the UI feel fast and snappy
+                          setSelectedSchedule(item.value); 
+                          
+                          try {
+                            // 3. Persist the string choice to local storage asynchronously
+                            // We cast item.value to a String to guarantee it matches AsyncStorage requirements
+                            await AsyncStorage.setItem('@WHS:Setting:Schedule', String(item.value));
+                          } catch (error) {
+                            console.error("Failed to save schedule selection:", error);
+                          }
+                        }
+                        
+                        // 4. Close the dropdown menu overlay
+                        setIsFocus(false); 
+                      }}
+                    />
+                  </View>
+                  <Text
+                      className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
+                      style={{color: '#8b8b8b'}}
+                  >
+                      Choose which bell schedule the app uses to show your current period. Leave it on Auto to match today's actual schedule, or manually select a specific day type (like an assembly or exam schedule) to preview it.
+                  </Text>
+
+                  <Text
+                      className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 ml-3 self-center"
+                      style={{color: '#5b5b5b'}}
+                  >
+                      Map
+                  </Text>
+                  <View
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                      style={{borderRadius: 20}}
+                  >
+                      <Image
+                          source={require("@/assets/images/whs-map.png")}
+                          className="self-center"
+                          style={{width: 25, height: 25, marginLeft: 20, marginRight: 8}}
+                      />
+                      <Text
+                          className="z-20 font-barlow-semibold text-black text-xl p-3"
+                      >
+                          Location Marker
+                      </Text>
+                      <Switch
                         style={{
-                          width: '50%',
-                          height: 50,
-                          paddingHorizontal: 20,
+                          alignSelf: 'center',
+                          marginHorizontal: 10,
                           borderRadius: 16,
                           marginLeft: 'auto',
+                          backgroundColor: '#9e9e9e',
                         }}
-                        containerStyle={{
-                          backgroundColor: '#ffffff',
-                          borderWidth: 0,
-                          borderRadius: 32,
-                          padding: 16
-                        }}
-                        // --- ALIGNMENT FOR THE PLACEHOLDER TEXT ---
-                        placeholderStyle={{ 
-                          fontSize: 20, 
-                          color: '#8b8b8b',
-                          flex: 1,
-                          fontFamily: 'BarlowSemiCondensed_600SemiBold',
-                          textAlign: 'right'
-                        }} 
-                        // --- ALIGNMENT FOR THE SELECTED ITEM TEXT ---
-                        selectedTextStyle={{ 
-                          fontSize: 20, 
-                          color: '#8b8b8b',
-                          flex: 1,
-                          fontFamily: 'BarlowSemiCondensed_600SemiBold',
-                          textAlign: 'right'
-                        }} 
-                        // --- SET LINE LIMIT ON MAIN SELECTION TEXT ---
-                        selectedTextProps={{
-                          numberOfLines: 1,
-                        }}
-                        activeColor=""
-                        // --- ALIGNMENT FOR THE DROPDOWN LIST POPUP ITEMS ---
-                        itemTextStyle={{
-                          fontSize: 20,
-                          color: '#000000',
-                          fontFamily: 'BarlowSemiCondensed_600SemiBold',
-                          textAlign: 'left'
-                        }}
-                        data={SCHEDULE_OPTIONS}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder={!isFocus ? 'Auto' : '...'}
-                        value={selectedSchedule}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={async (item) => { 
-                          // 1. Guard check: Ensure item and item.value actually exist
-                          if (item?.value) {
-                            // 2. Instantly update the React state to make the UI feel fast and snappy
-                            setSelectedSchedule(item.value); 
-                            
-                            try {
-                              // 3. Persist the string choice to local storage asynchronously
-                              // We cast item.value to a String to guarantee it matches AsyncStorage requirements
-                              await AsyncStorage.setItem('@WHS:Setting:Schedule', String(item.value));
-                            } catch (error) {
-                              console.error("Failed to save schedule selection:", error);
-                            }
+                        trackColor={{false: '#545454', true: '#b28d3e'}}
+                        thumbColor={AllowMapLocation ? '#ffffff' : '#f4f3f4'}
+                        onValueChange={async (nextValue) => {
+                          setAllowMapLocation(nextValue);
+                          console.log(nextValue)
+                          try {
+                            await AsyncStorage.setItem('@WHS:Map:Location:Data', String(nextValue));
+                          } catch (error) {
+                            console.error("Failed to save map location setting:", error);
                           }
-                          
-                          // 4. Close the dropdown menu overlay
-                          setIsFocus(false); 
                         }}
+                        value={AllowMapLocation}
                       />
-                    </View>
-                    <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
-                        style={{color: '#8b8b8b'}}
-                    >
-                        Choose which bell schedule the app uses to show your current period. Leave it on Auto to match today's actual schedule, or manually select a specific day type (like an assembly or exam schedule) to preview it.
-                    </Text>
-
-                    <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 ml-3 self-center"
-                        style={{color: '#5b5b5b'}}
-                    >
-                        Map
-                    </Text>
+                  </View>
+                  <Text
+                      className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 ml-3 self-center"
+                      style={{color: '#5b5b5b'}}
+                  >
+                      Information
+                  </Text>
+                  <TouchableOpacity
+                    className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                    style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
+                    onPress={() => {
+                      router.push("/(settings)/author")
+                    }}
+                  >
                     <View
-                        className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
-                        style={{borderRadius: 20}}
-                    >
-                        <Image
-                            source={require("@/assets/images/whs-map.png")}
-                            className="self-center"
-                            style={{width: 25, height: 25, marginLeft: 20, marginRight: 8}}
-                        />
-                        <Text
-                            className="z-20 font-barlow-semibold text-black text-xl p-3"
-                        >
-                            Location Marker
-                        </Text>
-                        <Switch
-                          style={{
-                            alignSelf: 'center',
-                            marginHorizontal: 10,
-                            borderRadius: 16,
-                            marginLeft: 'auto',
-                            backgroundColor: '#9e9e9e',
-                          }}
-                          trackColor={{false: '#545454', true: '#b28d3e'}}
-                          thumbColor={AllowMapLocation ? '#ffffff' : '#f4f3f4'}
-                          onValueChange={async (nextValue) => {
-                            setAllowMapLocation(nextValue);
-                            console.log(nextValue)
-                            try {
-                              await AsyncStorage.setItem('@WHS:Map:Location:Data', String(nextValue));
-                            } catch (error) {
-                              console.error("Failed to save map location setting:", error);
-                            }
-                          }}
-                          value={AllowMapLocation}
-                        />
-                    </View>
-                    <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-2xl p-3 ml-3 self-center"
-                        style={{color: '#5b5b5b'}}
-                    >
-                        Information
-                    </Text>
-                    <TouchableOpacity
-                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
-                      style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
-                      onPress={() => {
-                        router.push("/(settings)/author")
-                      }}
-                    >
-                      <View
-                          className="w-[100%] self-center bg-white flex flex-row flex-nowrap"
-                          style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
-                          
-                      >
-                  
-                          <Image
-                              source={require("@/assets/images/author.png")}
-                              className="self-center"
-                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
-                          />
-                          <Text
-                              className="z-20 font-barlow-semibold text-black text-xl p-3"
-                          >
-                              Authors
-                          </Text>
-                          <Image
-                              source={require("@/assets/images/forward.png")}
-                              className="self-center"
-                              
-                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
-                          />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
-                      onPress={() => {
-                        router.push("/(settings)/license")
-                      }}
-                    >
-                      <View
-                          className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
-                      >
-                  
-                          <Image
-                              source={require("@/assets/images/info.png")}
-                              className="self-center"
-                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
-                          />
-                          <Text
-                              className="z-20 font-barlow-semibold text-black text-xl p-3"
-                          >
-                              License
-                          </Text>
-                          <Image
-                              source={require("@/assets/images/forward.png")}
-                              className="self-center"
-                              
-                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
-                          />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
-                      onPress={() => {
-                        router.push("/(settings)/qanda")
-                      }}
-                    >
-                      <View
-                          className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
-                      >
-                  
-                          <Image
-                              source={require("@/assets/images/question-bold.png")}
-                              className="self-center"
-                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
-                          />
-                          <Text
-                              className="z-20 font-barlow-semibold text-black text-xl p-3"
-                          >
-                              Q&A
-                          </Text>
-                          <Image
-                              source={require("@/assets/images/forward.png")}
-                              className="self-center"
-                              
-                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
-                          />
-                      </View>
-                    </TouchableOpacity>
-                    <View
-                        className="w-[90%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
+                        className="w-[100%] self-center bg-white flex flex-row flex-nowrap"
+                        style={{borderTopLeftRadius: 20, borderTopRightRadius: 20}}
                         
                     >
+                
                         <Image
-                            source={require("@/assets/images/docs.png")}
+                            source={require("@/assets/images/author.png")}
                             className="self-center"
                             style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
                         />
                         <Text
                             className="z-20 font-barlow-semibold text-black text-xl p-3"
                         >
-                          App Version
+                            Authors
                         </Text>
-                        <Text className="self-center ml-auto mr-[20px]"
-                          style={{color: '#8b8b8b'}}
-                        >
-                          1.0.0
-                        </Text>
+                        <Image
+                            source={require("@/assets/images/forward.png")}
+                            className="self-center"
+                            
+                            style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                        />
                     </View>
-                    <TouchableOpacity
-                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
-                      style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}
-                      onPress={() => {
-                        openLink("https://github.com/Altronxs/Waipahu-App")
-                      }}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
+                    onPress={() => {
+                      router.push("/(settings)/license")
+                    }}
+                  >
+                    <View
+                        className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
                     >
-                      <View
-                        className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"  
-                        style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}  
-                      >
-                  
-                          <Image
-                              source={require("@/assets/images/globe.png")}
-                              className="self-center"
-                              style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
-                          />
-                          <Text
-                              className="z-20 font-barlow-semibold text-black text-xl p-3"
-                          >
-                              Source Code
-                          </Text>
-                          <Image
-                              source={require("@/assets/images/forward.png")}
-                              className="self-center"
-                              
-                              style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
-                          />
-                      </View>
-                    </TouchableOpacity>
-                    <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
-                        style={{color: '#8b8b8b'}}
-                    >
-                        MADE BY STUDENTS & ALUMNI
-                    </Text>
-                    <Text
-                        className="w-[90%] z-20 font-barlow-semibold text-base/tight px-3 self-center"
-                        style={{color: '#8b8b8b'}}
-                    >
-                    </Text>
-                </View>
                 
+                        <Image
+                            source={require("@/assets/images/info.png")}
+                            className="self-center"
+                            style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                        />
+                        <Text
+                            className="z-20 font-barlow-semibold text-black text-xl p-3"
+                        >
+                            License
+                        </Text>
+                        <Image
+                            source={require("@/assets/images/forward.png")}
+                            className="self-center"
+                            
+                            style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                        />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
+                    onPress={() => {
+                      router.push("/(settings)/qanda")
+                    }}
+                  >
+                    <View
+                        className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
+                    >
+                
+                        <Image
+                            source={require("@/assets/images/question-bold.png")}
+                            className="self-center"
+                            style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                        />
+                        <Text
+                            className="z-20 font-barlow-semibold text-black text-xl p-3"
+                        >
+                            Q&A
+                        </Text>
+                        <Image
+                            source={require("@/assets/images/forward.png")}
+                            className="self-center"
+                            
+                            style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                        />
+                    </View>
+                  </TouchableOpacity>
+                  <View
+                      className="w-[90%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"
+                      
+                  >
+                      <Image
+                          source={require("@/assets/images/docs.png")}
+                          className="self-center"
+                          style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                      />
+                      <Text
+                          className="z-20 font-barlow-semibold text-black text-xl p-3"
+                      >
+                        App Version
+                      </Text>
+                      <Text className="self-center ml-auto mr-[20px]"
+                        style={{color: '#8b8b8b'}}
+                      >
+                        1.0.0
+                      </Text>
+                  </View>
+                  <TouchableOpacity
+                    className="w-[90%] self-center bg-white flex flex-row flex-nowrap"
+                    style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}
+                    onPress={() => {
+                      openLink("https://github.com/Altronxs/Waipahu-App")
+                    }}
+                  >
+                    <View
+                      className="w-[100%] self-center bg-white flex flex-row flex-nowrap border-t-2 border-black/10"  
+                      style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}  
+                    >
+                
+                        <Image
+                            source={require("@/assets/images/globe.png")}
+                            className="self-center"
+                            style={{width: 30, height: 30, marginLeft: 20, marginRight: 8}}
+                        />
+                        <Text
+                            className="z-20 font-barlow-semibold text-black text-xl p-3"
+                        >
+                            Source Code
+                        </Text>
+                        <Image
+                            source={require("@/assets/images/forward.png")}
+                            className="self-center"
+                            
+                            style={{width: 20, height: 20, marginLeft: 'auto', marginRight: 20, tintColor: '#8b8b8b'}}
+                        />
+                    </View>
+                  </TouchableOpacity>
+                  <Text
+                      className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
+                      style={{color: '#8b8b8b'}}
+                  >
+                      MADE BY STUDENTS & ALUMNI
+                  </Text>
+                  <Text
+                      className="w-[90%] z-20 font-barlow-semibold text-base/tight px-3 self-center"
+                      style={{color: '#8b8b8b'}}
+                  >
+                  </Text>
+              </View>
             </ScrollView>
         </View>
       </SafeAreaProvider>
