@@ -21,15 +21,14 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "expo-router";
+import React, { useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Image,
     Linking,
     RefreshControl,
     ScrollView,
-    Modal,
     Text,
     TouchableOpacity,
     useWindowDimensions,

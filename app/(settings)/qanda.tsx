@@ -39,6 +39,7 @@ import {
 import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
 import qaJSON from "@/assets/json/qaData.json";
+import { FooterPage } from "@/components/FooterPage";
 
 
 interface qaFeature {
@@ -133,7 +134,7 @@ export default function Qanda() {
                 scrollEventThrottle={16}       
                 decelerationRate="normal"
             >
-                <View className="w-[90%] self-center mt-5 px-3">
+                <View className="w-[90%] self-center mt-5 px-3 pb-20">
                     {qaData.qaData?.map((feature) => (
                         <React.Fragment key={feature.id}>
                             {feature.category && (
@@ -150,6 +151,7 @@ export default function Qanda() {
                         </React.Fragment>
                     ))}
                 </View>
+                <FooterPage></FooterPage>
             </ScrollView>
         </View>
       </SafeAreaProvider>

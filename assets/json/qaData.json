@@ -87,23 +87,18 @@
     {
       "id": 17,
       "question": "What wasn't AI?",
-      "answer": "The design and visuals. The design came from researching how other school apps look and are structured, and applying that so the app looks and follows a similar structure to the Waipahu High School website. Images and icons come from Icons8 (icons8.com), were made with tools like Photoshop, or came straight from the school. If you’re in ACC (Arts & Communication) and want to help out or fix and improve the design, check the Help & Feedback section."
+      "answer": "The design and visuals are not designed with AI. The design came from researching how other school apps look and are structured, and applying that so the app looks and follows a similar design methodology to the Waipahu High School website.\n\nImages and icons come from Icons8 (icons8.com), and or were made with tools like Photoshop or they came straight from the school.\n\nIf you’re in ACC (Arts & Communication) and want to help out or fix and improve the design, check the Help & Feedback section."
     },
     {
       "id": 18,
-      "question": "Is the AI's work checked?",
-      "answer": "Yes. Code is mostly written by hand, and anything AI helps with, like cleaned-up code, comments, and written content, is reviewed and edited by before it goes in."
+      "category": "Help & Feedback",
+      "question": "How do I report a bug or suggest a feature?",
+      "answer": "Open an issue on the project's GitHub page, or reach out to any of these:\n\t- Ms. Takara, in room V202\n\t- AOIT (Academy of Information Technology): aoit.whs@gmail.com or Instagram @aoit.whs\n\t- Kyle Baldovi, the current app maintainer: kyleboy1010@gmail.com or Instagram @kylealtxyz"
     },
     {
       "id": 19,
-      "category": "Help & Feedback",
-      "question": "How do I report a bug or suggest a feature?",
-      "answer": "Open an issue on the project's GitHub page, or reach out to any of these:\n\t- Ms. Takara, in room V202\n\t- AOIT (Academy of Information Technology): aoit.whs@gmail.com or Instagram @aoit.whs\n\t- Kyle Baldovi, the app developer: kyleboy1010@gmail.com or Instagram @kylealtxyz"
-    },
-    {
-      "id": 20,
       "question": "Can I help work on the app?",
-      "answer": "Yes, collaborators are welcome. If you're interested, contact Kyle directly at kyleboy1010@gmail.com or Instagram @kylealtxyz. What fits best depends on your academy:\n\t- AIET (Industrial Engineering Technology): knowing HTML, JavaScript, and CSS (Tailwind) is a good start. React, React Native, and JS libraries help even more.\n\t- ACC (Arts & Communication): you're welcome to redesign or improve the UI/UX and layout of the app."
+      "answer": "Yes, collaborators are welcome. If you're interested, contact AOIT at aoit.whs@gmail.com or Instagram @aoit.whs. What fits best depends on your academy:\n\t- AIET (Industrial Engineering Technology): knowing HTML, JavaScript, and CSS (Tailwind) is a good start. React, React Native, and JS libraries help even more.\n\t- ACC (Arts & Communication): you're welcome to redesign or improve the UI/UX and layout of the app."
     }
   ]
 }
