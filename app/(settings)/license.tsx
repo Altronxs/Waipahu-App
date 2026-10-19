@@ -26,7 +26,6 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
     ActivityIndicator,
     Image,
-    ImageBackground,
     Linking,
     RefreshControl,
     ScrollView,

@@ -30,7 +30,6 @@ import {
   View,
   Linking,
   ScrollView,
-  ImageBackground,
   RefreshControl,
   useWindowDimensions,
 } from "react-native";
@@ -176,10 +175,14 @@ const Events = () => {
               <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center p-3 !pt-5">
                 MAJOR EVENTS & ACTIVITIES
               </Text>
-              <ImageBackground
-                source={require("@/assets/images/IMG_0059.jpeg")}
+              <View
                 className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
               >
+                <Image
+                  source={require("@/assets/images/IMG_0059.jpeg")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
                 <View className="absolute w-full h-full flex justify-center items-center p-4">
                   <Text className="z-20 font-barlow-semibold text-4xl text-white w-full p-3 pt-3">
@@ -192,11 +195,15 @@ const Events = () => {
                     Mark your Calendars for Sept 25, 2026.
                   </Text>
                 </View>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/spiritweek.jpg")}
+              </View>
+              <View
                 className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
               >
+                <Image
+                  source={require("@/assets/images/spiritweek.jpg")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
                 <View className="absolute w-full h-full flex justify-center items-center p-4">
                   <Text className="z-20 font-barlow-semibold text-4xl text-white w-full p-3 pt-3">
@@ -209,11 +216,15 @@ const Events = () => {
                     Get Spirit Week dates and themes by clicking <Text className="underline" onPress={() => openLink("https://www.instagram.com/waipahuhs.stugov/")}>HERE</Text>
                   </Text>
                 </View>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/snr_lua.jpg")}
+              </View>
+              <View
                 className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
               >
+                <Image
+                  source={require("@/assets/images/snr_lua.jpg")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
                 <View className="absolute w-full h-full flex justify-center items-center p-4">
                   <Text className="z-20 font-barlow-semibold text-4xl text-white w-full p-3 pt-3">
@@ -226,11 +237,15 @@ const Events = () => {
                     Mark your Calendars for Nov 21, 2026.
                   </Text>
                 </View>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/fsb.jpg")}
+              </View>
+              <View
                 className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
               >
+                <Image
+                  source={require("@/assets/images/fsb.jpg")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
                 <View className="absolute w-full h-full flex justify-center items-center p-4">
                   <Text className="z-20 font-barlow-semibold text-4xl text-white w-full p-3 pt-3">
@@ -243,11 +258,15 @@ const Events = () => {
                     Get FSB dates and details by clicking <Text className="underline">HERE</Text>
                   </Text>
                 </View>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/jnr_prom.jpg")}
+              </View>
+              <View
                 className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
               >
+                <Image
+                  source={require("@/assets/images/jnr_prom.jpg")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <View className="absolute w-full h-full bg-black opacity-75 p-2"></View>
                 <View className="absolute w-full h-full flex justify-center items-center p-4">
                   <Text className="z-20 font-barlow-semibold text-4xl text-white w-full p-3 pt-3">
@@ -260,11 +279,15 @@ const Events = () => {
                     Get Junior Prom dates and details by clicking <Text className="underline">HERE</Text>
                   </Text>
                 </View>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/snr_prom.jpg")}
+              </View>
+              <View
                 className="w-[90%] h-[50vh] self-center overflow-hidden mt-5"
               >
+                <Image
+                  source={require("@/assets/images/snr_prom.jpg")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <View className="absolute w-full h-full bg-black opacity-55 p-2"></View>
                 <View className="absolute w-full h-full flex justify-center items-center p-4">
                   <Text className="z-20 font-barlow-semibold text-4xl text-white w-full p-3 pt-3">
@@ -277,7 +300,7 @@ const Events = () => {
                     Get Senior Prom dates and details by clicking <Text className="underline">HERE</Text>
                   </Text>
                 </View>
-              </ImageBackground>
+              </View>
               <FooterPage></FooterPage>
             </View>
           </ScrollView>

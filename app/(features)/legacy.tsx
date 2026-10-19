@@ -31,7 +31,6 @@ import {
     ActivityIndicator,
     Dimensions,
     Image,
-    ImageBackground,
     Linking,
     ScrollView,
     Text,

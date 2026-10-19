@@ -30,7 +30,6 @@ import {
   View,
   Linking,
   ScrollView,
-  ImageBackground,
   RefreshControl,
   useWindowDimensions,
 } from "react-native";
@@ -127,42 +126,66 @@ const Academy = () => {
                 WAIPAHU HIGH SCHOOL
               </Text>
               
-              <ImageBackground
-                source={require("@/assets/images/ql-bg1.png")}
+              <View
                 className="w-[45%] self-center overflow-hidden mt-6 aspect-[549/766] mx-1"
               >
+                <Image
+                  source={require("@/assets/images/ql-bg1.png")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555316&type=d")}></TouchableOpacity>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/ql-bg2.png")}
+              </View>
+              <View
                 className="w-[45%] self-center overflow-hidden mt-6 aspect-[549/766] mx-1 translate-y-5"
               >
+                <Image
+                  source={require("@/assets/images/ql-bg2.png")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555305&type=d")}></TouchableOpacity>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/ql-bg3.png")}
+              </View>
+              <View
                 className="w-[45%] self-center overflow-hidden mt-6 aspect-[549/766] mx-1"
               >
+                <Image
+                  source={require("@/assets/images/ql-bg3.png")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555317&type=d")}></TouchableOpacity>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/ql-bg4.png")}
+              </View>
+              <View
                 className="w-[45%] self-center overflow-hidden mt-6 aspect-[549/766] mx-1 translate-y-5"
               >
+                <Image
+                  source={require("@/assets/images/ql-bg4.png")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555312&type=d")}></TouchableOpacity>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/ql-bg5.png")}
+              </View>
+              <View
                 className="w-[45%] self-center overflow-hidden mt-6 aspect-[549/766] mx-1"
               >
+                <Image
+                  source={require("@/assets/images/ql-bg5.png")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555318&type=d")}></TouchableOpacity>
-              </ImageBackground>
-              <ImageBackground
-                source={require("@/assets/images/ql-bg6.png")}
+              </View>
+              <View
                 className="w-[45%] self-center overflow-hidden mt-6 aspect-[549/766] mx-1 translate-y-5"
               >
+                <Image
+                  source={require("@/assets/images/ql-bg6.png")}
+                  className="absolute w-full h-full"
+                  resizeMode="cover"
+                />
                 <TouchableOpacity className="absolute w-full h-full" onPress={() => openLink("https://www.waipahuhigh.org/apps/pages/index.jsp?uREC_ID=555345&type=d")}></TouchableOpacity>
-              </ImageBackground>
+              </View>
               <Text className="z-20 font-source-serif-bold text-white text-base ml-9 mr-9 pt-5 self-start text-start">
                 What is an Academy?
               </Text>
