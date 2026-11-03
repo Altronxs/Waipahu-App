@@ -149,7 +149,6 @@ export default function Index() {
         { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://infinitecampus.org") },
         { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://waipahuhigh.org") },
         { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.push("/(settings)/settings") },
-        { label: "Made By", image: require("@/assets/images/author.png"), onPress: () => router.push("/(settings)/author") },
       ],
     }
   ];

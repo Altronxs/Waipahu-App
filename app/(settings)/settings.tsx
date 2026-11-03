@@ -491,6 +491,7 @@ export default function Settings() {
                       className="w-[90%] z-20 font-barlow-semibold text-base/tight px-3 self-center"
                       style={{color: '#8b8b8b'}}
                   >
+
                   </Text>
               </View>
             </ScrollView>

@@ -37,6 +37,8 @@ import React, { useRef } from "react";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from "expo-glass-effect";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
+import { HeaderPage } from "@/components/HeaderPage";
+import { FooterPage } from "@/components/FooterPage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -78,17 +80,7 @@ const Vision = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      <View className="flex-row justify-center bg-[#17273d] h-[13rem] z-10 pt-44 gap-5 relative pl-10">
-          <Image
-              source={require("@/assets/images/whs-logo.png")}
-              className="w-32 h-32 relative bottom-28"
-          />
-          <View className="w-48 h-28 bottom-20 items-start z-40 relative">
-              <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
-              <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
-              <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>
-          </View>
-      </View>
+      <HeaderPage></HeaderPage>
 
       <View className="justify-center items-center flex-nowrap bg-whs-gold">
         <GlassView
@@ -129,7 +121,7 @@ const Vision = () => {
             educational programs that challenge all students to perform at their
             highest potential.
           </Text>
-          <View className="relative bottom-24 pb-[10rem]">
+          <View className="relative bottom-24">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-xl w-full text-center relative p-5">
               CLASS OF 2026
             </Text>
@@ -222,6 +214,7 @@ const Vision = () => {
               for remediation
             </Text>
           </View>
+          <FooterPage></FooterPage>
         </ScrollView>
       </View>
     </SafeAreaProvider>

@@ -77,7 +77,7 @@ const Students = () => {
       ],
     },
     {
-      title: "Google Suite",
+      title: "Google Workspace Tools",
       items: [
         {
           label: "Gmail",
