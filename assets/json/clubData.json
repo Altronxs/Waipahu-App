@@ -4,7 +4,7 @@
             "name": "Academy of Engineering",
             "location": "V-203",
             "supervisor": "C. Burdick",
-            "description": "The Academy of Engineering provides students with hands-on experience in engineering principles, design thinking, and problem-solving. Students explore various engineering disciplines and work on projects that apply STEM concepts to real-world challenges."
+            "description": "The Academy of Engineering is dedicated to nurturing minds of leaderes in innovation."
         },
         {
             "name": "Art Club",
@@ -22,7 +22,7 @@
             "name": "Band",
             "location": "Band",
             "supervisor": "H. Fu",
-            "description": "The school band program offers students the opportunity to develop musical skills through instrumental performance. Members rehearse and perform at school events, competitions, and concerts while building teamwork and discipline through music."
+            "description": "The school band program offers students the opportunity to develop musical skills through instrumental performance. Members rehearse and perform at school events and concerts while building teamwork and discipline through music."
         },
         {
             "name": "Black Cultural Club",
@@ -58,7 +58,7 @@
             "name" : "Class of 2030 Council", 
             "location" : "G-8", 
             "supervisor" : "R. Cambra", 
-            "description" : "The Class of 2030 Council welcomes new ninth-graders to the school. Members run orientation icebreakers and build early class spirit and unity." 
+            "description" : "The Class of 2030 Council represents the freshman class, planning activities, class events, and fundraisers. Council members help establish class identity and create a welcoming environment for new students." 
         },
         {
             "name": "FCCLA",
@@ -112,13 +112,13 @@
             "name": "Leo Club",
             "location": "H-1",
             "supervisor": "R. Odoya",
-            "description": "Leo Club, sponsored by Lions Clubs International, empowers young people to serve their community and develop leadership skills. Members organize service projects, fundraisers, and community events while building friendships and making a difference."
+            "description": "Leo Club, by Lions Clubs International, empowers young people to serve their community and develop leadership skills. Members organize service projects, fundraisers, and community events while building friendships and making a difference."
         },
         {
             "name": "LIFE Club",
             "location": "J-7",
             "supervisor": "K. Fujihui",
-            "description": "L.I.F.E Club (Living in Faith Everyday) provides a supportive community for students to explore and express their faith. Members participate in discussions, service projects, and fellowship activities while growing spiritually together."
+            "description": "L.I.F.E Club (Love Is Found Everywhere) provides a supportive and safe community for LGBTQIA+ students"
         },
         {
             "name": "Marauder Chess Club",
@@ -136,7 +136,7 @@
             "name": "Marauder Media Club",
             "location": "J-6",
             "supervisor": "Bryant Murakami",
-            "description": "Marauder Media Club focuses on journalism, broadcasting, and multimedia production. Members create content for school news, develop media skills, and cover school events while learning about digital media and storytelling."
+            "description": "Marauder Media is Waipahu High School's media arts club program. From short films and music videos, to news packages and commercials, our program offer members creative freedom over their films"
         },
         {
             "name": "Math Team",
@@ -227,12 +227,6 @@
             "location": "P-32",
             "supervisor": "K. Sledge",
             "description": "The Spanish Honor Society (Sociedad Honoraria Hispánica) recognizes high school achievement in Spanish and promotes interest in Hispanic culture and language. Members demonstrate excellence in Spanish studies and serve their school and community."
-        },
-        {
-            "name": "AHS Student Board of Directors",
-            "location": "E-3",
-            "supervisor": "S. Haanio",
-            "description": "The student board of directors serves as a leadership body that represents the student body, facilitates communication between students and administration, and helps organize school-wide initiatives and events."
         },
         {
             "name": "Student Government",

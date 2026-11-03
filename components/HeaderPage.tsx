@@ -8,7 +8,7 @@ export function HeaderPage() {
                     source={require("@/assets/images/whs-logo.png")}
                     className="w-32 h-32 relative bottom-28"
                 />
-                <View className="w-48 h-28 bottom-20 items-start z-40 relative">
+                <View className="w-48 h-28 bottom-[5.5rem] items-start z-40 relative">
                     <Text className="text-white text-xl font-barlow-semibold">MY VOICE</Text>
                     <Text className="text-white text-xl ml-5 font-barlow-semibold"> MY CHOICE</Text>
                     <Text className="text-white text-xl ml-12 font-barlow-semibold"> MY FUTURE</Text>

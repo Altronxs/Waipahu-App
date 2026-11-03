@@ -120,48 +120,82 @@ const Clubs = () => {
       </View>
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
         <ScrollView
-          className="w-[100vw] h-96 bg-white flex-1 flex-col "
-          style={{ height: height * 0.5 }}
+          className="w-[100vw] bg-white flex-1 flex-col "
         >
-          <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center relative p-7 bottom-4 pt-10">
+          <Text className="z-20 font-barlow-semibold text-3xl text-whs-blue w-full text-center pt-8">
             HOME OF THE MARAUDERS
           </Text>
-          <Text className="z-20 font-source-serif-italic text-lg text-gray-700 w-full text-center relative bottom-16 p-8">
+          <Text className="w-[80%] z-20 font-source-serif-italic text-lg text-gray-700 self-center m-auto text-center py-3">
             Waipahu High School's vision is to provide student-centered
             educational programs that challenge all students to perform at their
             highest potential.
           </Text>
-          <View className="relative bottom-16">
+          <View className="pb-20 pt-2">
             {clubData.clubData?.map((feature, index) => (
               <React.Fragment key={index}>
-                <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
-                  <Text className="z-30 font-barlow-semibold text-whs-blue text-2xl w-full relative left-2 p-5 pb-3 underline">
-                    {feature.name}
-                  </Text>
-                  <View className="flex-row relative left-8">
+                <View className="w-[90%] h-[max(200px, auto)] p-3 flex-col mx-auto bg-whs-blue my-2">
+                  {/* <View className="w-full m-5">
                     <Image
-                      source={require("@/assets/images/whs-map.png")}
-                      className="w-[24px] h-[24px] object-contain relative"
-                      style={{ tintColor: "gray" }}
+                      source={require('@/assets/images/whs-logo.png')}
+                      className="w-full h-[max(25vw)] aspect-square"
+                      style={{aspectRatio: 1/1}}
                     />
-                    <Text className="z-20 font-barlow-regular text-base text-gray-700 pl-4 pr-4">
-                      {feature.location}
+                  </View> */}
+                  <View className="w-full">
+                    <Text className="z-30 font-barlow-semibold text-white text-2xl relative left-2 m-5 mb-3 border-l-4 px-2 border-whs-gold">
+                      {feature.name}
                     </Text>
-                    <Image
-                      source={require("@/assets/images/registrar.png")}
-                      className="w-[51px] h-[35px] object-center relative bottom-1 border-l-2 border-gray-200 pl-4"
-                      style={{ tintColor: "gray" }}
-                    />
-                    <Text className="z-20 font-barlow-regular text-base text-gray-700 pl-4">
-                      {feature.supervisor}
-                    </Text>
+                    <View className="flex-row pl-5">
+                      {feature.location !== "" ? (
+                        <>
+                          <Image
+                            source={require("@/assets/images/whs-map.png")}
+                            className="w-[12px] h-[12px] object-contain relative object-center m-1 my-2"
+                            style={{ tintColor: "white" }}
+                          />
+                          <Text className="z-20 font-barlow-regular text-sm text-white pl-2 pr-2 my-1">
+                            {feature.location}
+                          </Text>
+                        </>
+                      ) : null}
+                      {feature.supervisor !== "" ? (
+                        
+                        <>
+                          {feature.location !== "" ? (
+                            <>
+                              <Image
+                                source={require("@/assets/images/registrar.png")}
+                                className="w-[32px] h-[16px] object-center relative bottom-1 border-l-2 border-white pl-2 m-2"
+                                style={{ tintColor: "white" }}
+                              />
+                              <Text className="z-20 font-barlow-regular text-sm text-white pl-2 my-1">
+                                {feature.supervisor}
+                              </Text>
+                            </>
+                          ) : (
+                            <>
+                              <Image
+                                source={require("@/assets/images/registrar.png")}
+                                className="w-[32px] h-[17px] object-center relative bottom-1 pl-2 m-2"
+                                style={{ tintColor: "white" }}
+                              />
+                              <Text className="z-20 font-barlow-regular text-sm text-white pl-2 my-1">
+                                {feature.supervisor}
+                              </Text>
+                            </>
+                          )}
+                          
+                        </>
+                      ) : null}
+                    </View>
+                    {feature.description && (
+                      <Text className="z-20 font-barlow-regular text-base text-white w-full p-6 pt-2">
+                        {feature.description}
+                      </Text>
+                    )}
+                    
                   </View>
-
-                  {feature.description && (
-                    <Text className="z-20 font-barlow-regular text-base text-gray-700 w-full p-6 pt-2">
-                      {feature.description}
-                    </Text>
-                  )}
+                  
                 </View>
               </React.Fragment>
             ))}
