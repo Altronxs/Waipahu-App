@@ -160,12 +160,18 @@ const News = () => {
                       style.innerHTML = \`
                           #enheader5, #enfooter1, #shortcut-wrapper, #pageTitle { display: none !important; }
                           .inside-page::before { background-color: #ffffff !important; }
-                          table:first-of-type { display: none !important; }
                           
-                          /* FORCE PARENT WRAPPERS TO FILL WIDE AND RE-CENTER CONTENT */
+                          table:first-of-type { 
+                            position: relative;
+                            top: 20px;
+                            width: 100% !important;
+                          }
+                          
                           #news0wrapper, #news0wrapper tbody {
                             display: block !important;
                             width: 100% !important;
+                            height: 0% !important;
+                            background-color: white !important;
                             margin: 0 auto !important;
                           }
                           
@@ -186,20 +192,24 @@ const News = () => {
                           }
                           #news0wrapper tbody tr td {
                             display: grid !important;
-                            margin: 10px auto !important;
-                            background-color: #ffffff !important;
+                            
+                            margin: 40px auto;
+                            background-color: #17273d !important;
                             width: 90% !important;
                             grid-template-columns: 1fr !important;
-                            /* FIXED: Added 's' to grid-template-areas */
                             grid-template-areas:
                               "image" 
                               "title"
                               "summary" !important; 
+                            padding: 20px !important;                            
                           }
                           #news0wrapper, #news0wrapper tbody tr {
                             display: block !important;
                             margin: 0 auto !important;
                             width: 100% !important;
+                
+                            margin-top: 20px !important;
+                            margin-bottom: 20px !important; 
                           }
                           #news0wrapper tbody tr td a {
                             width: 100% !important;
@@ -213,19 +223,24 @@ const News = () => {
                             display: inline-block !important;
                             text-decoration: none !important;
                             font-weight: bold !important;
-                            color: #17273d !important;
+                            color: white !important;
                             font-size: 1.125rem !important;
-                            padding: 10px 0 !important;
-                            border-bottom: 3px solid #17273d !important;
+                            padding: 10px !important;
+                            border-left: 3px solid #b28d3e !important;
+                            margin-top: 10px;
+                            margin-bottom: 10px;
+                            
                           }
                           .light {
-                            color: #17273d !important;
+                            color: white !important;
                             font-size: 0.875rem !important;
                             line-height: 1.25rem !important;
                             max-width: 350px !important;
+                            
                           }
                           #news0wrapper tbody tr td span {
                             grid-area: title !important;
+                            
                           }
                           #news0wrapper tbody tr td a img {
                             display: block !important;
@@ -234,7 +249,7 @@ const News = () => {
                             max-width: 350px !important;
                             height: auto !important;
                             border-width: 0px !important;
-                            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) !important;
+                            margin-bottom: 20px !important;
                           }
                           #news0wrapper tbody tr td br {
                             margin: 0 !important;
