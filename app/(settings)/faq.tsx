@@ -53,7 +53,7 @@ interface qaData {
 }
 
 
-export default function Qanda() {
+export default function Faq() {
   const router = useRouter(); // Get the router instance
   const { height, width } = useWindowDimensions();
 
@@ -119,7 +119,7 @@ export default function Qanda() {
                 </GlassView>
                 
                 <Text className="z-20 font-roboto-bold text-white text-center text-2xl pb-2">
-                    Q&A
+                    FAQ
                 </Text>
                 <Image
                     source={require("@/assets/images/whs-logo.png")}
