@@ -1,14 +1,10 @@
-Readme · MD
 # Waipahu High School App
  
 A mobile app built for Waipahu High School students, staff, and families. It started as an HTML/CSS prototype from past seniors, and has since been rebuilt from the ground up in **React Native + Expo** with a modernized UI, native navigation, and a lot more functionality.
  
-<!-- Optional: add a screenshot or banner here -->
-<!-- ![App Screenshot](./assets/images/whs-home.png) -->
- 
 ## 📱 About
  
-**WaipahuHighSchoolApp** is a student hub that brings together the information students and staff need most, schedules, campus navigation, news, clubs, and more, all in 1 native mobile app. It builds on the vision of the original web prototype that previous senior classes put together, just reimagined with a polished UI and a codebase that's actually maintainable.
+**The Waipahu High School App** is a student hub that brings together the information students and staff need most, schedules, campus navigation, news, clubs, and more, all in 1 native mobile app. It builds on the vision of the original web prototype that previous senior classes put together, just reimagined with a polished UI and a codebase that's actually maintainable.
  
 ## ✨ Features
  
@@ -29,6 +25,7 @@ A mobile app built for Waipahu High School students, staff, and families. It sta
 - 🎯 **Vision** — school vision/mission info
 - 🏛️ **Legacy** — social media links for classes, sports teams, and student groups
 - 👤 **Author** — credits/about page
+- ❓ **FAQ** — in-app answers to common questions about the schedule, campus map, news and cafe, AI use, and giving feedback
 - ⚙️ **Settings** — schedule override and other app preferences
 - 📄 **License** — in-app license viewer
 
@@ -50,7 +47,7 @@ For deeper docs, data file schemas, project structure, and why this app is built
 - **[Expo](https://expo.dev/)** (SDK 57) — build, run, and deploy tooling
 - **[React Native](https://reactnative.dev/)** 0.86 + **React** 19.2
 - **[Expo Router](https://docs.expo.dev/router/introduction/)** — file-based routing
-- **NativeTabs** (`expo-router/unstable-native-tabs`) — native bottom tab bar
+- **NativeTabs** (`expo-router/native-tabs`) — native bottom tab bar
 - **[NativeWind](https://www.nativewind.dev/)** + Tailwind CSS — utility-first styling
 - **[react-native-maps](https://github.com/react-native-maps/react-native-maps)** + **expo-location** — interactive campus map with live position
 - **react-native-webview** — embedded web content (e.g. Staff directory)
@@ -126,6 +123,7 @@ Waipahu-App/
 │   │   └── _layout.tsx             # Per-screen titles + stack transitions
 │   ├── (settings)/               # Settings-adjacent screens
 │   │   ├── author.tsx              # Credits/about page
+│   │   ├── faq.tsx                 # In-app FAQ (reads qaData.json)
 │   │   ├── settings.tsx            # Schedule override + app preferences
 │   │   ├── license.tsx             # In-app license viewer
 │   │   └── _layout.tsx
@@ -133,6 +131,8 @@ Waipahu-App/
 │   └── globals.css               # Tailwind/NativeWind global styles
 ├── components/                  # Shared UI components
 │   ├── FocusGate.tsx              # Delays unmount until a screen loses focus
+│   ├── FooterPage.tsx             # Bottom school info section, ends every scrolling screen
+│   ├── HeaderPage.tsx             # Top banner (seal and slogan)
 │   └── MarauderLoadingBadge.tsx   # Shared loading indicator
 ├── src/
 │   └── utils/                    # Data-fetching/parsing services, not UI
@@ -141,7 +141,7 @@ Waipahu-App/
 │       └── scheduleServices.js     # Bell schedule + calendar lookups
 ├── assets/
 │   ├── images/                   # Icons, backgrounds, campus/map assets
-│   ├── json/                     # clubData, mapdata, calendar, school_schedule
+│   ├── json/                     # clubData, mapdata, calendar, school_schedule, qaData
 │   └── pdf/                      # Campus map PDF
 ├── live-data/                   # Data refreshed independently of app releases
 │   ├── calendar.json
@@ -169,7 +169,7 @@ This project welcomes contributions from Waipahu High School students, alumni, a
 ## 🙏 Credits
  
 - **Original prototype**: designed and built in HTML/CSS by previous Waipahu High School seniors
-- **React Native/Expo rebuild, navigation, and UI redesign**: [Kyle Baldovi] ([@Altronxs](https://github.com/Altronxs))
+- **React Native/Expo rebuild, navigation, and UI redesign**: Kyle Baldovi ([@Altronxs](https://github.com/Altronxs))
 
 ## 📄 License
  

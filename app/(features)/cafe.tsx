@@ -122,7 +122,7 @@ const Cafe = () => {
         const weblinkData = await getwebLinks();
         const lastFetchTime = await AsyncStorage.getItem('@WHS:Menu:LastFetchTime');
 
-          // Refresh from the CDN if we've never fetched, or if it's been
+        // Refresh from the CDN if we've never fetched, or if it's been
         // more than a day since the last successful fetch.
         const isCacheEmpty = !weblinkData || !lastFetchTime;
         const isOlderThanOneDay = now - parseInt(lastFetchTime || '0', 10) > ONE_DAY_MS;

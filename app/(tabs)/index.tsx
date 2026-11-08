@@ -114,7 +114,7 @@ export default function Index() {
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
 
   // Ref mirror of `events` so the 1s interval callback (which has an empty
-  // dependency array and is created once) can always read the latest
+  // dependency array and is created once can always read the latest
   // events without needing to be re-created every time events changes.
   const eventsRef = useRef(events);
   const calendarRef = useRef(calendar);
