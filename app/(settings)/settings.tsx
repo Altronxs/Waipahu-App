@@ -406,7 +406,7 @@ export default function Settings() {
                   <TouchableOpacity
                     className="w-[90%] self-center bg-white flex flex-row flex-nowrap "
                     onPress={() => {
-                      router.push("/(settings)/qanda")
+                      router.push("/(settings)/faq")
                     }}
                   >
                     <View
@@ -421,7 +421,7 @@ export default function Settings() {
                         <Text
                             className="z-20 font-barlow-semibold text-black text-xl p-3"
                         >
-                            Q&A
+                            FAQ
                         </Text>
                         <Image
                             source={require("@/assets/images/forward.png")}
