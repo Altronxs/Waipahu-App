@@ -102,15 +102,15 @@ const Academy = () => {
           Career Academies
         </Text>
       </View>
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
+      <View className="bg-whs-blue w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
         <FocusGate>
           <ScrollView
-            className="w-[100vw] h-96 bg-white flex-1 flex-col"
+            className="w-[100vw] h-96 bg-whs-blue flex-1 flex-col"
             style={{ height: height * 0.5 }}
-            bounces={false}                
+            bounces={true}                
             overScrollMode="never"          
-            scrollEventThrottle={16}
-            decelerationRate="normal"
+            scrollEventThrottle={16}       
+            decelerationRate="normal" 
           >
             <View 
               className="flex flex-row justify-center items-center pt-3 pb-20 flex-wrap w-full gap-2 bg-whs-blue"

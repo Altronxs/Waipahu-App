@@ -139,10 +139,10 @@ const Events = () => {
           <ScrollView
             className="w-[100vw] h-96 bg-white flex-1 flex-col "
             style={{ height: height * 0.5 }}
-            bounces={false}                
+            bounces={true}                
             overScrollMode="never"          
             scrollEventThrottle={16}       
-            decelerationRate="normal"
+            decelerationRate="normal" 
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
             }

@@ -475,15 +475,11 @@ const Bell = () => {
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
         <FocusGate>
           <ScrollView
-            // NOTE: `className="h-96"` here is immediately overridden by the
-            // inline `style={{ height: height * 2.5 }}` below — the class has
-            // no effect. Left as-is to avoid changing layout, but consider
-            // dropping the dead className.
             className="w-[100vw] h-96 bg-white flex-1 flex-col"
-            bounces={false}
-            overScrollMode="never"
-            scrollEventThrottle={16}
-            decelerationRate="normal"
+            bounces={true}                
+            overScrollMode="never"          
+            scrollEventThrottle={16}       
+            decelerationRate="normal" 
           >
             <View 
               className="self-center items-center flex flex-column w-[100vw] z-10 flex-1 pb-20"

@@ -99,7 +99,7 @@ const Students = () => {
       ],
     },
     {
-      title: "Early College",
+      title: "Early College Resources",
       items: [
         {
           label: "Official Early College Website",
@@ -195,14 +195,13 @@ const Students = () => {
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center flex-1">
         <ScrollView
           className="w-[100vw] h-96 bg-white flex-1 flex-col"
-          //style={{ height: height * 0.5 }}
-          bounces={false}                
+          bounces={true}                
           overScrollMode="never"          
           scrollEventThrottle={16}       
           decelerationRate="normal"   
         >
           <View
-            className="flex-row flex-wrap justify-center items-start w-[100vw] flex-1 pb-40"
+            className="flex-row flex-wrap justify-center items-center w-[100vw] flex-1 pb-40"
           >
             <Image
               source={require("@/assets/images/bg-home.png")}

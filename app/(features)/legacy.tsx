@@ -248,6 +248,10 @@ const Legacy = () => {
         <FocusGate>
           <ScrollView
             className="w-[100vw] bg-white flex-1 flex-col"
+            bounces={true}                
+            overScrollMode="never"          
+            scrollEventThrottle={16}       
+            decelerationRate="normal" 
           >
             <View
               className="flex flex-row justify-center items-center pt-3 pb-[100px] flex-wrap w-full gap-2"
