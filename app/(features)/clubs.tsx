@@ -94,7 +94,6 @@ const Clubs = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            
         >
             <TouchableOpacity
                 className="items-center"

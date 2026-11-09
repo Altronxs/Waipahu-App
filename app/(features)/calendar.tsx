@@ -34,8 +34,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import type { WebView as WebViewType } from "react-native-webview";
+import type {
+  WebView as WebViewType,
+  WebViewMessageEvent
+} from "react-native-webview";
 import { WebView } from "react-native-webview"; 
+import React, { useState } from "react";
 
 const { width } = Dimensions.get("window");
 
@@ -43,6 +47,7 @@ const Calendar = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -70,6 +75,13 @@ const Calendar = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
+      {isLoading === true && (
+        <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
+          <View className="flex-1 justify-center items-center bg-[#17273d]">
+            <MarauderLoadingBadge></MarauderLoadingBadge>
+          </View>
+        </View>
+      )}
       <HeaderPage></HeaderPage>
 
       <View className="justify-center items-center flex-nowrap bg-whs-gold">
@@ -108,6 +120,22 @@ const Calendar = () => {
               ref={webViewRef}
               source={{
                 uri: "https://www.waipahuhigh.org/apps/events/view_calendar.jsp",
+              }}
+              injectedJavaScript={`
+                  setTimeout(() => {
+                  window.ReactNativeWebView.postMessage("styles_injected");
+                  }, 250);
+                  true;
+              `}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              onMessage={(event: WebViewMessageEvent) => {
+                if (event.nativeEvent.data === "styles_injected") {
+                  console.log("Styles injected successfully.");
+                  setIsLoading(false);
+                } else {
+                  console.log(event.nativeEvent.data);
+                }
               }}
             />
           ) : null}
