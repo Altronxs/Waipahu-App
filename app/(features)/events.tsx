@@ -21,9 +21,8 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
-  ActivityIndicator,
   Image,
   Text,
   TouchableOpacity,
@@ -34,7 +33,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { loadWebsiteData } from '@/src/utils/eventServices';
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GlassView } from "expo-glass-effect";
 import { FocusGate } from "@/components/FocusGate";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
@@ -101,7 +100,7 @@ const Events = () => {
 
   return (
     <SafeAreaProvider className="flex flex-col">
-      {appIsReady == false && (
+      {appIsReady === false && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
             <MarauderLoadingBadge></MarauderLoadingBadge>

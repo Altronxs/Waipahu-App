@@ -1,10 +1,6 @@
-import { Stack, useRouter } from "expo-router";
-import { TouchableOpacity, Text } from "react-native";
+import { Stack } from "expo-router";
 
 export default function SettingsLayout() {
-  const router = useRouter();
-
-
   return (
     <Stack
       screenOptions={{

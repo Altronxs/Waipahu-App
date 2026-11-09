@@ -21,31 +21,22 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "expo-router";
 import {
-    ActivityIndicator,
     Image,
-    Linking,
-    RefreshControl,
     ScrollView,
-    Modal,
     Text,
     TouchableOpacity,
     useWindowDimensions,
     View,
-    Switch,
 } from "react-native";
 import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
 export default function License() {
-  const router = useRouter(); // Get the router instance
-  const { height, width } = useWindowDimensions();
-
-  const [selectedSchedule, setSelectedSchedule] = useState<string>('');
-  const [isFocus, setIsFocus] = useState(false);
-
+  const router = useRouter();
+  const { height } = useWindowDimensions();
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -67,14 +58,7 @@ export default function License() {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   } else {
@@ -145,43 +129,43 @@ export default function License() {
                       
                       <View className="flex-col gap-y-3 pl-3">
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"License"</Text> shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
+                          <Text className="font-roboto-bold">&quot;License&quot;</Text> shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Licensor"</Text> shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
+                          <Text className="font-roboto-bold">&quot;Licensor&quot;</Text> shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Legal Entity"</Text> shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
+                          <Text className="font-roboto-bold">&quot;Legal Entity&quot;</Text> shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, &quot;control&quot; means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"You" (or "Your")</Text> shall mean an individual or Legal Entity exercising permissions granted by this License.
+                          <Text className="font-roboto-bold">&quot;You&quot; (or &quot;Your&quot;)</Text> shall mean an individual or Legal Entity exercising permissions granted by this License.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Source"</Text> form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
+                          <Text className="font-roboto-bold">&quot;Source&quot;</Text> form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Object"</Text> form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+                          <Text className="font-roboto-bold">&quot;Object&quot;</Text> form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Work"</Text> shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
+                          <Text className="font-roboto-bold">&quot;Work&quot;</Text> shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Derivative Works"</Text> shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
+                          <Text className="font-roboto-bold">&quot;Derivative Works&quot;</Text> shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Contribution"</Text> shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
+                          <Text className="font-roboto-bold">&quot;Contribution&quot;</Text> shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, &quot;submitted&quot; means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as &quot;Not a Contribution.&quot;
                         </Text>
                         
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">"Contributor"</Text> shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
+                          <Text className="font-roboto-bold">&quot;Contributor&quot;</Text> shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
                         </Text>
                       </View>
                     </View>
@@ -225,7 +209,7 @@ export default function License() {
                           <Text className="font-roboto-bold">(c)</Text> You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
                         </Text>
                         <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5">
-                          <Text className="font-roboto-bold">(d)</Text> If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
+                          <Text className="font-roboto-bold">(d)</Text> If the Work includes a &quot;NOTICE&quot; text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
                         </Text>
                       </View>
 
@@ -260,7 +244,7 @@ export default function License() {
                         7. Disclaimer of Warranty.
                       </Text>
                       <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5 pl-3">
-                        Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
+                        Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
                       </Text>
                     </View>
 
@@ -294,7 +278,7 @@ export default function License() {
                         APPENDIX: How to apply the Apache License to your work.
                       </Text>
                       <Text className="font-roboto-regular text-sm text-[#5b5b5b] leading-5 pl-3 mb-3">
-                        To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets "[]" replaced with your own identifying information. (Don't include the brackets!) The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same "printed page" as the copyright notice for easier identification within third-party archives.
+                        To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets &quot;[]&quot; replaced with your own identifying information. (Don&apos;t include the brackets!) The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same &quot;printed page&quot; as the copyright notice for easier identification within third-party archives.
                       </Text>
 
                       <View className="flex-col bg-[#f5f5f5] rounded-md p-3 gap-y-2">
@@ -302,7 +286,7 @@ export default function License() {
                           Copyright 2026 Kyle Alexander Baldovi
                         </Text>
                         <Text className="font-roboto-regular text-xs text-[#5b5b5b] leading-5">
-                          Licensed under the Apache License, Version 2.0 (the "License");
+                          Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
                           you may not use this file except in compliance with the License.
                           You may obtain a copy of the License at
                         </Text>
@@ -311,7 +295,7 @@ export default function License() {
                         </Text>
                         <Text className="font-roboto-regular text-xs text-[#5b5b5b] leading-5">
                           Unless required by applicable law or agreed to in writing, software
-                          distributed under the License is distributed on an "AS IS" BASIS,
+                          distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
                           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                           See the License for the specific language governing permissions and
                           limitations under the License.

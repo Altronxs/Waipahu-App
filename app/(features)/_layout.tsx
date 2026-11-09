@@ -1,10 +1,6 @@
-import { Stack, useRouter } from "expo-router";
-import { TouchableOpacity, Text, View } from "react-native";
-import { Image } from "expo-image"; // Optimized image component
+import { Stack } from "expo-router";
 
 export default function FeaturesLayout() {
-  const router = useRouter();
-
   return (
     <Stack
       screenOptions={{

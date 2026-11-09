@@ -40,14 +40,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-interface SchoolEvent {
-  name: string;
-  month: string; // e.g., "August" or "08"
-  day: string;   // e.g., "17"
-  time: string;  // e.g., "All Day" or a specific time string
-}
-
 // Your strict alphanumeric mapping array
 const SCHEDULE_OPTIONS = [
   { label: 'Auto', value: '-1' },
@@ -74,18 +66,17 @@ const openLink = (url: string) => {
 
 export default function Settings() {
   const router = useRouter(); // Get the router instance
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
 
   // Gate for the splash/loading screen. Only flips true once fonts are loaded
   // AND the first tick of the interval effect has run (see effect below).
-  const [appIsReady, setAppIsReady] = useState(true); //This page doesn't need to load anything so hard coded true
+  const [appIsReady ] = useState(true); //This page doesn't need to load anything so hard coded true
 
   // Drives the pull-to-refresh spinner on the ScrollView (see
   // handleRefresh / RefreshControl below).
   const [refreshing, setRefreshing] = useState(false);
 
   const [AllowMapLocation, setAllowMapLocation] = useState<boolean>(false)
-  const toggleSwitch = () => setAllowMapLocation(previousState => !previousState);
 
   const [selectedSchedule, setSelectedSchedule] = useState<string>('');
   const [isFocus, setIsFocus] = useState(false);
@@ -110,7 +101,6 @@ export default function Settings() {
   // Manual refresh trigger, wired to the ScrollView's RefreshControl below.
   const handleRefresh = async () => {
     setRefreshing(true);
-    
     setRefreshing(false);
   };
 
@@ -139,7 +129,7 @@ export default function Settings() {
 
   // Splash/loading screen: shown until fonts are loaded AND the first
   // interval tick has fired (see setAppIsReady(true) in the focus effect above).
-  if ((appIsReady == false) || !fontsLoaded) {
+  if ((appIsReady === false) || !fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image
@@ -293,7 +283,7 @@ export default function Settings() {
                       className="w-[90%] z-20 font-barlow-semibold text-base/tight p-3 self-center"
                       style={{color: '#8b8b8b'}}
                   >
-                      Choose which bell schedule the app uses to show your current period. Leave it on Auto to match today's actual schedule, or manually select a specific day type (like an assembly or exam schedule) to preview it.
+                      {"Choose which bell schedule the app uses to show your current period. Leave it on Auto to match today's actual schedule, or manually select a specific day type (like an assembly or exam schedule) to preview it."}
                   </Text>
 
                   <Text

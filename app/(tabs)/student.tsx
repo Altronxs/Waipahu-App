@@ -32,24 +32,16 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from 'expo-glass-effect'
 import { HeaderPage } from "@/components/HeaderPage";
 import { FooterPage } from "@/components/FooterPage";
 
-const { width, height } = Dimensions.get("window");
-
 type IconItem = {
   label: string;
   image: any;
   onPress: () => void;
-};
-
-const openLink = (url: string) => {
-  Linking.openURL(url).catch((error) => {
-    console.error("Failed to open URL:", error);
-  });
 };
 
 const Students = () => {

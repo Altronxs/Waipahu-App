@@ -26,10 +26,7 @@ import {
 } from "@expo-google-fonts/source-serif-pro";
 import { GlassView } from "expo-glass-effect";
 import { useRouter } from "expo-router";
-import React from "react";
 import {
-    ActivityIndicator,
-    Dimensions,
     Image,
     Linking,
     ScrollView,
@@ -38,9 +35,6 @@ import {
     View,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
-
-const { width, height } = Dimensions.get("window");
 
 type SocialItem = {
   label: string;
@@ -172,7 +166,6 @@ const classLegacyAccounts: SocialItem[] = [
     url: "https://www.instagram.com/fearlesshuskies",
   },
   {
-    // NOTE: this still points at the same URL as Fearless Huskies '22 above (copy-paste leftover from the source file) — swap in the correct handle when ready.
     label: "Royal Rebels '21",
     image: require("@/assets/images/social/rr21.jpg"),
       url: "https://www.instagram.com/fearlesshuskies",

@@ -24,22 +24,20 @@ import {
 } from "@expo-google-fonts/source-serif-pro";
 import { GlassView } from "expo-glass-effect";
 import { useRouter } from "expo-router";
-import { useIsFocused } from "expo-router/react-navigation"; // SDK 56+ path
-import React, { useRef } from "react";
+import { useIsFocused } from "expo-router/react-navigation";
+import { useRef } from "react";
 import {
-  ActivityIndicator,
   Dimensions,
   Image,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { WebView as WebViewType } from "react-native-webview";
-import { WebView } from "react-native-webview";
- 
+import { WebView } from "react-native-webview"; 
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const Calendar = () => {
   const webViewRef = useRef<WebViewType>(null);
