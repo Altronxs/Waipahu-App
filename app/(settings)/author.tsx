@@ -20,9 +20,8 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect , useRouter } from "expo-router";
 import {
-    ActivityIndicator,
     Dimensions,
     Image,
     ScrollView,
@@ -30,16 +29,17 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
  
-import { useRouter } from "expo-router";
+
 import React, { useRef } from "react";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from "expo-glass-effect";
 import { HeaderPage } from "@/components/HeaderPage";
 import { FooterPage } from "@/components/FooterPage";
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const Author = () => {
   const webViewRef = useRef<WebViewType>(null);
@@ -72,14 +72,7 @@ const Author = () => {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
       </View>
     );
   }
@@ -116,7 +109,7 @@ const Author = () => {
         <ScrollView
           className="w-[100vw] h-96 bg-white flex-1 flex-col "
           style={{ height: height * 0.5 }}
-          bounces={false}                
+          bounces={true}                
           overScrollMode="never"          
           scrollEventThrottle={16}       
           decelerationRate="normal"   
@@ -125,9 +118,7 @@ const Author = () => {
             MADE BY STUDENTS & ALUMNI
           </Text>
           <Text className="z-20 font-source-serif-italic text-base text-gray-700 w-full text-center pb-3 px-4 ">
-            Waipahu High School's vision is to provide student-centered
-            educational programs that challenge all students to perform at their
-            highest potential.
+            {"Waipahu High School's vision is to provide student-centered educational programs that challenge all students to perform at their highest potential."}
           </Text>
           <View className="w-[100vw] p-3 border-t-[1px] border-gray-200">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-lg w-full relative left-2 p-5 pb-3 underline">

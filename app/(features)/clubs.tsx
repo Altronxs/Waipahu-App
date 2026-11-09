@@ -20,26 +20,22 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect , useRouter } from "expo-router";
 import {
-    ActivityIndicator,
-    Dimensions,
     Image,
     ScrollView,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GlassView } from "expo-glass-effect";
-import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import type { WebView as WebViewType } from "react-native-webview";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import { FooterPage } from "@/components/FooterPage";
 import { HeaderPage } from "@/components/HeaderPage";
 
-const { width, height } = Dimensions.get("window");
 interface clubFeature {
   name: string;
   location: string;
@@ -53,8 +49,8 @@ interface clubDataResponse {
 const Clubs = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
-  const [clubData, setClubData] = useState<clubDataResponse>(
-    require("@/assets/json/clubData.json"),
+  const [clubData] = useState<clubDataResponse>(
+    require("@/assets/json/clubData.json")
   );
 
   useFocusEffect(
@@ -98,7 +94,6 @@ const Clubs = () => {
             style={{alignSelf: 'flex-start', zIndex: 30, borderRadius: 1000, alignItems: 'center', padding: 6, margin: 10}}
             glassEffectStyle="clear"
             isInteractive
-            
         >
             <TouchableOpacity
                 className="items-center"
@@ -126,9 +121,7 @@ const Clubs = () => {
             HOME OF THE MARAUDERS
           </Text>
           <Text className="w-[80%] z-20 font-source-serif-italic text-lg text-gray-700 self-center m-auto text-center py-3">
-            Waipahu High School's vision is to provide student-centered
-            educational programs that challenge all students to perform at their
-            highest potential.
+            {"Waipahu High School's vision is to provide student-centered educational programs that challenge all students to perform at their highest potential."}
           </Text>
           <View className="pb-20 pt-2">
             {clubData.clubData?.map((feature, index) => (

@@ -22,17 +22,13 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
-    ActivityIndicator,
     Image,
     Linking,
-    RefreshControl,
     ScrollView,
-    Modal,
     Text,
     TouchableOpacity,
-    useWindowDimensions,
     View,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
@@ -86,7 +82,6 @@ const openLink = (url: string) => {
  */
 export default function Index() {
   const router = useRouter(); // Get the router instance
-  const { height } = useWindowDimensions();
 
   // 24 hours in milliseconds (24 * 60 * 60 * 1000)
   const ONE_DAY_MS = 86400000; 
@@ -118,12 +113,6 @@ export default function Index() {
   // events without needing to be re-created every time events changes.
   const eventsRef = useRef(events);
   const calendarRef = useRef(calendar);
-
-  type IconItem = {
-    label: string;
-    image: any;
-    onPress: () => void;
-  };
   
   // Static nav/menu configuration grouped into sections for the home grid.
   // This reuses the screen instance instead of pushing infinite duplicates onto the memory stack.
@@ -181,6 +170,7 @@ export default function Index() {
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (error) {
       // if fail return hardcoded but not updated calendar
+      console.log(error);
       return calendarJSON;
     }
   };
@@ -420,7 +410,7 @@ export default function Index() {
 
   // Splash/loading screen: shown until fonts are loaded AND the first
   // interval tick has fired (see setAppIsReady(true) in the focus effect above).
-  if ((appIsReady == false) || !fontsLoaded ) {
+  if ((appIsReady === false) || !fontsLoaded ) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <MarauderLoadingBadge></MarauderLoadingBadge>

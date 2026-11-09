@@ -20,9 +20,8 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect , useRouter } from "expo-router";
 import {
-    ActivityIndicator,
     Dimensions,
     Image,
     ScrollView,
@@ -30,9 +29,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
- 
-import { useRouter } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import React, { useRef } from "react";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from "expo-glass-effect";
@@ -40,7 +37,7 @@ import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import { HeaderPage } from "@/components/HeaderPage";
 import { FooterPage } from "@/components/FooterPage";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const Vision = () => {
   const webViewRef = useRef<WebViewType>(null);
@@ -117,9 +114,7 @@ const Vision = () => {
             HOME OF THE MARAUDERS
           </Text>
           <Text className="z-20 font-source-serif-italic text-lg text-gray-700 w-full text-center relative bottom-16 p-8">
-            Waipahu High School's vision is to provide student-centered
-            educational programs that challenge all students to perform at their
-            highest potential.
+            {"Waipahu High School's vision is to provide student-centered educational programs that challenge all students to perform at their highest potential."}
           </Text>
           <View className="relative bottom-24">
             <Text className="z-30 font-barlow-semibold text-whs-blue text-xl w-full text-center relative p-5">

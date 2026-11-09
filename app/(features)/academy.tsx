@@ -20,20 +20,17 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useCallback, useEffect } from "react";
+import { useRouter } from "expo-router";
 import {
-  ActivityIndicator,
   Image,
   Text,
   TouchableOpacity,
   View,
   Linking,
   ScrollView,
-  RefreshControl,
   useWindowDimensions,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GlassView } from 'expo-glass-effect';
 import { FocusGate } from "@/components/FocusGate";
 import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
@@ -105,15 +102,15 @@ const Academy = () => {
           Career Academies
         </Text>
       </View>
-      <View className="bg-white w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
+      <View className="bg-whs-blue w-[100vw] h-[75%] justify-center items-center " style={{ height: (height - 208)}}>
         <FocusGate>
           <ScrollView
-            className="w-[100vw] h-96 bg-white flex-1 flex-col"
+            className="w-[100vw] h-96 bg-whs-blue flex-1 flex-col"
             style={{ height: height * 0.5 }}
-            bounces={false}                
+            bounces={true}                
             overScrollMode="never"          
-            scrollEventThrottle={16}
-            decelerationRate="normal"
+            scrollEventThrottle={16}       
+            decelerationRate="normal" 
           >
             <View 
               className="flex flex-row justify-center items-center pt-3 pb-20 flex-wrap w-full gap-2 bg-whs-blue"
@@ -282,13 +279,13 @@ const Academy = () => {
                   Our Vision
                 </Text>
                 <Text className="z-20 font-source-serif-regular text-whs-blue text-sm pl-9 pr-9">
-                  The Academy of Industrial & Engineering Technology's vision is to provide student-centered educational programs that challenge all students to perform at their highest potential.
+                  {"The Academy of Industrial & Engineering Technology's vision is to provide student-centered educational programs that challenge all students to perform at their highest potential."}
                 </Text>
                 <Text className="z-20 font-source-serif-bold text-whs-blue text-base ml-9 mr-9 pt-5">
-                  Our Mission
+                  {"Our Mission"}
                 </Text>
                 <Text className="z-20 font-source-serif-regular text-whs-blue text-sm pl-9 pr-9">
-                  The Academy of Industrial & Engineering Technology's mission is to Inspire & Empower all to Thrive in college, career, and life.
+                  {"The Academy of Industrial & Engineering Technology's mission is to Inspire & Empower all to Thrive in college, career, and life."}
                 </Text>
                 <Text className="z-20 font-source-serif-bold text-whs-blue text-base ml-9 mr-9 pt-5">
                   Our Goals
@@ -318,14 +315,14 @@ const Academy = () => {
                   2023 NCAC Model Academy With Distinction
                 </Text>
                 <Text className="z-20 font-source-serif-bold text-whs-blue text-base text-center ml-9 mr-9 pt-3 mt-3 border-t-2 border-whs-blue/20">
-                  Mālama 'Āina. Conservation. Sustainability.
+                  {"Mālama 'Āina. Conservation. Sustainability."}
                 </Text>
 
                 <Text className="z-20 font-source-serif-bold text-whs-blue text-base ml-9 mr-9 pt-5">
                   Our Mission
                 </Text>
                 <Text className="z-20 font-source-serif-regular text-whs-blue text-sm pl-9 pr-9">
-                  The Academy of Natural Resources prepares all students to become environmentally conscious practitioners of aloha 'āina* who contribute personally and professionally to a sustainable world.
+                  {"The Academy of Natural Resources prepares all students to become environmentally conscious practitioners of aloha 'āina* who contribute personally and professionally to a sustainable world."}
                 </Text>
                 <Text className="z-20 font-source-serif-bold text-whs-blue text-base ml-9 mr-9 pt-5">
                   Our Goals

@@ -23,15 +23,12 @@ import {
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
-  ActivityIndicator,
   Image,
   Text,
   TouchableOpacity,
-  Modal,
   View,
   ScrollView,
   useWindowDimensions,
-  RefreshControl,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type {
@@ -70,23 +67,6 @@ interface Calendar {
   }[];
 }
 
-// Your strict alphanumeric mapping array
-const SCHEDULE_OPTIONS = [
-  { label: 'No Override', value: '-1' },
-  { label: 'Monday Schedule', value: '0' },
-  { label: 'Tuesday Schedule', value: '1' },
-  { label: 'Wednesday Schedule', value: '2' },
-  { label: 'Thursday Schedule', value: '3' },
-  { label: 'Friday Schedule', value: '4' },
-  { label: 'A Assembly', value: '5' },
-  { label: 'Double B Assembly', value: '6' },
-  { label: 'C Assembly', value: '7' },
-  { label: 'No School / Holiday', value: '8' },
-  { label: 'EXAM A Schedule', value: '9' },
-  { label: 'EXAM B Schedule', value: '10' },
-];
-
-
 // Shape returned by `calculateCurrentPeriod`. Declaring this once here (instead
 // of inline `as {...}` casts at every call site) makes it easier to keep in
 // sync if `schedule.ts` changes, and gives you real type-checking on the
@@ -122,6 +102,7 @@ const getCalendar = async () => {
     const jsonValue = await AsyncStorage.getItem('@WHS:Calendar:Data');
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
+    console.log(error);
     return calendarJSON;
   }
 };
@@ -148,7 +129,6 @@ const Bell = () => {
   const [events, setEvents] = useState<SchoolEvent[]>([]);
   const [eventsError, setEventsError] = useState<string | null>(null);
   const [calendar, setCalendar] = useState<Calendar | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
   // Kept in sync with `events` (and `calendar`) via the effects below so the
   // 1s interval callback (which is only created once per focus, see the
   // `useFocusEffect` further down) can always read the latest values without
@@ -398,9 +378,9 @@ const Bell = () => {
           // Use a cloned Date instance so we can advance to the next day without
           // mutating the current Hawaii time used elsewhere in this tick.
           const nextDay = new Date(now);
-          if (dayOfWeek == 0) {
+          if (dayOfWeek === 0) {
             nextDay.setDate(now.getDate() + 1);
-          } else if (dayOfWeek == 6) {
+          } else if (dayOfWeek === 6) {
             nextDay.setDate(now.getDate() - 1);
           }
           
@@ -495,15 +475,11 @@ const Bell = () => {
       <View className="bg-white w-[100vw] h-[75%] justify-center items-center">
         <FocusGate>
           <ScrollView
-            // NOTE: `className="h-96"` here is immediately overridden by the
-            // inline `style={{ height: height * 2.5 }}` below — the class has
-            // no effect. Left as-is to avoid changing layout, but consider
-            // dropping the dead className.
             className="w-[100vw] h-96 bg-white flex-1 flex-col"
-            bounces={false}
-            overScrollMode="never"
-            scrollEventThrottle={16}
-            decelerationRate="normal"
+            bounces={true}                
+            overScrollMode="never"          
+            scrollEventThrottle={16}       
+            decelerationRate="normal" 
           >
             <View 
               className="self-center items-center flex flex-column w-[100vw] z-10 flex-1 pb-20"
