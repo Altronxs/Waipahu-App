@@ -21,17 +21,16 @@ import {
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
 import { GlassView } from "expo-glass-effect";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useRef, useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useRef, useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Dimensions,
   Image,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import type {
   WebView as WebViewType,
   WebViewMessageEvent
@@ -43,23 +42,15 @@ import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeaderPage } from "@/components/HeaderPage";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const FALLBACK_MENU_URL = `https://www.waipahuhigh.org/pdf/menu-events%20Sept%202026.pdf`;
 
-interface MenuData {
-  url: string;
-}
 interface webLinks {
   website: {
     url: string;
   }[];
 }
-// Minimum time between forced WebView reloads, independent of the data
-// fetch's own cache TTL. Prevents rapid focus/blur cycling from also
-// hammering waipahuhigh.org via the WebView's native request on top of
-// the JS-level fetch above.
-const RELOAD_THROTTLE_MS = 30000;
 
 const Cafe = () => {
   const isFocused = useIsFocused();
@@ -104,6 +95,7 @@ const Cafe = () => {
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (error) {
       // if fail return hardcoded but not updated calendar
+      console.log(error);
       return FALLBACK_MENU_URL;
     }
   };
@@ -193,7 +185,7 @@ const Cafe = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      {isLoading == true && (
+      {isLoading === true && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
             <MarauderLoadingBadge></MarauderLoadingBadge>

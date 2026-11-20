@@ -34,7 +34,7 @@ import {
     View,
 } from "react-native";
 import MapView, { Callout, Marker, Polygon } from "react-native-maps";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import type { WebView as WebViewType } from "react-native-webview";
 import { GlassView } from 'expo-glass-effect'
@@ -43,7 +43,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FocusGate } from "@/components/FocusGate";
 import { HeaderPage } from "@/components/HeaderPage";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const WAIPAHU_CAMPUS_MAP_NAME = "Waipahu High Campus Map";
 
@@ -143,12 +143,10 @@ const Map = () => {
   const webViewRef = useRef<WebViewType>(null);
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
-  const [appIsReady, setAppIsReady] = useState(false);
   const [interestPoint, setInterestPoint] = useState<string>("");
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [isSheetVisible, setIsSheetVisible] = useState(false);
   const [region, setRegion] = useState(INITIAL_REGION);
-  const [errorMsg, setErrorMsg] = useState(null);
   const [AllowMapLocation, setAllowMapLocation] = useState<boolean>(false)
 
   const [mapData] = useState<MapDataResponse>(
@@ -212,7 +210,6 @@ const Map = () => {
       }
     }
     loadMapAsset();
-    setAppIsReady(true)
   }, []);
 
   const openSheetFor = (name: string) => {
@@ -241,7 +238,7 @@ const Map = () => {
     (feature) => feature.name === interestPoint,
   );
 
-  if ((appIsReady == false) || !fontsLoaded) {
+  if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
         <Image

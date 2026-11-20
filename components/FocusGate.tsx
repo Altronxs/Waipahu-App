@@ -1,5 +1,5 @@
 import { useIsFocused } from "expo-router/react-navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type FocusGateProps = {
   children: React.ReactNode;
@@ -10,21 +10,19 @@ type FocusGateProps = {
 export function FocusGate({ children, unmountDelay = 0 }: FocusGateProps) {
   const isFocused = useIsFocused();
   const [shouldRender, setShouldRender] = useState(isFocused);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Mount as soon as the screen is focused. Adjusting state during render
+  // (instead of in an effect) avoids the extra cascading render.
+  if (isFocused && !shouldRender) {
+    setShouldRender(true);
+  }
+
+  // After blur, unmount once the delay passes. If the screen regains focus
+  // first, the cleanup cancels the pending unmount.
   useEffect(() => {
-    if (isFocused) {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      setShouldRender(true);
-    } else if (unmountDelay > 0) {
-      timerRef.current = setTimeout(() => setShouldRender(false), unmountDelay);
-    } else {
-      setShouldRender(false);
-    }
-
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+    if (isFocused) return undefined;
+    const timer = setTimeout(() => setShouldRender(false), unmountDelay);
+    return () => clearTimeout(timer);
   }, [isFocused, unmountDelay]);
 
   return shouldRender ? <>{children}</> : null;

@@ -27,13 +27,12 @@ import { GlassView } from "expo-glass-effect";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Image,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import type {
   WebView as WebViewType,
   WebViewMessageEvent,
@@ -83,7 +82,7 @@ const Staff = () => {
 
   return (
     <SafeAreaProvider className="flex-col">
-      {isLoading == true && (
+      {isLoading === true && (
         <View className="absolute top-0 left-0 w-full h-full z-50 bg-[#17273d] justify-center items-center">
           <View className="flex-1 justify-center items-center bg-[#17273d]">
             <MarauderLoadingBadge></MarauderLoadingBadge>

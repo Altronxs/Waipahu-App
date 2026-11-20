@@ -21,26 +21,20 @@ import {
     SourceSerifPro_700Bold,
     SourceSerifPro_700Bold_Italic,
 } from "@expo-google-fonts/source-serif-pro";
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "expo-router";
+import React from "react";
 import {
-    ActivityIndicator,
     Image,
-    Linking,
-    RefreshControl,
     ScrollView,
-    Modal,
     Text,
     TouchableOpacity,
     useWindowDimensions,
     View,
-    Switch,
 } from "react-native";
 import { GlassView } from 'expo-glass-effect';
 import { SafeAreaProvider } from "react-native-safe-area-context"; 
-import qaJSON from "@/assets/json/qaData.json";
 import { FooterPage } from "@/components/FooterPage";
-
+import { MarauderLoadingBadge } from "@/components/MarauderLoadingBadge";
 
 interface qaFeature {
     id: number;
@@ -55,14 +49,8 @@ interface qaData {
 
 export default function Faq() {
   const router = useRouter(); // Get the router instance
-  const { height, width } = useWindowDimensions();
-
-  const [selectedSchedule, setSelectedSchedule] = useState<string>('');
-  const [isFocus, setIsFocus] = useState(false);
-
-  const [qaData, setQaData] = useState<qaData>(
-    require("@/assets/json/qaData.json")
-  );
+  const { height } = useWindowDimensions();
+  const qaData: qaData =  require("@/assets/json/qaData.json");
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -84,15 +72,8 @@ export default function Faq() {
   if (!fontsLoaded) {
     return (
       <View className="flex-1 justify-center items-center bg-[#17273d]">
-        <Image
-          source={require("@/assets/images/whs-logo.png")}
-          className="size-32 mb-6 self-center"
-        />
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text className="text-white mt-4 font-barlow-semibold text-center self-center">
-          Loading...
-        </Text>
-      </View>
+        <MarauderLoadingBadge></MarauderLoadingBadge>
+    </View>
     );
   } else {
     return (

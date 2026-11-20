@@ -43,11 +43,11 @@ export function FooterPage() {
                 source={require("@/assets/images/DOE.png")}
                 className="size-11 float-right m-1 mr-3"
                 />
-                <Text className="z-20 w-full font-roboto-regular text-base text-white text-right mr-3">
-                    Powered by
+                <Text className="z-20 w-full font-roboto-bold text-base text-white text-right mr-3">
+                    Made by Students
                 </Text>
-                <Text className="z-20 font-roboto-bold text-base/none text-white text-right mr-3">
-                    Students & Alumni
+                <Text className="z-20 font-roboto-regular text-base/none text-white text-right mr-3">
+                    For Students
                 </Text>
             </View>
             </View>
