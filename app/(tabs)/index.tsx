@@ -137,6 +137,7 @@ export default function Index() {
         { label: "Contacts", image: require("@/assets/images/phone.png"), onPress: () => router.push("/(features)/contacts") },
         { label: "Infinite Campus", image: require("@/assets/images/if.png"), onPress: () => openLink("https://infinitecampus.org") },
         { label: "Official Website", image: require("@/assets/images/globe.png"), onPress: () => openLink("https://waipahuhigh.org") },
+        { label: "Daily Bulitin", image: require("@/assets/images/docs.png"), onPress: () => openLink("https://docs.google.com/document/d/1BTHgERQcRhQaMh6Pt6I4PqjqoZHl4zCGspF5D5c26u4/edit?tab=t.bb1vs6yfrpjc") },
         { label: "App Settings", image: require("@/assets/images/gear.png"), onPress: () => router.push("/(settings)/settings") },
       ],
     }
